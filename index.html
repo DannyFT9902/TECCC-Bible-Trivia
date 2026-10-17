@@ -267,11 +267,86 @@
         .ans-choice-symbol { width: clamp(38px, 5vw, 52px); height: clamp(38px, 5vw, 52px); position: relative; flex: 0 0 auto; display: grid; place-items: center; background: rgba(0,0,0,0.2); border-radius: 14px; border: 1px solid rgba(255,255,255,0.22); padding: 8px; }
         .ans-choice-symbol .shape-icon { width: 100%; height: 100%; margin: 0; }
         .ans-copy { min-width: 0; color: #fff; font-size: clamp(.95rem, 2.1vw, 1.2rem); font-weight: 700; line-height: 1.3; overflow-wrap: anywhere; }
-        .leaderboard-screen { overflow-y: auto; overscroll-behavior: contain; }
-        .podium-item { opacity: 0; transform: translateY(30px) scale(.97); }
-        .podium-item.is-revealed { opacity: 1; transform: translateY(0) scale(1); animation: podium-rise .72s cubic-bezier(.18,.85,.28,1.18) both; }
+        
+        /* --- Host Single-Viewport Shrinking Podium & Leaderboard --- */
+        #screen-host-leaderboard {
+            overflow: hidden;
+        }
+        .podium-section-wrapper {
+            flex-grow: 1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            transition: all 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+            min-height: 0;
+        }
+        .podium-item {
+            opacity: 0;
+            transform: translateY(30px) scale(.97);
+            transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .podium-item.is-revealed {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            animation: podium-rise .72s cubic-bezier(.18,.85,.28,1.18) both;
+        }
         .podium-item.is-empty { visibility: hidden; }
-        .podium-item.podium-1.is-revealed { animation: podium-rise .82s cubic-bezier(.18,.85,.28,1.18) both, winner-glow 1.4s ease-out .55s both; }
+        .podium-item.podium-1.is-revealed {
+            animation: podium-rise .82s cubic-bezier(.18,.85,.28,1.18) both, winner-glow 1.4s ease-out .55s both;
+        }
+
+        .podium-pedestal, .podium-avatar, .podium-name, .podium-score, .podium-label {
+            transition: all 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .podium-2-pedestal { height: 9.5rem; }
+        .podium-1-pedestal { height: 13.5rem; }
+        .podium-3-pedestal { height: 7.5rem; }
+        @media (min-width: 768px) {
+            .podium-2-pedestal { height: 12rem; }
+            .podium-1-pedestal { height: 16.5rem; }
+            .podium-3-pedestal { height: 9.5rem; }
+        }
+
+        /* Shrunk Podium State (Triggered 5 Seconds After 1st Place Reveal) */
+        #host-leaderboard-main.is-compact .podium-section-wrapper {
+            flex-grow: 0;
+            padding-top: 0 !important;
+        }
+        #host-leaderboard-main.is-compact .podium-2-pedestal { height: 2.3rem !important; padding-top: 0.2rem !important; }
+        #host-leaderboard-main.is-compact .podium-1-pedestal { height: 3.1rem !important; padding-top: 0.25rem !important; }
+        #host-leaderboard-main.is-compact .podium-3-pedestal { height: 1.9rem !important; padding-top: 0.15rem !important; }
+        #host-leaderboard-main.is-compact .podium-pedestal span { font-size: 1.25rem !important; line-height: 1 !important; }
+        #host-leaderboard-main.is-compact #podium-1-avatar { width: 3.2rem !important; height: 3.2rem !important; margin-bottom: 0.25rem !important; }
+        #host-leaderboard-main.is-compact #podium-2-avatar,
+        #host-leaderboard-main.is-compact #podium-3-avatar { width: 2.5rem !important; height: 2.5rem !important; margin-bottom: 0.2rem !important; }
+        #host-leaderboard-main.is-compact .podium-name { font-size: 0.85rem !important; margin-bottom: 0.1rem !important; }
+        #host-leaderboard-main.is-compact .podium-score { font-size: 0.68rem !important; padding: 0.1rem 0.5rem !important; margin-bottom: 0.35rem !important; }
+        #host-leaderboard-main.is-compact .podium-label { font-size: 0.65rem !important; margin-bottom: 0.15rem !important; }
+        #host-leaderboard-main.is-compact #host-lb-title { font-size: 1.5rem !important; margin-bottom: 0 !important; }
+
+        /* Full Standings Drawer on Host Screen */
+        .full-standings-panel {
+            transition: all 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+            flex: 1 1 0%;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .full-standings-panel.standings-hidden {
+            flex: 0 0 0px;
+            max-height: 0px;
+            opacity: 0;
+            margin: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            border-width: 0 !important;
+            transform: translateY(24px);
+            pointer-events: none;
+            overflow: hidden;
+        }
+
         @keyframes podium-rise { from { opacity: 0; transform: translateY(34px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
         @keyframes winner-glow { 0% { filter: drop-shadow(0 0 0 rgba(250,204,21,0)); } 50% { filter: drop-shadow(0 0 24px rgba(250,204,21,.6)); } 100% { filter: drop-shadow(0 0 8px rgba(250,204,21,.2)); } }
         #leaderboard-announcement.announcement-pop { animation: announcement-pop .42s cubic-bezier(.18,.85,.28,1.18) both; }
@@ -287,23 +362,48 @@
             100% { transform: scale(1.03) translateX(1.5px); }
         }
 
-        .leaderboard-row { display: grid; grid-template-columns: 52px 48px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 62px; padding: 10px 14px; border: 1px solid rgba(250, 204, 21, 0.18); border-radius: 16px; background: rgba(15, 11, 33, 0.65); transition: transform 0.2s ease; }
+        /* Enhanced Multi-Column Leaderboard Grid (Host & Player) */
+        .leaderboard-header-grid,
+        .leaderboard-row {
+            display: grid;
+            grid-template-columns: 52px 42px minmax(110px, 1.5fr) repeat(3, minmax(68px, 0.85fr)) minmax(86px, 0.95fr);
+            align-items: center;
+            gap: 8px;
+        }
+        .leaderboard-header-grid {
+            padding: 0 14px 6px 14px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #94a3b8;
+        }
+        .leaderboard-row {
+            min-height: 54px;
+            padding: 8px 14px;
+            border: 1px solid rgba(250, 204, 21, 0.18);
+            border-radius: 14px;
+            background: rgba(15, 11, 33, 0.65);
+            transition: transform 0.2s ease;
+        }
         .leaderboard-row:hover { transform: translateX(3px); }
-        .leaderboard-row-avatar { width: 42px; height: 42px; overflow: hidden; border-radius: 50%; background: rgba(255,255,255,.08); border: 2px solid rgba(250, 204, 21, 0.4); }
+        .leaderboard-row-avatar { width: 38px; height: 38px; overflow: hidden; border-radius: 50%; background: rgba(255,255,255,.08); border: 2px solid rgba(250, 204, 21, 0.4); }
         .leaderboard-row-avatar svg { width: 100%; height: 100%; display: block; }
-        .leaderboard-rank { color: #fde047; font-weight: 800; text-align: center; font-size: 0.95rem; }
-        .leaderboard-row-name { min-width: 0; overflow: hidden; color: #f8fafc; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
-        .leaderboard-points { color: #fde047; font-variant-numeric: tabular-nums; font-weight: 800; white-space: nowrap; background: rgba(234, 179, 8, 0.14); padding: 5px 12px; border-radius: 999px; border: 1px solid rgba(250, 204, 21, 0.25); }
+        .leaderboard-rank { color: #fde047; font-weight: 800; text-align: center; font-size: 0.88rem; }
+        .leaderboard-row-name { min-width: 0; overflow: hidden; color: #f8fafc; font-weight: 700; font-size: 0.9rem; text-overflow: ellipsis; white-space: nowrap; }
+        .stat-pill {
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 3px 6px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            white-space: nowrap;
+        }
+        .leaderboard-points { color: #fde047; font-variant-numeric: tabular-nums; font-weight: 800; font-size: 0.85rem; text-align: right; white-space: nowrap; background: rgba(234, 179, 8, 0.14); padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(250, 204, 21, 0.25); justify-self: end; }
         .top-three-row { border-color: rgba(250, 204, 21, .45); background: linear-gradient(100deg, rgba(234, 179, 8, .18), rgba(30, 27, 75, .65)); }
-        
-        .full-standings-panel {
-            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .full-standings-panel.standings-hidden {
-            opacity: 0;
-            transform: translateY(20px);
-            pointer-events: none;
-        }
 
         #confetti-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 40; }
 
@@ -332,13 +432,31 @@
             background: rgba(16, 185, 129, 0.22) !important;
         }
 
+        @media (max-width: 720px) {
+            .leaderboard-header-grid { display: none; }
+            .leaderboard-row {
+                grid-template-columns: 42px 36px minmax(0, 1fr) auto;
+                row-gap: 6px;
+                padding: 10px;
+            }
+            .leaderboard-row .stat-pill {
+                grid-column: span 1;
+                font-size: 0.7rem;
+            }
+            .leaderboard-row .mobile-stats-strip {
+                grid-column: 1 / -1;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+                padding-top: 4px;
+                border-top: 1px solid rgba(255,255,255,0.06);
+            }
+        }
         @media (max-width: 520px) {
             .answer-grid { gap: 10px; grid-template-rows: repeat(2, minmax(118px, 1fr)); min-height: min(76vh, 620px); }
             .ans-btn { flex-direction: row; justify-content: flex-start; gap: 10px; padding: 10px; text-align: left; }
             .ans-choice-symbol { width: 34px; height: 34px; padding: 6px; }
             .ans-copy { font-size: clamp(.8rem, 3.2vw, .95rem); }
-            .leaderboard-row { grid-template-columns: 40px 38px minmax(0, 1fr) auto; gap: 8px; }
-            .leaderboard-row-avatar { width: 36px; height: 36px; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
@@ -698,78 +816,88 @@
         </div>
     </div>
 
-    <!-- Host Leaderboard (Podium + Full Standings of Everyone) -->
-    <div id="screen-host-leaderboard" class="screen-container leaderboard-screen custom-scroll p-4 md:p-6 relative">
-        <main class="max-w-6xl w-full min-h-full mx-auto py-3 md:py-6 flex flex-col gap-6 relative z-10 pt-8">
-            <header class="text-center">
-                <div class="eyebrow mb-1">Final Results</div>
-                <h1 class="font-display text-3xl md:text-5xl font-extrabold text-white tracking-tight mb-2">Championship Podium & Standings</h1>
-                <div class="flex flex-col items-center justify-center gap-2">
-                    <p id="leaderboard-announcement" class="mt-1 min-h-8 text-lg md:text-2xl font-bold text-yellow-200 px-4 py-1 rounded-full" aria-live="polite">Get ready for the final results…</p>
+    <!-- Host Leaderboard (Single-Screen Shrinking Podium + Full Standings Drawer) -->
+    <div id="screen-host-leaderboard" class="screen-container p-3 sm:p-5 relative">
+        <main id="host-leaderboard-main" class="max-w-6xl w-full h-full mx-auto flex flex-col gap-3 relative z-10 pt-5 sm:pt-2 overflow-hidden">
+            <header class="text-center shrink-0 flex flex-col items-center">
+                <div class="flex items-center gap-3">
+                    <span class="eyebrow">Final Results</span>
                     <button id="btn-skip-podium" onclick="skipPodiumAnimation()" class="hidden text-xs font-semibold text-slate-300 hover:text-white underline">
-                        Skip Reveal Animation
+                        Skip Reveal Wait
                     </button>
                 </div>
+                <h1 id="host-lb-title" class="font-display text-2xl sm:text-4xl font-extrabold text-white tracking-tight transition-all duration-500">Championship Podium & Standings</h1>
+                <p id="leaderboard-announcement" class="mt-0.5 min-h-7 text-base sm:text-xl font-bold text-yellow-200 px-4 py-0.5 rounded-full" aria-live="polite">Get ready for the final results…</p>
             </header>
 
-            <!-- Top 3 Podium -->
-            <section aria-label="Top three players" class="w-full">
-                <div class="w-full max-w-5xl mx-auto flex items-end justify-center gap-2 sm:gap-4 md:gap-8 pt-2">
+            <!-- Top 3 Podium (Starts Tall, Shrinks 5s After 1st Place Reveal) -->
+            <section aria-label="Top three players" class="w-full podium-section-wrapper shrink-0">
+                <div class="w-full max-w-4xl mx-auto flex items-end justify-center gap-3 sm:gap-6">
                     <!-- Rank 2 -->
                     <div id="podium-2" class="podium-item w-1/3 flex flex-col items-center order-1 relative">
-                        <div class="text-xs font-semibold text-slate-300 mb-2 text-center">🥈 2nd Place</div>
-                        <div id="podium-2-avatar" class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full mb-3 bg-slate-800 border-3 border-slate-200 overflow-hidden"></div>
-                        <div id="podium-2-name" class="font-bold text-sm sm:text-lg md:text-xl mb-1 text-white truncate w-full text-center">Name</div>
-                        <div id="podium-2-score" class="font-semibold text-slate-100 mb-4 bg-slate-400/20 border border-slate-300/30 px-3 py-1 rounded-full text-xs">0 PTS</div>
-                        <div class="w-full h-28 sm:h-36 md:h-44 bento-card !rounded-b-none flex justify-center pt-5 bg-gradient-to-b from-slate-300/20 to-transparent">
-                            <span class="text-4xl md:text-5xl font-display font-extrabold text-slate-200/70">2</span>
+                        <div class="podium-label text-xs font-semibold text-slate-300 mb-1.5 text-center">🥈 2nd Place</div>
+                        <div id="podium-2-avatar" class="podium-avatar w-14 h-14 sm:w-20 sm:h-20 rounded-full mb-2 bg-slate-800 border-2 border-slate-200 overflow-hidden"></div>
+                        <div id="podium-2-name" class="podium-name font-bold text-sm sm:text-lg mb-0.5 text-white truncate w-full text-center">Name</div>
+                        <div id="podium-2-score" class="podium-score font-semibold text-slate-100 mb-2.5 bg-slate-400/20 border border-slate-300/30 px-2.5 py-0.5 rounded-full text-xs">0 PTS</div>
+                        <div class="podium-pedestal podium-2-pedestal w-full bento-card !rounded-b-none flex justify-center pt-3 bg-gradient-to-b from-slate-300/20 to-transparent">
+                            <span class="text-3xl sm:text-5xl font-display font-extrabold text-slate-200/70">2</span>
                         </div>
                     </div>
 
                     <!-- Rank 1 -->
                     <div id="podium-1" class="podium-item podium-1 w-1/3 flex flex-col items-center order-2 relative z-20">
-                        <div class="text-xs sm:text-sm font-bold text-yellow-300 mb-2 flex items-center gap-1 text-center">
+                        <div class="podium-label text-xs sm:text-sm font-bold text-yellow-300 mb-1.5 flex items-center gap-1 text-center">
                             👑 1st Place
                         </div>
-                        <div id="podium-1-avatar" class="w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full mb-3 ring-4 ring-yellow-300 bg-slate-800 overflow-hidden"></div>
-                        <div id="podium-1-name" class="font-bold text-base sm:text-xl md:text-2xl mb-1 text-yellow-100 truncate w-full text-center">Name</div>
-                        <div id="podium-1-score" class="font-bold text-yellow-200 mb-5 bg-yellow-500/20 px-4 py-1 rounded-full border border-yellow-300/50 text-xs sm:text-sm">0 PTS</div>
-                        <div class="w-full h-40 sm:h-48 md:h-60 bento-card !rounded-b-none flex justify-center pt-6 bg-gradient-to-b from-yellow-400/30 to-transparent">
-                            <span class="text-5xl md:text-7xl font-display font-extrabold text-yellow-300">1</span>
+                        <div id="podium-1-avatar" class="podium-avatar w-18 h-18 sm:w-24 sm:h-24 rounded-full mb-2 ring-3 ring-yellow-300 bg-slate-800 overflow-hidden"></div>
+                        <div id="podium-1-name" class="podium-name font-bold text-base sm:text-xl mb-0.5 text-yellow-100 truncate w-full text-center">Name</div>
+                        <div id="podium-1-score" class="podium-score font-bold text-yellow-200 mb-3 bg-yellow-500/20 px-3 py-0.5 rounded-full border border-yellow-300/50 text-xs">0 PTS</div>
+                        <div class="podium-pedestal podium-1-pedestal w-full bento-card !rounded-b-none flex justify-center pt-4 bg-gradient-to-b from-yellow-400/30 to-transparent">
+                            <span class="text-4xl sm:text-6xl font-display font-extrabold text-yellow-300">1</span>
                         </div>
                     </div>
 
                     <!-- Rank 3 -->
                     <div id="podium-3" class="podium-item w-1/3 flex flex-col items-center order-3 relative">
-                        <div class="text-xs font-semibold text-amber-300 mb-2 text-center">🥉 3rd Place</div>
-                        <div id="podium-3-avatar" class="w-14 h-14 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-full mb-3 bg-slate-800 border-3 border-amber-400 overflow-hidden"></div>
-                        <div id="podium-3-name" class="font-bold text-sm sm:text-base md:text-lg mb-1 text-white truncate w-full text-center">Name</div>
-                        <div id="podium-3-score" class="font-semibold text-amber-200 mb-4 bg-amber-500/20 border border-amber-400/30 px-3 py-1 rounded-full text-xs">0 PTS</div>
-                        <div class="w-full h-24 sm:h-28 md:h-36 bento-card !rounded-b-none flex justify-center pt-4 bg-gradient-to-b from-amber-500/20 to-transparent">
-                            <span class="text-3xl md:text-4xl font-display font-extrabold text-amber-300/75">3</span>
+                        <div class="podium-label text-xs font-semibold text-amber-300 mb-1.5 text-center">🥉 3rd Place</div>
+                        <div id="podium-3-avatar" class="podium-avatar w-12 h-12 sm:w-16 sm:h-16 rounded-full mb-2 bg-slate-800 border-2 border-amber-400 overflow-hidden"></div>
+                        <div id="podium-3-name" class="podium-name font-bold text-sm sm:text-base mb-0.5 text-white truncate w-full text-center">Name</div>
+                        <div id="podium-3-score" class="podium-score font-semibold text-amber-200 mb-2.5 bg-amber-500/20 border border-amber-400/30 px-2.5 py-0.5 rounded-full text-xs">0 PTS</div>
+                        <div class="podium-pedestal podium-3-pedestal w-full bento-card !rounded-b-none flex justify-center pt-3 bg-gradient-to-b from-amber-500/20 to-transparent">
+                            <span class="text-2xl sm:text-4xl font-display font-extrabold text-amber-300/75">3</span>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Full Leaderboard of Everyone Who Played -->
-            <section id="host-full-standings-section" class="bento-card p-5 sm:p-6 w-full full-standings-panel" aria-label="Full player standings">
-                <div class="flex flex-wrap justify-between items-center gap-3 mb-4 relative z-10 border-b border-white/10 pb-3">
-                    <div>
-                        <h2 class="text-lg sm:text-xl font-display font-bold text-white">Full Room Leaderboard</h2>
-                        <p class="text-xs text-slate-300">Complete standings from 1st place down to every participant</p>
+            <!-- Full Room Leaderboard Drawer (Reveals on Same Screen After 5s Shrink) -->
+            <section id="host-full-standings-section" class="bento-card p-3.5 sm:p-5 w-full full-standings-panel standings-hidden" aria-label="Full player standings">
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-2.5 relative z-10 border-b border-white/10 pb-2 shrink-0">
+                    <div class="flex items-center gap-3">
+                        <h2 class="text-sm sm:text-base font-display font-bold text-white">Full Room Leaderboard</h2>
+                        <span class="bg-yellow-400/15 border border-yellow-400/30 text-yellow-200 font-bold px-2.5 py-0.5 rounded-full text-[11px]">
+                            <span id="host-total-players-ranked">0</span> Players
+                        </span>
                     </div>
-                    <div class="bg-yellow-400/15 border border-yellow-400/30 text-yellow-200 font-bold px-3.5 py-1 rounded-full text-xs">
-                        <span id="host-total-players-ranked">0</span> Players Ranked
-                    </div>
+                    <button onclick="goHomeAndClean()" class="px-4 py-1.5 btn-primary rounded-lg font-bold text-xs">
+                        Back to Home
+                    </button>
                 </div>
-                <ol id="host-leaderboard-rest" class="flex flex-col gap-2.5 relative z-10"></ol>
-                <p id="host-leaderboard-empty" class="hidden text-sm text-slate-300 py-3 relative z-10">No players to show yet.</p>
-            </section>
 
-            <div class="text-center pb-6">
-                <button onclick="goHomeAndClean()" class="px-8 py-3.5 btn-primary rounded-xl font-bold text-sm">Back to Home</button>
-            </div>
+                <!-- Column Headers -->
+                <div class="leaderboard-header-grid relative z-10 shrink-0">
+                    <span class="text-center">Rank</span>
+                    <span></span>
+                    <span>Player</span>
+                    <span class="text-center">⚡ Fastest</span>
+                    <span class="text-center">🐢 Slowest</span>
+                    <span class="text-center">🎯 Avg Pts</span>
+                    <span class="text-right">Total Score</span>
+                </div>
+
+                <ol id="host-leaderboard-rest" class="flex flex-col gap-2 relative z-10 flex-grow overflow-y-auto custom-scroll pr-1 min-h-0"></ol>
+                <p id="host-leaderboard-empty" class="hidden text-xs text-slate-300 py-3 text-center relative z-10">No players to show yet.</p>
+            </section>
         </main>
     </div>
 
@@ -888,30 +1016,76 @@
         </div>
     </div>
 
-    <!-- Player Final Result -->
-    <div id="screen-player-leaderboard" class="screen-container leaderboard-screen custom-scroll p-4 md:p-6">
-        <main class="max-w-3xl w-full min-h-full mx-auto py-2 md:py-5 flex flex-col gap-5 pt-8">
-            <section class="bento-card p-6 md:p-8 text-center relative overflow-hidden">
-                <div class="eyebrow mb-3">Game Over</div>
-                <div class="relative w-20 h-20 mx-auto mb-3">
-                    <div id="player-final-avatar" class="w-full h-full rounded-full ring-3 ring-yellow-400 relative z-10 bg-slate-800 overflow-hidden"></div>
+    <!-- Player Final Result & Analytics Sheet -->
+    <div id="screen-player-leaderboard" class="screen-container screen-scroll custom-scroll p-4 md:p-6">
+        <main class="max-w-4xl w-full min-h-full mx-auto py-2 md:py-5 flex flex-col gap-5 pt-8">
+            <section class="bento-card p-5 md:p-7 text-center relative overflow-hidden">
+                <div class="eyebrow mb-2">Match Summary & Analytics</div>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-5">
+                    <div class="relative w-20 h-20 shrink-0">
+                        <div id="player-final-avatar" class="w-full h-full rounded-full ring-3 ring-yellow-400 relative z-10 bg-slate-800 overflow-hidden"></div>
+                    </div>
+                    <div class="text-center sm:text-left">
+                        <p id="player-final-rank" class="text-lg md:text-xl font-bold text-white">Rank</p>
+                        <p id="player-final-rank-sub" class="text-xs text-slate-300 mb-1">Position</p>
+                        <div class="inline-flex items-baseline gap-1.5 bg-yellow-400/15 border border-yellow-400/30 px-3.5 py-1 rounded-full">
+                            <span id="player-final-score" class="text-2xl font-display font-extrabold text-yellow-300 tabular-nums">0</span>
+                            <span class="text-xs font-bold text-yellow-200 uppercase">Total Pts</span>
+                        </div>
+                    </div>
                 </div>
-                <p class="text-xs font-medium text-slate-300 mb-1">Your Final Score</p>
-                <div id="player-final-score" class="text-4xl md:text-5xl font-display font-extrabold text-yellow-300 mb-4 tabular-nums">0</div>
-                <div class="bg-black/35 p-3.5 rounded-xl border border-white/10">
-                    <p id="player-final-rank" class="text-base md:text-lg font-bold text-white mb-0.5">Rank</p>
-                    <p id="player-final-rank-sub" class="text-xs text-slate-300">Position</p>
+
+                <!-- Player Personal Performance Telemetry Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 text-left relative z-10">
+                    <div class="bg-black/35 p-3 rounded-xl border border-white/10">
+                        <div class="text-[11px] font-semibold text-slate-400">⚡ Fastest Answer</div>
+                        <div id="p-stat-fastest" class="text-base font-extrabold text-emerald-300 mt-0.5 tabular-nums">—</div>
+                    </div>
+                    <div class="bg-black/35 p-3 rounded-xl border border-white/10">
+                        <div class="text-[11px] font-semibold text-slate-400">🐢 Slowest Answer</div>
+                        <div id="p-stat-slowest" class="text-base font-extrabold text-amber-300 mt-0.5 tabular-nums">—</div>
+                    </div>
+                    <div class="bg-black/35 p-3 rounded-xl border border-white/10">
+                        <div class="text-[11px] font-semibold text-slate-400">🎯 Avg Speed Pts</div>
+                        <div id="p-stat-avg-pts" class="text-base font-extrabold text-yellow-300 mt-0.5 tabular-nums">0 pts</div>
+                    </div>
+                    <div class="bg-black/35 p-3 rounded-xl border border-white/10">
+                        <div class="text-[11px] font-semibold text-slate-400">📊 Accuracy</div>
+                        <div id="p-stat-accuracy" class="text-base font-extrabold text-sky-300 mt-0.5 tabular-nums">0%</div>
+                    </div>
+                    <div class="bg-black/35 p-3 rounded-xl border border-white/10">
+                        <div class="text-[11px] font-semibold text-slate-400">🔥 Best Streak</div>
+                        <div id="p-stat-streak" class="text-base font-extrabold text-orange-300 mt-0.5 tabular-nums">0</div>
+                    </div>
+                    <div class="bg-black/35 p-3 rounded-xl border border-white/10">
+                        <div class="text-[11px] font-semibold text-slate-400">✅ Correct</div>
+                        <div id="p-stat-correct" class="text-base font-extrabold text-white mt-0.5 tabular-nums">0 / 10</div>
+                    </div>
                 </div>
             </section>
+
             <section class="bento-card p-4 sm:p-6" aria-label="Final leaderboard">
                 <div class="flex flex-wrap justify-between items-center gap-3 mb-3 relative z-10 border-b border-white/10 pb-2.5">
                     <div>
-                        <h2 class="text-base sm:text-lg font-display font-bold text-white">Full Room Standings</h2>
-                        <p class="text-xs text-slate-300">Every player ranked from 1st place down</p>
+                        <h2 class="text-base sm:text-lg font-display font-bold text-white">Full Room Leaderboard Sheet</h2>
+                        <p class="text-xs text-slate-300">Fastest time, slowest time, average points, and total score</p>
                     </div>
                 </div>
+
+                <!-- Column Headers -->
+                <div class="leaderboard-header-grid relative z-10">
+                    <span class="text-center">Rank</span>
+                    <span></span>
+                    <span>Player</span>
+                    <span class="text-center">⚡ Fastest</span>
+                    <span class="text-center">🐢 Slowest</span>
+                    <span class="text-center">🎯 Avg Pts</span>
+                    <span class="text-right">Total Score</span>
+                </div>
+
                 <ol id="player-final-leaderboard" class="flex flex-col gap-2 relative z-10"></ol>
             </section>
+
             <div class="text-center pb-6">
                 <button onclick="goHomeAndClean()" class="px-8 py-3.5 btn-primary rounded-xl font-bold text-sm">Play Again</button>
             </div>
@@ -1002,7 +1176,6 @@
                 osc.stop(now + duration + 0.02);
             },
 
-            // Realistic Snare Drum Roll Crescendo before each Podium Reveal
             drumRoll(durationSeconds = 1.4, intensity = 1.0) {
                 if (!this.sfxEnabled) return;
                 this.init();
@@ -1011,14 +1184,12 @@
                 if (!noiseBuf) return;
 
                 const now = this.ctx.currentTime;
-                const hits = Math.floor(durationSeconds * 28); // Rapid 28 strokes/sec snare buzz
+                const hits = Math.floor(durationSeconds * 28);
                 for (let i = 0; i < hits; i++) {
                     const progress = i / hits;
                     const hitTime = now + (i * (durationSeconds / hits));
-                    // Crescendo: builds up dramatically toward the reveal
                     const hitVol = (0.02 + Math.pow(progress, 1.8) * 0.18) * intensity;
 
-                    // Snare wire noise burst
                     const noise = this.ctx.createBufferSource();
                     noise.buffer = noiseBuf;
                     const filter = this.ctx.createBiquadFilter();
@@ -1037,7 +1208,6 @@
                     noise.start(hitTime);
                     noise.stop(hitTime + 0.05);
 
-                    // Drum shell body thump on alternating strokes
                     if (i % 2 === 0) {
                         const osc = this.ctx.createOscillator();
                         const bodyGain = this.ctx.createGain();
@@ -1134,14 +1304,12 @@
                 }
             },
 
-            // Celebratory Fanfare when each Podium Hero pops up after the drum roll
             podiumStep(rank) {
                 if (rank === 3) {
                     [392.00, 493.88, 587.33, 783.99].forEach((f, i) => this.playNote(f, 'triangle', 0.45, i * 0.07, 0.16));
                 } else if (rank === 2) {
                     [440.00, 554.37, 659.25, 880.00, 1108.73].forEach((f, i) => this.playNote(f, 'triangle', 0.5, i * 0.07, 0.17));
                 } else if (rank === 1) {
-                    // Victorious Champion Fanfare: Shofar + Royal Chord + Harp Cascade
                     this.shofar();
                     const grand = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98, 2093.00];
                     grand.forEach((f, i) => {
@@ -2004,7 +2172,21 @@
                 
                 if (docSnap.exists() && docSnap.data().status === 'lobby') {
                     const playerRef = doc(db, 'players', userId);
-                    await setDoc(playerRef, { gameId: codeInput, name: nameInput, avatar: selectedPlayerAvatar, score: 0, currentAnswer: -1, lastPoints: 0, answeredAt: 0 });
+                    await setDoc(playerRef, {
+                        gameId: codeInput,
+                        name: nameInput,
+                        avatar: selectedPlayerAvatar,
+                        score: 0,
+                        currentAnswer: -1,
+                        lastPoints: 0,
+                        answeredAt: 0,
+                        fastestTimeMs: null,
+                        slowestTimeMs: null,
+                        correctCount: 0,
+                        answeredCount: 0,
+                        streak: 0,
+                        bestStreak: 0
+                    });
 
                     myGameCode = codeInput; currentRole = 'player';
                     SoundEngine.playerJoin();
@@ -2132,12 +2314,29 @@
         }
 
         function sortPlayersByScore(players) {
-            return [...players].sort((a, b) => (Number(b.score) || 0) - (Number(a.score) || 0) || String(a.name || '').localeCompare(String(b.name || '')));
+            return [...players].sort((a, b) => (Number(b.score) || 0) - (Number(a.score) || 0) || (Number(a.fastestTimeMs) || 999999) - (Number(b.fastestTimeMs) || 999999) || String(a.name || '').localeCompare(String(b.name || '')));
         }
 
+        function formatSeconds(ms) {
+            if (typeof ms !== 'number' || !isFinite(ms) || ms <= 0) return '—';
+            return `${(ms / 1000).toFixed(1)}s`;
+        }
+
+        function getAvgPointsPerCorrect(player) {
+            const score = Number(player.score) || 0;
+            const correct = Number(player.correctCount) || 0;
+            if (correct <= 0) return 0;
+            return Math.round(score / correct);
+        }
+
+        // Builds rich leaderboard rows with Fastest, Slowest, Avg Speed Pts, and Total Score
         function createLeaderboardRow(player, rank) {
             const row = document.createElement('li');
             const score = Number(player.score) || 0;
+            const fastestStr = formatSeconds(player.fastestTimeMs);
+            const slowestStr = formatSeconds(player.slowestTimeMs);
+            const avgPts = getAvgPointsPerCorrect(player);
+
             row.className = `leaderboard-row ${rank <= 3 ? 'top-three-row' : ''}`;
             row.setAttribute('aria-label', `${player.name || 'Player'}, rank ${rank}, ${score} points`);
 
@@ -2159,14 +2358,41 @@
             name.textContent = player.name || 'Player';
             const heroSub = document.createElement('div');
             heroSub.className = 'text-[11px] font-medium text-slate-300 truncate';
-            heroSub.textContent = getHeroName(player.avatar);
+            const correctCount = Number(player.correctCount) || 0;
+            const bestStreak = Number(player.bestStreak) || 0;
+            heroSub.textContent = `${getHeroName(player.avatar)} · ✅ ${correctCount} · 🔥 ${bestStreak}`;
             nameWrap.append(name, heroSub);
+
+            // Desktop Stat Columns
+            const fastEl = document.createElement('span');
+            fastEl.className = 'stat-pill text-emerald-300 hidden md:inline-block';
+            fastEl.title = 'Fastest Question Answered';
+            fastEl.textContent = `⚡ ${fastestStr}`;
+
+            const slowEl = document.createElement('span');
+            slowEl.className = 'stat-pill text-amber-300 hidden md:inline-block';
+            slowEl.title = 'Slowest Question Answered';
+            slowEl.textContent = `🐢 ${slowestStr}`;
+
+            const avgEl = document.createElement('span');
+            avgEl.className = 'stat-pill text-sky-300 hidden md:inline-block';
+            avgEl.title = 'Average Points Earned Per Correct Answer';
+            avgEl.textContent = `🎯 ${avgPts} avg`;
 
             const points = document.createElement('span');
             points.className = 'leaderboard-points';
             points.textContent = `${score.toLocaleString()} pts`;
 
-            row.append(rankLabel, avatar, nameWrap, points);
+            // Mobile Compact Stat Strip
+            const mobileStrip = document.createElement('div');
+            mobileStrip.className = 'mobile-stats-strip md:hidden';
+            mobileStrip.innerHTML = `
+                <span class="stat-pill text-emerald-300">⚡ Fast: ${fastestStr}</span>
+                <span class="stat-pill text-amber-300">🐢 Slow: ${slowestStr}</span>
+                <span class="stat-pill text-sky-300">🎯 Avg: ${avgPts}</span>
+            `;
+
+            row.append(rankLabel, avatar, nameWrap, fastEl, slowEl, avgEl, points, mobileStrip);
             return row;
         }
 
@@ -2300,6 +2526,7 @@
             }, 100);
         }
 
+        // Calculates points AND tracks Fastest Time, Slowest Time, Correct Count, and Best Streak
         async function processEndQuestion() {
             if (isProcessingEnd || currentRole !== 'host') return;
             isProcessingEnd = true; clearInterval(hostTimerInterval);
@@ -2309,16 +2536,48 @@
             const batch = writeBatch(db);
             
             playersData.forEach(player => {
-                let newScore = player.score || 0;
+                let newScore = Number(player.score) || 0;
                 let points = 0;
-                if (player.currentAnswer === qData.a) {
-                    const timeTaken = player.answeredAt - gameData.startTime;
-                    const clamped = Math.max(0, Math.min(durationMs, timeTaken));
-                    points = Math.round(500 + ((durationMs - clamped) / durationMs) * 500);
-                    newScore += points;
+                let fastestTimeMs = typeof player.fastestTimeMs === 'number' ? player.fastestTimeMs : null;
+                let slowestTimeMs = typeof player.slowestTimeMs === 'number' ? player.slowestTimeMs : null;
+                let correctCount = Number(player.correctCount) || 0;
+                let answeredCount = Number(player.answeredCount) || 0;
+                let streak = Number(player.streak) || 0;
+                let bestStreak = Number(player.bestStreak) || 0;
+
+                if (player.currentAnswer !== -1 && player.answeredAt > 0) {
+                    answeredCount += 1;
+                    const rawTaken = player.answeredAt - gameData.startTime;
+                    const clamped = Math.max(100, Math.min(durationMs, rawTaken));
+
+                    // Track fastest and slowest answer times across all answered questions
+                    if (fastestTimeMs === null || clamped < fastestTimeMs) fastestTimeMs = clamped;
+                    if (slowestTimeMs === null || clamped > slowestTimeMs) slowestTimeMs = clamped;
+
+                    if (player.currentAnswer === qData.a) {
+                        points = Math.round(500 + ((durationMs - clamped) / durationMs) * 500);
+                        newScore += points;
+                        correctCount += 1;
+                        streak += 1;
+                        if (streak > bestStreak) bestStreak = streak;
+                    } else {
+                        streak = 0;
+                    }
+                } else {
+                    streak = 0;
                 }
+
                 const pRef = doc(db, 'players', player.id);
-                batch.update(pRef, { score: newScore, lastPoints: points });
+                batch.update(pRef, {
+                    score: newScore,
+                    lastPoints: points,
+                    fastestTimeMs: fastestTimeMs,
+                    slowestTimeMs: slowestTimeMs,
+                    correctCount: correctCount,
+                    answeredCount: answeredCount,
+                    streak: streak,
+                    bestStreak: bestStreak
+                });
             });
             
             const gameRef = doc(db, 'games', myGameCode);
@@ -2358,6 +2617,16 @@
             }
         }
 
+        function shrinkPodiumAndShowFullLeaderboard() {
+            const mainContainer = document.getElementById('host-leaderboard-main');
+            const fullStandingsPanel = document.getElementById('host-full-standings-section');
+            const skipBtn = document.getElementById('btn-skip-podium');
+            mainContainer.classList.add('is-compact');
+            fullStandingsPanel.classList.remove('standings-hidden');
+            skipBtn.classList.add('hidden');
+            SoundEngine.harpReveal();
+        }
+
         function skipPodiumAnimation() {
             podiumRevealTimeouts.forEach(clearTimeout);
             podiumRevealTimeouts = [];
@@ -2366,11 +2635,10 @@
             [3, 2, 1].forEach(rank => {
                 if (sorted[rank - 1]) document.getElementById(`podium-${rank}`).classList.add('is-revealed');
             });
-            document.getElementById('host-full-standings-section').classList.remove('standings-hidden');
-            document.getElementById('btn-skip-podium').classList.add('hidden');
             if (sorted[0]) {
-                setLeaderboardAnnouncement(`👑 ${sorted[0].name || 'Our champion'} takes 1st place!`, false);
+                setLeaderboardAnnouncement(`👑 ${sorted[0].name || 'Our champion'} is the Victorious One!`, false);
             }
+            shrinkPodiumAndShowFullLeaderboard();
         }
 
         function renderHostLeaderboard(animate = true) {
@@ -2379,11 +2647,11 @@
             SoundEngine.stopBGM();
             const sorted = sortPlayersByScore(playersData);
             
-            // Update Full Leaderboard Count & Rows (from #1 down to everyone who played)
             document.getElementById('host-total-players-ranked').innerText = sorted.length;
             renderLeaderboardRows('host-leaderboard-rest', sorted, 1);
             document.getElementById('host-leaderboard-empty').classList.toggle('hidden', sorted.length > 0);
 
+            const mainContainer = document.getElementById('host-leaderboard-main');
             const fullStandingsPanel = document.getElementById('host-full-standings-section');
             const skipBtn = document.getElementById('btn-skip-podium');
 
@@ -2392,6 +2660,7 @@
                 podiumRevealTimeouts = [];
                 podiumRevealRunning = true;
                 stopConfetti();
+                mainContainer.classList.remove('is-compact');
                 fullStandingsPanel.classList.add('standings-hidden');
                 skipBtn.classList.remove('hidden');
                 setLeaderboardAnnouncement('🥁 Drum roll please… preparing the podium!', false);
@@ -2417,6 +2686,7 @@
             if (!animate) {
                 if (!podiumRevealRunning) {
                     revealOrder.forEach(rank => document.getElementById(`podium-${rank}`).classList.add('is-revealed'));
+                    mainContainer.classList.add('is-compact');
                     fullStandingsPanel.classList.remove('standings-hidden');
                     skipBtn.classList.add('hidden');
                 }
@@ -2424,6 +2694,7 @@
             }
             if (!revealOrder.length) {
                 podiumRevealRunning = false;
+                mainContainer.classList.add('is-compact');
                 fullStandingsPanel.classList.remove('standings-hidden');
                 skipBtn.classList.add('hidden');
                 setLeaderboardAnnouncement('No scores recorded yet.', false);
@@ -2442,7 +2713,7 @@
                     ? '🥁 Drum roll… 2nd place goes to…'
                     : '🥁 Drum roll for the Victorious One… 1st place goes to…';
 
-                // Stage 1: Start Drum Roll + Suspense Announcement
+                // Stage 1: Drum roll before this podium spot
                 podiumRevealTimeouts.push(setTimeout(() => {
                     setLeaderboardAnnouncement(intro, true);
                     SoundEngine.drumRoll(drumDurationSec, rank === 1 ? 1.25 : 1.0);
@@ -2450,7 +2721,7 @@
 
                 timeline += drumDurationMs;
 
-                // Stage 2: Reveal Podium Hero + Play Victorious Fanfare
+                // Stage 2: Reveal Podium Hero + Play Fanfare
                 podiumRevealTimeouts.push(setTimeout(() => {
                     document.getElementById(`podium-${rank}`).classList.add('is-revealed');
                     SoundEngine.podiumStep(rank);
@@ -2461,11 +2732,12 @@
                         setLeaderboardAnnouncement(`🎉 ${player.name || 'Player'} claims ${placeName} place!`, false);
                     }
 
-                    // When the final podium spot is revealed, smoothly unveil the Full Room Standings below
+                    // After the top 3 are revealed, wait 5 seconds (5000ms), then shrink podium & expand full leaderboard on one screen
                     if (index === revealOrder.length - 1) {
-                        podiumRevealRunning = false;
-                        skipBtn.classList.add('hidden');
-                        fullStandingsPanel.classList.remove('standings-hidden');
+                        podiumRevealTimeouts.push(setTimeout(() => {
+                            podiumRevealRunning = false;
+                            shrinkPodiumAndShowFullLeaderboard();
+                        }, reduceMotion ? 500 : 5000));
                     }
                 }, timeline));
 
@@ -2548,18 +2820,32 @@
             const sorted = sortPlayersByScore(playersData);
             const myRank = sorted.findIndex(p => p.id === userId) + 1;
             const me = playersData.find(p => p.id === userId);
+            const totalQ = getTotalQuestionsInMatch();
             
             document.getElementById('player-final-score').innerText = me ? (Number(me.score) || 0).toLocaleString() : 0;
             document.getElementById('player-final-avatar').innerHTML = me ? getAvatarHTML(me.avatar) : '';
             
             let titleText = `Player`;
-            if(myRank === 1) titleText = "🥇 1st Place";
-            else if(myRank === 2) titleText = "🥈 2nd Place";
-            else if(myRank === 3) titleText = "🥉 3rd Place";
-            else titleText = `#${myRank} Place`;
+            if(myRank === 1) titleText = "🥇 1st Place — The Victorious One!";
+            else if(myRank === 2) titleText = "🥈 2nd Place — Faithful Disciple";
+            else if(myRank === 3) titleText = "🥉 3rd Place — Keen Seeker";
+            else titleText = `Finished #${myRank} Place`;
             
             document.getElementById('player-final-rank').innerText = titleText;
-            document.getElementById('player-final-rank-sub').innerText = `Played as ${me ? getHeroName(me.avatar) : 'Hero'}`;
+            document.getElementById('player-final-rank-sub').innerText = `${me ? me.name : 'You'} · Played as ${me ? getHeroName(me.avatar) : 'Hero'}`;
+
+            // Populate Player Personal Performance Analytics Cards
+            if (me) {
+                const correctCount = Number(me.correctCount) || 0;
+                const accuracyPct = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
+                document.getElementById('p-stat-fastest').innerText = formatSeconds(me.fastestTimeMs);
+                document.getElementById('p-stat-slowest').innerText = formatSeconds(me.slowestTimeMs);
+                document.getElementById('p-stat-avg-pts').innerText = `${getAvgPointsPerCorrect(me)} pts`;
+                document.getElementById('p-stat-accuracy').innerText = `${accuracyPct}%`;
+                document.getElementById('p-stat-streak').innerText = `${Number(me.bestStreak) || 0} in a row`;
+                document.getElementById('p-stat-correct').innerText = `${correctCount} / ${totalQ}`;
+            }
+
             renderLeaderboardRows('player-final-leaderboard', sorted);
         }
 
