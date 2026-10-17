@@ -1,0 +1,2423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible Trivia: Divine Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        :root {
+            --aurora-1: #311042;
+            --aurora-2: #7c2d12;
+            --aurora-3: #1e1b4b;
+            --aurora-4: #4c1d95;
+            --bg-base: #090514;
+            --gold-light: #fef08a;
+            --gold-mid: #eab308;
+            --gold-dark: #a16207;
+            --gold-border: rgba(250, 204, 21, 0.32);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-base);
+            margin: 0;
+            overflow: hidden;
+            touch-action: manipulation;
+            color: #f8fafc;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Clean, minimal display class replacing ornate serif */
+        .font-display {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            letter-spacing: -0.025em;
+        }
+
+        /* --- Rich Celestial Background --- */
+        .aurora-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 15%, #1e1b4b 0%, #090514 65%, #05020a 100%);
+        }
+        .aurora-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(110px);
+            opacity: 0.5;
+            animation: drift 24s infinite alternate ease-in-out;
+            transform-origin: center;
+        }
+        .blob-1 { top: -12%; left: -10%; width: 55vw; height: 55vw; background: #4338ca; animation-duration: 22s; }
+        .blob-2 { bottom: -20%; right: -10%; width: 50vw; height: 50vw; background: #9333ea; animation-delay: -5s; animation-duration: 28s; }
+        .blob-3 { top: 25%; left: 35%; width: 40vw; height: 40vw; background: #b45309; opacity: 0.3; animation-delay: -10s; animation-duration: 25s; }
+        .blob-4 { top: -15%; right: 15%; width: 35vw; height: 35vw; background: #0284c7; opacity: 0.35; animation-delay: -15s; animation-duration: 20s; }
+
+        .starfield {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(1.5px 1.5px at 15% 20%, rgba(254, 240, 138, 0.7), transparent),
+                radial-gradient(1.5px 1.5px at 85% 15%, rgba(255, 255, 255, 0.6), transparent),
+                radial-gradient(1.5px 1.5px at 70% 80%, rgba(254, 240, 138, 0.6), transparent),
+                radial-gradient(1.5px 1.5px at 25% 75%, rgba(255, 255, 255, 0.5), transparent),
+                radial-gradient(2px 2px at 50% 45%, rgba(250, 204, 21, 0.4), transparent),
+                radial-gradient(1.5px 1.5px at 90% 55%, rgba(255, 255, 255, 0.6), transparent);
+            background-size: 400px 400px;
+            animation: twinkle 6s infinite alternate ease-in-out;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.35; }
+            100% { opacity: 0.8; }
+        }
+
+        @keyframes drift {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(25px, -35px) scale(1.08) rotate(8deg); }
+            100% { transform: translate(-20px, 25px) scale(0.95) rotate(-6deg); }
+        }
+
+        /* --- Refined Minimalist Cards --- */
+        .bento-card {
+            background: linear-gradient(165deg, rgba(30, 22, 58, 0.9) 0%, rgba(15, 11, 33, 0.95) 100%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1.5px solid var(--gold-border);
+            border-radius: 24px;
+            box-shadow: 
+                0 24px 48px -12px rgba(0, 0, 0, 0.8),
+                inset 0 1px 2px rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- Tactile 3D Buttons --- */
+        .btn-primary {
+            background: linear-gradient(180deg, #fde047 0%, #eab308 45%, #ca8a04 100%);
+            color: #1e1b4b;
+            border: 1.5px solid #fef08a;
+            box-shadow: 
+                0 5px 0 #713f12,
+                0 10px 20px rgba(234, 179, 8, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.7);
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #713f12, 0 14px 26px rgba(234, 179, 8, 0.45), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+            filter: brightness(1.03);
+        }
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #713f12, 0 4px 10px rgba(234, 179, 8, 0.25);
+        }
+        .btn-primary:disabled {
+            opacity: 0.45;
+            filter: grayscale(0.6);
+            cursor: not-allowed;
+            box-shadow: 0 4px 0 #422006;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(180deg, rgba(67, 56, 202, 0.45) 0%, rgba(30, 27, 75, 0.85) 100%);
+            border: 1.5px solid rgba(165, 180, 252, 0.3);
+            box-shadow: 0 4px 0 #0f0a2c, 0 8px 18px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            color: #f8fafc;
+            transition: all 0.15s ease;
+        }
+        .btn-secondary:hover:not(:disabled) {
+            background: linear-gradient(180deg, rgba(79, 70, 229, 0.6) 0%, rgba(49, 46, 129, 0.9) 100%);
+            border-color: rgba(250, 204, 21, 0.55);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #0f0a2c, 0 12px 22px rgba(0, 0, 0, 0.55);
+        }
+        .btn-secondary:active:not(:disabled) {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #0f0a2c;
+        }
+
+        .input-premium {
+            background: rgba(9, 5, 20, 0.75);
+            border: 1.5px solid rgba(250, 204, 21, 0.28);
+            color: #ffffff;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 3px 8px rgba(0,0,0,0.65);
+        }
+        .input-premium::placeholder { color: rgba(196, 181, 253, 0.45); }
+        .input-premium:focus {
+            background: rgba(9, 5, 20, 0.92);
+            border-color: #fde047;
+            box-shadow: inset 0 3px 8px rgba(0,0,0,0.75), 0 0 0 3px rgba(250, 204, 21, 0.2);
+            outline: none;
+        }
+
+        /* --- Tactile 3D Answer Buttons --- */
+        .ans-btn {
+            position: relative;
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex; align-items: center;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+        .ans-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 40%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
+        }
+        .ans-btn:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-2px); }
+        .ans-btn:active:not(:disabled) { transform: translateY(4px); }
+        .ans-btn:disabled { opacity: 0.65; transform: scale(0.98); cursor: not-allowed; }
+        
+        .ans-red { 
+            background: linear-gradient(180deg, #f43f5e 0%, #e11d48 55%, #9f1239 100%); 
+            box-shadow: 0 7px 0 #4c0519, 0 12px 24px rgba(225, 29, 72, 0.35); 
+        }
+        .ans-red:active:not(:disabled) { box-shadow: 0 2px 0 #4c0519; }
+
+        .ans-blue { 
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 55%, #075985 100%); 
+            box-shadow: 0 7px 0 #082f49, 0 12px 24px rgba(2, 132, 199, 0.35); 
+        }
+        .ans-blue:active:not(:disabled) { box-shadow: 0 2px 0 #082f49; }
+
+        .ans-yellow { 
+            background: linear-gradient(180deg, #fbbf24 0%, #d97706 55%, #92400e 100%); 
+            box-shadow: 0 7px 0 #451a03, 0 12px 24px rgba(217, 119, 6, 0.35); 
+        }
+        .ans-yellow:active:not(:disabled) { box-shadow: 0 2px 0 #451a03; }
+
+        .ans-green { 
+            background: linear-gradient(180deg, #34d399 0%, #059669 55%, #065f46 100%); 
+            box-shadow: 0 7px 0 #022c22, 0 12px 24px rgba(5, 150, 105, 0.35); 
+        }
+        .ans-green:active:not(:disabled) { box-shadow: 0 2px 0 #022c22; }
+
+        .shape-icon { width: 42px; height: 42px; fill: #ffffff; flex-shrink: 0; }
+        @media (max-width: 768px) { .shape-icon { width: 52px; height: 52px; } }
+
+        /* --- Storybook Character Avatar Medallions --- */
+        .avatar-wrap {
+            position: relative;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #4338ca, #1e1b4b);
+            border: 2.5px solid rgba(250, 204, 21, 0.35);
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+        .avatar-wrap svg { width: 100%; height: 100%; display: block; }
+        .avatar-wrap:hover {
+            transform: translateY(-3px) scale(1.05);
+            border-color: #fde047;
+        }
+        .avatar-wrap.selected {
+            border-color: #fef08a;
+            border-width: 3.5px;
+            box-shadow: 0 0 20px rgba(250, 204, 21, 0.75);
+            transform: scale(1.08);
+            z-index: 10;
+        }
+
+        .text-gradient { background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .grad-primary { background-image: linear-gradient(180deg, #ffffff 0%, #fef08a 60%, #f59e0b 100%); }
+        .grad-gold { background-image: linear-gradient(180deg, #fef9c3 0%, #fde047 55%, #eab308 100%); }
+        
+        .screen-container { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; opacity: 0; pointer-events: none;
+            transform: scale(0.98); transition: opacity 0.3s ease, transform 0.3s ease; z-index: 10;
+        }
+        .screen-container.active { opacity: 1; pointer-events: auto; transform: scale(1); }
+
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(9, 5, 20, 0.4); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(250, 204, 21, 0.45); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #fde047; }
+
+        .timer-track { width: 100%; height: 14px; background: rgba(9, 5, 20, 0.8); border-radius: 999px; overflow: hidden; border: 1.5px solid rgba(250, 204, 21, 0.28); padding: 2px; }
+        .timer-fill { height: 100%; background: linear-gradient(90deg, #38bdf8, #818cf8, #fde047); transition: width 0.1s linear; border-radius: 999px; }
+        .timer-urgent { background: linear-gradient(90deg, #f43f5e, #dc2626) !important; box-shadow: 0 0 14px rgba(244, 63, 94, 0.7); }
+
+        button, input, textarea { font: inherit; }
+        button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid rgba(254, 240, 138, 0.9); outline-offset: 2px; }
+        .eyebrow { color: #fde047; font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+        .home-card { background: linear-gradient(160deg, rgba(49, 27, 92, 0.9), rgba(19, 14, 43, 0.95) 58%, rgba(59, 23, 69, 0.9)); }
+        .screen-scroll { overflow-y: auto; overscroll-behavior: contain; }
+        #screen-player-question { overflow-y: auto; overscroll-behavior: contain; }
+        .player-question-layout { min-height: 100%; }
+        .answer-grid { grid-template-rows: repeat(2, minmax(126px, 1fr)); min-height: min(76vh, 680px); }
+        .ans-btn { justify-content: flex-start; gap: 14px; padding: clamp(14px, 2.4vw, 24px); min-width: 0; min-height: 126px; text-align: left; }
+        .ans-choice-symbol { width: clamp(38px, 5vw, 52px); height: clamp(38px, 5vw, 52px); position: relative; flex: 0 0 auto; display: grid; place-items: center; background: rgba(0,0,0,0.2); border-radius: 14px; border: 1px solid rgba(255,255,255,0.22); padding: 8px; }
+        .ans-choice-symbol .shape-icon { width: 100%; height: 100%; margin: 0; }
+        .ans-copy { min-width: 0; color: #fff; font-size: clamp(.95rem, 2.1vw, 1.2rem); font-weight: 700; line-height: 1.3; overflow-wrap: anywhere; }
+        .leaderboard-screen { overflow-y: auto; overscroll-behavior: contain; }
+        .podium-item { opacity: 0; transform: translateY(30px) scale(.97); }
+        .podium-item.is-revealed { opacity: 1; transform: translateY(0) scale(1); animation: podium-rise .72s cubic-bezier(.18,.85,.28,1.18) both; }
+        .podium-item.is-empty { visibility: hidden; }
+        .podium-item.podium-1.is-revealed { animation: podium-rise .82s cubic-bezier(.18,.85,.28,1.18) both, winner-glow 1.4s ease-out .55s both; }
+        @keyframes podium-rise { from { opacity: 0; transform: translateY(34px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes winner-glow { 0% { filter: drop-shadow(0 0 0 rgba(250,204,21,0)); } 50% { filter: drop-shadow(0 0 24px rgba(250,204,21,.6)); } 100% { filter: drop-shadow(0 0 8px rgba(250,204,21,.2)); } }
+        #leaderboard-announcement.announcement-pop { animation: announcement-pop .42s cubic-bezier(.18,.85,.28,1.18) both; }
+        @keyframes announcement-pop { from { opacity: .35; transform: translateY(8px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .leaderboard-row { display: grid; grid-template-columns: 44px 48px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 62px; padding: 10px 14px; border: 1px solid rgba(250, 204, 21, 0.18); border-radius: 16px; background: rgba(15, 11, 33, 0.65); }
+        .leaderboard-row-avatar { width: 42px; height: 42px; overflow: hidden; border-radius: 50%; background: rgba(255,255,255,.08); border: 2px solid rgba(250, 204, 21, 0.4); }
+        .leaderboard-row-avatar svg { width: 100%; height: 100%; display: block; }
+        .leaderboard-rank { color: #fde047; font-weight: 800; text-align: center; }
+        .leaderboard-row-name { min-width: 0; overflow: hidden; color: #f8fafc; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+        .leaderboard-points { color: #fde047; font-variant-numeric: tabular-nums; font-weight: 800; white-space: nowrap; background: rgba(234, 179, 8, 0.14); padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(250, 204, 21, 0.25); }
+        .top-three-row { border-color: rgba(250, 204, 21, .45); background: linear-gradient(100deg, rgba(234, 179, 8, .18), rgba(30, 27, 75, .65)); }
+        #confetti-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 40; }
+
+        .sound-pill {
+            background: rgba(15, 11, 33, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(250, 204, 21, 0.35);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+            transition: all 0.2s ease;
+        }
+        .sound-pill:hover {
+            border-color: #fde047;
+            transform: translateY(-1px);
+        }
+        .sound-pill.muted {
+            opacity: 0.55;
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .correct-radio-label {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .correct-radio-label.is-correct {
+            border-color: #34d399 !important;
+            background: rgba(16, 185, 129, 0.22) !important;
+        }
+
+        @media (max-width: 520px) {
+            .answer-grid { gap: 10px; grid-template-rows: repeat(2, minmax(118px, 1fr)); min-height: min(76vh, 620px); }
+            .ans-btn { flex-direction: row; justify-content: flex-start; gap: 10px; padding: 10px; text-align: left; }
+            .ans-choice-symbol { width: 34px; height: 34px; padding: 6px; }
+            .ans-copy { font-size: clamp(.8rem, 3.2vw, .95rem); }
+            .leaderboard-row { grid-template-columns: 32px 38px minmax(0, 1fr) auto; gap: 8px; }
+            .leaderboard-row-avatar { width: 36px; height: 36px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aurora-bg">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+        <div class="aurora-blob blob-4"></div>
+    </div>
+    <div class="starfield"></div>
+    <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+    <!-- Floating Audio Controls -->
+    <div class="fixed top-3 right-3 z-50 flex items-center gap-2">
+        <button id="btn-toggle-music" onclick="toggleMusic()" class="sound-pill px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-semibold text-yellow-100" title="Toggle Sanctuary Music">
+            <span id="music-icon">🎵</span>
+            <span class="hidden sm:inline" id="music-label">Music On</span>
+        </button>
+        <button id="btn-toggle-sfx" onclick="toggleSFX()" class="sound-pill px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-semibold text-yellow-100" title="Toggle Sound Effects">
+            <span id="sfx-icon">🔔</span>
+            <span class="hidden sm:inline" id="sfx-label">SFX On</span>
+        </button>
+    </div>
+
+    <!-- Modals & Toasts -->
+    <div id="error-modal" class="fixed inset-0 z-[100] flex items-center justify-center opacity-0 pointer-events-none bg-black/75 backdrop-blur-md transition-opacity duration-300">
+        <div class="bento-card p-8 w-full max-w-md mx-4 text-center transform scale-95 transition-transform duration-300" id="error-content">
+            <div class="w-14 h-14 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-400">
+                <svg class="w-7 h-7 text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h3 class="text-xl font-display font-bold text-white mb-2">Notice</h3>
+            <p class="text-slate-200 mb-6 break-words text-sm leading-relaxed" id="error-message">Message here</p>
+            <button onclick="closeError()" class="w-full py-3 btn-primary rounded-xl font-bold text-sm">Got it</button>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 transform -translate-y-[150%] bento-card px-5 py-2.5 rounded-full flex items-center gap-2.5 transition-transform duration-300 shadow-2xl">
+        <div class="w-2.5 h-2.5 rounded-full bg-yellow-400 animate-ping"></div>
+        <span id="toast-message" class="font-semibold text-sm text-yellow-100">Notification</span>
+    </div>
+
+    <!-- ==================== SCREENS ==================== -->
+
+    <!-- Loading -->
+    <div id="screen-loading" class="screen-container active justify-center items-center">
+        <div class="relative flex items-center justify-center w-20 h-20 mb-5">
+            <div class="absolute inset-0 border-4 border-yellow-500/20 rounded-full"></div>
+            <div class="absolute inset-0 border-4 border-yellow-400 rounded-full border-t-transparent animate-spin"></div>
+        </div>
+        <h2 class="text-xl font-display font-bold text-white">Loading Bible Trivia</h2>
+        <p class="text-slate-300 text-xs mt-2 font-medium">Connecting to game server...</p>
+    </div>
+
+    <!-- Home -->
+    <div id="screen-home" class="screen-container justify-center items-center p-6">
+        <div class="bento-card home-card p-7 md:p-10 w-full max-w-lg text-center flex flex-col items-center">
+            <div class="mb-7 text-center relative z-10">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-b from-yellow-300/20 to-amber-600/20 border border-yellow-300/50 flex items-center justify-center shadow-lg">
+                    <svg class="w-9 h-9 text-yellow-300" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
+                    </svg>
+                </div>
+                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-200 text-xs font-semibold mb-3">
+                    Divine Edition
+                </div>
+                <h1 class="font-display text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-2">Bible Trivia</h1>
+                <p class="mt-2 max-w-sm mx-auto text-sm leading-relaxed text-slate-300">Pick your Bible character, join the room, and test your knowledge of Scripture.</p>
+            </div>
+            <div class="w-full flex flex-col gap-3.5 relative z-10">
+                <button onclick="showScreen('screen-player-join')" class="w-full py-4 btn-primary rounded-2xl text-lg font-bold flex items-center justify-center gap-2">
+                    <span>Join Live Game</span>
+                </button>
+                <p class="-mt-1 text-xs text-slate-400">Have a 5-character Room PIN or QR Code?</p>
+                <div class="relative flex items-center py-1">
+                    <div class="flex-grow border-t border-white/10"></div>
+                    <span class="flex-shrink-0 mx-4 text-xs font-semibold text-slate-400 uppercase">Or</span>
+                    <div class="flex-grow border-t border-white/10"></div>
+                </div>
+                <button onclick="showScreen('screen-host-setup')" class="w-full py-3.5 btn-secondary rounded-2xl text-base font-semibold">
+                    Host a Match
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Host Setup -->
+    <div id="screen-host-setup" class="screen-container justify-center items-center p-4 sm:p-6">
+        <div class="bento-card p-6 sm:p-8 w-full max-w-lg max-h-[92vh] overflow-y-auto custom-scroll">
+            <button onclick="showScreen('screen-home')" class="relative z-10 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 mb-4 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back
+            </button>
+            <h2 class="font-display text-2xl font-bold text-center mb-1 text-white relative z-10">Select Difficulty</h2>
+            <p class="text-center text-xs text-slate-300 mb-5 relative z-10">10 randomized questions per game</p>
+            <div class="flex flex-col gap-3 relative z-10">
+                <button onclick="createRoom('easy')" class="w-full py-4 px-5 rounded-2xl btn-secondary flex justify-between items-center group">
+                    <div class="text-left">
+                        <div class="text-base sm:text-lg font-bold text-emerald-300">👼 Baby Christian</div>
+                        <div class="text-xs text-slate-300 mt-0.5">Beginner stories & heroes · 10s timer</div>
+                    </div>
+                    <span class="text-xs font-semibold bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 px-3 py-1 rounded-full shrink-0">10s · Easy</span>
+                </button>
+                <button onclick="createRoom('medium')" class="w-full py-4 px-5 rounded-2xl btn-secondary flex justify-between items-center group">
+                    <div class="text-left">
+                        <div class="text-base sm:text-lg font-bold text-amber-300">⚔️ Bible Warrior</div>
+                        <div class="text-xs text-slate-300 mt-0.5">Parables, prophets & kings · 15s timer</div>
+                    </div>
+                    <span class="text-xs font-semibold bg-amber-500/20 border border-amber-400/30 text-amber-200 px-3 py-1 rounded-full shrink-0">15s · Med</span>
+                </button>
+                <button onclick="createRoom('hard')" class="w-full py-4 px-5 rounded-2xl btn-secondary flex justify-between items-center group">
+                    <div class="text-left">
+                        <div class="text-base sm:text-lg font-bold text-rose-300">👑 Transcendent</div>
+                        <div class="text-xs text-slate-300 mt-0.5">Deep scripture & history · 20s timer</div>
+                    </div>
+                    <span class="text-xs font-semibold bg-rose-500/20 border border-rose-400/30 text-rose-200 px-3 py-1 rounded-full shrink-0">20s · Hard</span>
+                </button>
+
+                <div class="relative flex items-center py-1">
+                    <div class="flex-grow border-t border-white/10"></div>
+                    <span class="flex-shrink-0 mx-3 text-[11px] font-semibold text-slate-400 uppercase">Custom Mode</span>
+                    <div class="flex-grow border-t border-white/10"></div>
+                </div>
+
+                <button onclick="openCustomBuilder()" class="w-full py-4 px-5 rounded-2xl btn-secondary flex justify-between items-center group border-yellow-400/40">
+                    <div class="text-left">
+                        <div class="text-base sm:text-lg font-bold text-yellow-200">📜 Custom Sermon Builder</div>
+                        <div class="text-xs text-slate-300 mt-0.5">Create your own Sunday sermon questions</div>
+                    </div>
+                    <span id="custom-count-badge" class="text-xs font-semibold bg-yellow-400/20 border border-yellow-300/40 text-yellow-200 px-3 py-1 rounded-full shrink-0">0 Saved</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Host Custom Sermon Builder Screen -->
+    <div id="screen-custom-builder" class="screen-container justify-center items-center p-3 sm:p-6">
+        <div class="bento-card p-5 sm:p-7 w-full max-w-4xl h-[92vh] flex flex-col">
+            <div class="flex flex-wrap justify-between items-center gap-3 mb-4 relative z-10 shrink-0">
+                <button onclick="showScreen('screen-host-setup')" class="text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Back
+                </button>
+                <h2 class="font-display text-lg sm:text-xl font-bold text-white">Custom Sermon Questions</h2>
+                <button onclick="clearAllCustomQuestions()" class="text-xs font-semibold text-rose-300 hover:text-rose-200 underline">Clear All</button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-grow min-h-0 relative z-10 overflow-y-auto lg:overflow-hidden custom-scroll pr-1">
+                <!-- Left Form: Add Question -->
+                <div class="lg:col-span-7 flex flex-col gap-3 bg-black/30 p-4 rounded-2xl border border-white/10 overflow-y-auto custom-scroll">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Question</label>
+                        <textarea id="custom-q-text" rows="2" maxlength="160" placeholder="e.g., What was the main theme of today's sermon in Romans 8?" class="input-premium w-full p-3 rounded-xl text-sm font-medium resize-none"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div id="custom-opt-wrap-0" class="correct-radio-label is-correct p-2.5 rounded-xl border border-white/15 bg-white/5 flex flex-col gap-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold text-rose-300">Option A</span>
+                                <label class="flex items-center gap-1 text-xs font-semibold text-emerald-300 cursor-pointer">
+                                    <input type="radio" name="custom-correct-ans" value="0" checked onchange="updateCorrectRadioUI()" class="accent-emerald-400">
+                                    Correct
+                                </label>
+                            </div>
+                            <input type="text" id="custom-opt-0" maxlength="60" placeholder="First choice..." class="input-premium w-full px-3 py-2 rounded-lg text-xs">
+                        </div>
+
+                        <div id="custom-opt-wrap-1" class="correct-radio-label p-2.5 rounded-xl border border-white/15 bg-white/5 flex flex-col gap-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold text-sky-300">Option B</span>
+                                <label class="flex items-center gap-1 text-xs font-semibold text-emerald-300 cursor-pointer">
+                                    <input type="radio" name="custom-correct-ans" value="1" onchange="updateCorrectRadioUI()" class="accent-emerald-400">
+                                    Correct
+                                </label>
+                            </div>
+                            <input type="text" id="custom-opt-1" maxlength="60" placeholder="Second choice..." class="input-premium w-full px-3 py-2 rounded-lg text-xs">
+                        </div>
+
+                        <div id="custom-opt-wrap-2" class="correct-radio-label p-2.5 rounded-xl border border-white/15 bg-white/5 flex flex-col gap-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold text-amber-300">Option C</span>
+                                <label class="flex items-center gap-1 text-xs font-semibold text-emerald-300 cursor-pointer">
+                                    <input type="radio" name="custom-correct-ans" value="2" onchange="updateCorrectRadioUI()" class="accent-emerald-400">
+                                    Correct
+                                </label>
+                            </div>
+                            <input type="text" id="custom-opt-2" maxlength="60" placeholder="Third choice..." class="input-premium w-full px-3 py-2 rounded-lg text-xs">
+                        </div>
+
+                        <div id="custom-opt-wrap-3" class="correct-radio-label p-2.5 rounded-xl border border-white/15 bg-white/5 flex flex-col gap-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold text-emerald-300">Option D</span>
+                                <label class="flex items-center gap-1 text-xs font-semibold text-emerald-300 cursor-pointer">
+                                    <input type="radio" name="custom-correct-ans" value="3" onchange="updateCorrectRadioUI()" class="accent-emerald-400">
+                                    Correct
+                                </label>
+                            </div>
+                            <input type="text" id="custom-opt-3" maxlength="60" placeholder="Fourth choice..." class="input-premium w-full px-3 py-2 rounded-lg text-xs">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3 items-end mt-1">
+                        <div class="w-full sm:flex-grow">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Bible Verse Reference (Optional)</label>
+                            <input type="text" id="custom-q-ref" maxlength="45" placeholder="e.g., Romans 8:28" class="input-premium w-full px-3 py-2.5 rounded-xl text-xs">
+                        </div>
+                        <button onclick="addCustomQuestion()" class="w-full sm:w-auto px-5 py-2.5 btn-secondary rounded-xl font-semibold text-xs text-yellow-200 shrink-0">
+                            + Add Question
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Question List & Launch -->
+                <div class="lg:col-span-5 flex flex-col bg-black/30 p-4 rounded-2xl border border-white/10 min-h-[220px] lg:min-h-0">
+                    <div class="flex justify-between items-center mb-3 shrink-0">
+                        <span class="text-xs font-semibold text-slate-300">Saved Questions</span>
+                        <span id="custom-list-counter" class="text-xs font-bold bg-yellow-400/20 text-yellow-200 px-2.5 py-0.5 rounded-full">0</span>
+                    </div>
+                    <div id="custom-questions-list" class="flex-grow overflow-y-auto custom-scroll flex flex-col gap-2 pr-1"></div>
+                    <button onclick="launchCustomRoom()" id="btn-launch-custom" class="w-full py-3.5 btn-primary rounded-xl text-sm font-bold mt-4 shrink-0" disabled>
+                        Launch Custom Game
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Host Lobby -->
+    <div id="screen-host-lobby" class="screen-container p-6 overflow-hidden">
+        <div class="max-w-6xl w-full mx-auto h-full flex flex-col gap-6 pt-6 sm:pt-2">
+            <div class="bento-card p-6 flex flex-col md:flex-row justify-between items-center gap-6 shrink-0">
+                <div class="flex flex-col md:flex-row items-center gap-6 relative z-10">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1 text-center md:text-left">Join with Room PIN:</p>
+                        <div class="text-5xl md:text-6xl font-display font-black text-yellow-300 tracking-wider" id="display-game-code">00000</div>
+                    </div>
+                    <div class="h-16 w-px bg-white/10 hidden md:block"></div>
+                    <div class="bg-white p-3 rounded-2xl shadow-xl shrink-0" id="qrcode"></div>
+                </div>
+                <div class="flex flex-wrap gap-3 w-full md:w-auto relative z-10">
+                    <input type="text" id="display-join-link" readonly class="hidden" value="">
+                    <button onclick="playShofarCall()" class="px-4 py-3.5 btn-secondary rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5" title="Sound the Shofar Horn">
+                        📯 Horn
+                    </button>
+                    <button onclick="copyJoinLink()" class="px-5 py-3.5 btn-secondary rounded-xl font-semibold flex-1 md:flex-none text-sm flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                        Copy Link
+                    </button>
+                    <button onclick="startHostGame()" id="btn-start-game" class="px-8 py-3.5 btn-primary rounded-xl font-bold flex-1 md:flex-none text-base" disabled>
+                        Start Game
+                    </button>
+                </div>
+            </div>
+
+            <div class="bento-card p-6 flex-grow flex flex-col min-h-0">
+                <div class="flex justify-between items-center mb-5 relative z-10">
+                    <h3 class="text-lg font-display font-bold text-white">Players Joined</h3>
+                    <div class="bg-yellow-400/15 border border-yellow-400/30 text-yellow-200 font-semibold px-3.5 py-1 rounded-full text-xs">
+                        <span id="host-player-count">0</span> Ready
+                    </div>
+                </div>
+                <div id="host-player-list" class="flex flex-wrap gap-3.5 overflow-y-auto custom-scroll content-start flex-grow relative z-10 p-1">
+                    <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 font-medium text-sm gap-3" id="waiting-msg">
+                        <svg class="w-12 h-12 animate-bounce opacity-50 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        Waiting for players to join...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Host Question -->
+    <div id="screen-host-question" class="screen-container p-6">
+        <div class="max-w-6xl w-full mx-auto h-full flex flex-col gap-5 pt-6 sm:pt-2">
+            <div class="flex justify-between items-center">
+                <div class="bento-card px-4 py-2 text-xs font-semibold text-slate-300">
+                    PIN: <span id="host-in-game-code" class="text-yellow-300 tracking-wider ml-1 font-bold"></span>
+                </div>
+                <div class="bento-card px-5 py-2 text-xs font-bold text-yellow-300" id="host-question-counter">Q 1 / 10</div>
+            </div>
+            
+            <div class="bento-card p-8 md:p-12 flex-grow flex items-center justify-center text-center relative overflow-y-auto custom-scroll">
+                <h2 id="host-question-text" class="font-bold text-white leading-snug z-10 w-full" style="font-size: clamp(1.5rem, 3.4vw, 3rem); word-wrap: break-word;">Question goes here?</h2>
+            </div>
+            
+            <div class="flex items-center gap-5">
+                <div class="shrink-0 w-20 h-20 rounded-full bento-card flex items-center justify-center">
+                    <span id="host-timer-text" class="text-3xl font-display font-extrabold text-yellow-300 tabular-nums">10</span>
+                </div>
+                <div class="flex-grow bento-card p-4">
+                    <div class="timer-track mb-2 relative z-10"><div id="host-timer-bar" class="timer-fill w-full"></div></div>
+                    <div class="flex justify-between text-xs font-semibold text-slate-300 relative z-10">
+                        <span>Time Remaining</span>
+                        <span id="host-answer-count" class="text-yellow-300">0 Answers</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 shrink-0">
+                <div class="ans-btn ans-red p-5 flex items-center">
+                    <span class="ans-choice-symbol mr-4"><svg class="shape-icon" viewBox="0 0 24 24"><polygon points="12 2 22 20 2 20"/></svg></span>
+                    <span class="text-lg md:text-xl font-bold text-white break-words" id="host-ans-0">Answer 1</span>
+                </div>
+                <div class="ans-btn ans-blue p-5 flex items-center">
+                    <span class="ans-choice-symbol mr-4"><svg class="shape-icon" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/></svg></span>
+                    <span class="text-lg md:text-xl font-bold text-white break-words" id="host-ans-1">Answer 2</span>
+                </div>
+                <div class="ans-btn ans-yellow p-5 flex items-center">
+                    <span class="ans-choice-symbol mr-4"><svg class="shape-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></span>
+                    <span class="text-lg md:text-xl font-bold text-white break-words" id="host-ans-2">Answer 3</span>
+                </div>
+                <div class="ans-btn ans-green p-5 flex items-center">
+                    <span class="ans-choice-symbol mr-4"><svg class="shape-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg></span>
+                    <span class="text-lg md:text-xl font-bold text-white break-words" id="host-ans-3">Answer 4</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Host Reveal -->
+    <div id="screen-host-reveal" class="screen-container p-6 justify-center items-center">
+        <div class="max-w-4xl w-full flex flex-col gap-6 text-center">
+            <h2 class="eyebrow text-emerald-300">Correct Answer</h2>
+            <div class="bento-card p-10 relative overflow-hidden flex flex-col items-center justify-center">
+                <div id="host-correct-answer" class="text-3xl md:text-5xl font-extrabold text-white relative z-10 w-full" style="word-wrap: break-word;">Answer Text Here</div>
+                <div id="host-correct-ref" class="mt-4 px-5 py-1.5 bg-yellow-400/15 border border-yellow-300/40 rounded-full text-sm md:text-base font-semibold text-yellow-200 relative z-10 flex items-center gap-2">
+                    📖 <span id="host-correct-ref-text">Reference</span>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-4 gap-4 md:gap-8 max-w-3xl mx-auto w-full mt-2">
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-full ans-btn ans-red aspect-square flex items-center justify-center"><svg class="w-9 h-9 md:w-11 md:h-11 fill-white" viewBox="0 0 24 24"><polygon points="12 2 22 20 2 20"/></svg></div>
+                    <span class="text-2xl font-bold text-white tabular-nums" id="host-count-0">0</span>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-full ans-btn ans-blue aspect-square flex items-center justify-center"><svg class="w-9 h-9 md:w-11 md:h-11 fill-white" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/></svg></div>
+                    <span class="text-2xl font-bold text-white tabular-nums" id="host-count-1">0</span>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-full ans-btn ans-yellow aspect-square flex items-center justify-center"><svg class="w-9 h-9 md:w-11 md:h-11 fill-white" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></div>
+                    <span class="text-2xl font-bold text-white tabular-nums" id="host-count-2">0</span>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-full ans-btn ans-green aspect-square flex items-center justify-center"><svg class="w-9 h-9 md:w-11 md:h-11 fill-white" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg></div>
+                    <span class="text-2xl font-bold text-white tabular-nums" id="host-count-3">0</span>
+                </div>
+            </div>
+
+            <button onclick="hostNextQuestion()" class="mx-auto mt-2 px-14 py-4 btn-primary rounded-2xl text-lg font-bold w-full md:w-auto">
+                Next Question <svg class="inline w-5 h-5 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Host Leaderboard -->
+    <div id="screen-host-leaderboard" class="screen-container leaderboard-screen p-4 md:p-6 relative">
+        <main class="max-w-6xl w-full min-h-full mx-auto py-3 md:py-6 flex flex-col gap-8 relative z-10 pt-8">
+            <header class="text-center">
+                <div class="eyebrow mb-1">Final Results</div>
+                <h1 class="font-display text-3xl md:text-5xl font-extrabold text-white tracking-tight mb-2">Leaderboard</h1>
+                <p id="leaderboard-announcement" class="mt-2 min-h-8 text-lg md:text-xl font-semibold text-yellow-200" aria-live="polite">Get ready for the final results…</p>
+            </header>
+
+            <section aria-label="Top three players" class="w-full">
+                <div class="w-full max-w-5xl mx-auto flex items-end justify-center gap-2 sm:gap-4 md:gap-8 pt-4">
+                    <!-- Rank 2 -->
+                    <div id="podium-2" class="podium-item w-1/3 flex flex-col items-center order-1 relative">
+                        <div class="text-xs font-semibold text-slate-300 mb-2 text-center">2nd Place</div>
+                        <div id="podium-2-avatar" class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full mb-3 bg-slate-800 border-3 border-slate-200 overflow-hidden"></div>
+                        <div id="podium-2-name" class="font-bold text-sm sm:text-lg md:text-xl mb-1 text-white truncate w-full text-center">Name</div>
+                        <div id="podium-2-score" class="font-semibold text-slate-100 mb-4 bg-slate-400/20 border border-slate-300/30 px-3 py-1 rounded-full text-xs">0 PTS</div>
+                        <div class="w-full h-32 sm:h-40 md:h-48 bento-card !rounded-b-none flex justify-center pt-5 bg-gradient-to-b from-slate-300/20 to-transparent">
+                            <span class="text-4xl md:text-5xl font-display font-extrabold text-slate-200/70">2</span>
+                        </div>
+                    </div>
+
+                    <!-- Rank 1 -->
+                    <div id="podium-1" class="podium-item podium-1 w-1/3 flex flex-col items-center order-2 relative z-20">
+                        <div class="text-xs sm:text-sm font-bold text-yellow-300 mb-2 flex items-center gap-1 text-center">
+                            👑 1st Place
+                        </div>
+                        <div id="podium-1-avatar" class="w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full mb-3 ring-4 ring-yellow-300 bg-slate-800 overflow-hidden"></div>
+                        <div id="podium-1-name" class="font-bold text-base sm:text-xl md:text-2xl mb-1 text-yellow-100 truncate w-full text-center">Name</div>
+                        <div id="podium-1-score" class="font-bold text-yellow-200 mb-5 bg-yellow-500/20 px-4 py-1 rounded-full border border-yellow-300/50 text-xs sm:text-sm">0 PTS</div>
+                        <div class="w-full h-44 sm:h-52 md:h-64 bento-card !rounded-b-none flex justify-center pt-6 bg-gradient-to-b from-yellow-400/30 to-transparent">
+                            <span class="text-5xl md:text-7xl font-display font-extrabold text-yellow-300">1</span>
+                        </div>
+                    </div>
+
+                    <!-- Rank 3 -->
+                    <div id="podium-3" class="podium-item w-1/3 flex flex-col items-center order-3 relative">
+                        <div class="text-xs font-semibold text-amber-300 mb-2 text-center">3rd Place</div>
+                        <div id="podium-3-avatar" class="w-14 h-14 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-full mb-3 bg-slate-800 border-3 border-amber-400 overflow-hidden"></div>
+                        <div id="podium-3-name" class="font-bold text-sm sm:text-base md:text-lg mb-1 text-white truncate w-full text-center">Name</div>
+                        <div id="podium-3-score" class="font-semibold text-amber-200 mb-4 bg-amber-500/20 border border-amber-400/30 px-3 py-1 rounded-full text-xs">0 PTS</div>
+                        <div class="w-full h-28 sm:h-32 md:h-40 bento-card !rounded-b-none flex justify-center pt-4 bg-gradient-to-b from-amber-500/20 to-transparent">
+                            <span class="text-3xl md:text-4xl font-display font-extrabold text-amber-300/75">3</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bento-card p-4 sm:p-6 w-full" aria-label="Full player standings">
+                <div class="flex flex-wrap justify-between items-end gap-3 mb-4 relative z-10">
+                    <div>
+                        <h2 class="text-base sm:text-lg font-display font-bold text-white">All Players</h2>
+                        <p class="text-xs text-slate-300">Ranked by total points</p>
+                    </div>
+                </div>
+                <ol id="host-leaderboard-rest" class="flex flex-col gap-2 relative z-10"></ol>
+                <p id="host-leaderboard-empty" class="hidden text-sm text-slate-300 py-3 relative z-10">No players to show yet.</p>
+            </section>
+
+            <div class="text-center pb-2">
+                <button onclick="goHomeAndClean()" class="px-8 py-3.5 btn-primary rounded-xl font-bold text-sm">Back to Home</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Player Join -->
+    <div id="screen-player-join" class="screen-container p-4 items-center justify-center">
+        <button onclick="goHomeAndClean()" class="absolute top-3 left-3 p-3 btn-secondary rounded-full z-20">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        </button>
+        <div class="bento-card p-5 md:p-7 w-full max-w-md flex flex-col h-[90vh] md:h-[86vh] shadow-2xl mt-6">
+            <h2 class="font-display text-xl font-bold text-center text-white mb-4 relative z-10">Join Game</h2>
+            
+            <div class="grid grid-cols-2 gap-3 mb-4 relative z-10">
+                <div>
+                    <label for="join-code" class="block text-xs font-semibold text-slate-300 mb-1">Room PIN</label>
+                    <input type="text" id="join-code" placeholder="PIN" aria-label="Room PIN" autocomplete="off" class="input-premium w-full p-2.5 text-center text-lg font-bold rounded-xl uppercase tracking-wider" maxlength="5">
+                </div>
+                <div>
+                    <label for="join-name" class="block text-xs font-semibold text-slate-300 mb-1">Your Name</label>
+                    <input type="text" id="join-name" placeholder="Nickname" aria-label="Your nickname" autocomplete="nickname" class="input-premium w-full p-2.5 text-center text-base font-semibold rounded-xl" maxlength="15">
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-between bg-indigo-950/70 border border-yellow-400/30 rounded-2xl px-3.5 py-2 mb-3 relative z-10">
+                <div class="flex items-center gap-3">
+                    <div id="selected-hero-preview" class="w-10 h-10 rounded-full border border-yellow-300 overflow-hidden shrink-0"></div>
+                    <div>
+                        <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-300">Selected Character</div>
+                        <div id="selected-hero-name" class="text-sm font-bold text-yellow-200">King David</div>
+                    </div>
+                </div>
+                <span class="text-xs font-medium text-slate-300">36 Avatars</span>
+            </div>
+
+            <div class="flex-grow flex flex-col mb-4 min-h-0 relative z-10">
+                <div class="bento-card p-3 flex-grow bg-black/30 border-white/10 overflow-hidden">
+                    <div id="avatar-grid" class="grid grid-cols-4 sm:grid-cols-5 gap-3 overflow-y-auto custom-scroll content-start h-full pr-1 py-1">
+                        <!-- 36 Storybook Avatars Injected Here -->
+                    </div>
+                </div>
+            </div>
+            <button onclick="playerJoinRoom()" id="btn-join-game" class="w-full py-3.5 btn-primary rounded-xl text-base font-bold mt-auto relative z-10">Join Game</button>
+            <p id="join-status" class="min-h-4 mt-1.5 text-center text-xs text-slate-300 relative z-10" role="status" aria-live="polite"></p>
+        </div>
+    </div>
+
+    <!-- Player Lobby -->
+    <div id="screen-player-lobby" class="screen-container justify-center items-center p-6 text-center">
+        <div class="max-w-xs w-full">
+            <div class="inline-flex items-center justify-center bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-3.5 py-1 rounded-full font-semibold text-xs mb-5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-ping"></span> Connected
+            </div>
+            <h2 class="font-display text-3xl font-bold text-white mb-1">You're In!</h2>
+            <p class="text-slate-300 text-sm mb-7">Look for your avatar on the host screen.</p>
+            <div class="bento-card py-8 px-6 flex flex-col items-center relative overflow-hidden">
+                <div id="player-avatar-display" class="w-28 h-28 rounded-full mb-4 ring-3 ring-yellow-400 relative z-10 bg-slate-800 overflow-hidden"></div>
+                <div id="player-nickname-display" class="text-xl font-bold text-white truncate w-full relative z-10">Nickname</div>
+                <div id="player-hero-title" class="text-xs font-medium text-yellow-300 mt-1 relative z-10">Storybook Hero</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Question -->
+    <div id="screen-player-question" class="screen-container p-3 md:p-5">
+        <div class="player-question-layout max-w-5xl mx-auto w-full flex flex-col gap-3 md:gap-4 py-1 pt-9 sm:pt-6">
+            <header class="bento-card px-4 py-2.5 flex justify-between items-center gap-3 text-xs font-semibold shrink-0">
+                <div class="text-slate-300">PIN <span id="player-in-game-code" class="text-yellow-300 ml-1 font-bold"></span></div>
+                <div id="player-question-counter" class="text-slate-200 whitespace-nowrap font-semibold">Question 1 of 10</div>
+                <div class="bg-yellow-400/15 text-yellow-200 px-3 py-1 rounded-lg border border-yellow-400/30 tabular-nums font-bold" id="player-score-top">0 PTS</div>
+            </header>
+            <div class="answer-grid flex-grow grid grid-cols-2 gap-3 md:gap-4 relative pb-2">
+                <button onclick="submitAnswer(0)" id="p-btn-0" class="ans-btn ans-red">
+                    <span class="ans-choice-symbol"><svg class="shape-icon" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 22 20 2 20"/></svg></span>
+                    <span id="p-ans-0" class="ans-copy">Option one</span>
+                </button>
+                <button onclick="submitAnswer(1)" id="p-btn-1" class="ans-btn ans-blue">
+                    <span class="ans-choice-symbol"><svg class="shape-icon" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 22 12 12 22 2 12"/></svg></span>
+                    <span id="p-ans-1" class="ans-copy">Option two</span>
+                </button>
+                <button onclick="submitAnswer(2)" id="p-btn-2" class="ans-btn ans-yellow">
+                    <span class="ans-choice-symbol"><svg class="shape-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg></span>
+                    <span id="p-ans-2" class="ans-copy">Option three</span>
+                </button>
+                <button onclick="submitAnswer(3)" id="p-btn-3" class="ans-btn ans-green">
+                    <span class="ans-choice-symbol"><svg class="shape-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18"/></svg></span>
+                    <span id="p-ans-3" class="ans-copy">Option four</span>
+                </button>
+
+                <div id="player-waiting-overlay" class="absolute inset-0 bento-card !rounded-2xl z-20 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 bg-slate-950/85 backdrop-blur-md">
+                    <div class="w-12 h-12 border-4 border-yellow-400/20 border-t-yellow-400 rounded-full animate-spin mb-3"></div>
+                    <h3 class="text-xl font-display font-bold text-white">Answer Locked</h3>
+                    <p class="text-xs text-slate-300 mt-1">Waiting for other players…</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Reveal -->
+    <div id="screen-player-reveal" class="screen-container p-6 justify-center items-center transition-colors duration-500">
+        <div id="player-reveal-content" class="text-center w-full max-w-sm bento-card p-8 shadow-2xl relative overflow-hidden transition-all duration-300">
+            <div id="reveal-glow" class="absolute inset-0 opacity-20 pointer-events-none"></div>
+            <div id="reveal-icon" class="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 relative z-10 border-2"></div>
+            
+            <h1 id="player-reveal-title" class="text-2xl font-display font-bold mb-1 relative z-10">Result</h1>
+            <p id="player-reveal-subtitle" class="text-slate-200 mb-3 text-sm font-medium relative z-10">...</p>
+            
+            <div id="player-reveal-ref" class="text-xs font-semibold text-yellow-200 mb-5 relative z-10 bg-yellow-400/15 px-3.5 py-1 rounded-full inline-block border border-yellow-300/30 hidden">📖 Reference</div>
+            
+            <div id="player-reveal-points-container" class="relative z-10 mb-5">
+                <div class="text-xs font-medium text-slate-300 mb-0.5">Points Earned</div>
+                <div id="player-reveal-points" class="text-3xl font-extrabold text-yellow-300 inline-block">0</div>
+            </div>
+            <div class="bg-black/35 py-3.5 px-5 rounded-xl border border-white/10 relative z-10">
+                <span class="text-xs font-medium text-slate-300 block mb-0.5">Total Score</span>
+                <span id="player-current-score" class="text-2xl text-white font-bold tabular-nums">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Final Result -->
+    <div id="screen-player-leaderboard" class="screen-container leaderboard-screen p-4 md:p-6">
+        <main class="max-w-3xl w-full min-h-full mx-auto py-2 md:py-5 flex flex-col gap-5 pt-8">
+            <section class="bento-card p-6 md:p-8 text-center relative overflow-hidden">
+                <div class="eyebrow mb-3">Game Over</div>
+                <div class="relative w-20 h-20 mx-auto mb-3">
+                    <div id="player-final-avatar" class="w-full h-full rounded-full ring-3 ring-yellow-400 relative z-10 bg-slate-800 overflow-hidden"></div>
+                </div>
+                <p class="text-xs font-medium text-slate-300 mb-1">Your Final Score</p>
+                <div id="player-final-score" class="text-4xl md:text-5xl font-display font-extrabold text-yellow-300 mb-4 tabular-nums">0</div>
+                <div class="bg-black/35 p-3.5 rounded-xl border border-white/10">
+                    <p id="player-final-rank" class="text-base md:text-lg font-bold text-white mb-0.5">Rank</p>
+                    <p id="player-final-rank-sub" class="text-xs text-slate-300">Position</p>
+                </div>
+            </section>
+            <section class="bento-card p-4 sm:p-6" aria-label="Final leaderboard">
+                <div class="flex flex-wrap justify-between items-end gap-3 mb-3 relative z-10">
+                    <div>
+                        <h2 class="text-base sm:text-lg font-display font-bold text-white">Standings</h2>
+                    </div>
+                </div>
+                <ol id="player-final-leaderboard" class="flex flex-col gap-2 relative z-10"></ol>
+            </section>
+            <div class="text-center pb-2">
+                <button onclick="goHomeAndClean()" class="px-8 py-3.5 btn-primary rounded-xl font-bold text-sm">Play Again</button>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { initializeFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot, collection, query, where, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // =========================================================================
+        // ⚠️ FIREBASE CONFIG ⚠️
+        // =========================================================================
+        const firebaseConfig = {
+          apiKey: "AIzaSyBBoAswaHpJGRWHFuoelJhJwoeoSwSItUg", 
+          authDomain: "church-game-e1245.firebaseapp.com",
+          databaseURL: "https://church-game-e1245-default-rtdb.firebaseio.com",
+          projectId: "church-game-e1245",
+          storageBucket: "church-game-e1245.firebasestorage.app",
+          messagingSenderId: "748662855817",
+          appId: "1:748662855817:web:b98ab1e391686c2808ce58"
+        };
+
+        // =========================================================================
+        // ⏱️ QUESTION DURATION BY DIFFICULTY TIER
+        // Easy (Baby Christian): 10s | Medium (Bible Warrior) & Custom: 15s | Hard (Transcendent): 20s
+        // =========================================================================
+        function getQuestionDurationMs(difficulty) {
+            if (difficulty === 'easy') return 10000;
+            if (difficulty === 'medium' || difficulty === 'custom') return 15000;
+            if (difficulty === 'hard') return 20000;
+            return 15000;
+        }
+
+        // =========================================================================
+        // 🎶 SANCTUARY WEB AUDIO SYNTHESIZER
+        // =========================================================================
+        const SoundEngine = {
+            ctx: null,
+            musicEnabled: true,
+            sfxEnabled: true,
+            bgmInterval: null,
+            currentBgmMode: null,
+            stepIndex: 0,
+
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) this.ctx = new AudioCtx();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            },
+
+            playNote(freq, type = 'sine', duration = 0.35, startTime = 0, volume = 0.14) {
+                if (!this.sfxEnabled) return;
+                this.init();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime + startTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, now);
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.linearRampToValueAtTime(volume, now + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.0008, now + duration);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + duration + 0.02);
+            },
+
+            click() {
+                this.playNote(587.33, 'triangle', 0.08, 0, 0.1);
+                this.playNote(880, 'sine', 0.06, 0.02, 0.08);
+            },
+
+            playerJoin() {
+                const notes = [523.25, 659.25, 783.99, 1046.5];
+                notes.forEach((n, i) => this.playNote(n, 'triangle', 0.28, i * 0.06, 0.12));
+            },
+
+            shofar() {
+                if (!this.sfxEnabled) return;
+                this.init();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+
+                const osc1 = this.ctx.createOscillator();
+                const osc2 = this.ctx.createOscillator();
+                const filter = this.ctx.createBiquadFilter();
+                const gain = this.ctx.createGain();
+
+                osc1.type = 'sawtooth';
+                osc2.type = 'triangle';
+
+                osc1.frequency.setValueAtTime(220, now);
+                osc1.frequency.exponentialRampToValueAtTime(329.63, now + 0.28);
+                osc1.frequency.setValueAtTime(329.63, now + 0.9);
+                osc1.frequency.exponentialRampToValueAtTime(349.23, now + 1.25);
+
+                osc2.frequency.setValueAtTime(221.5, now);
+                osc2.frequency.exponentialRampToValueAtTime(331.2, now + 0.28);
+                osc2.frequency.setValueAtTime(331.2, now + 0.9);
+                osc2.frequency.exponentialRampToValueAtTime(351.0, now + 1.25);
+
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(650, now);
+                filter.frequency.linearRampToValueAtTime(1450, now + 0.5);
+                filter.frequency.linearRampToValueAtTime(900, now + 1.4);
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.linearRampToValueAtTime(0.22, now + 0.18);
+                gain.gain.setValueAtTime(0.22, now + 0.95);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 1.45);
+
+                osc1.connect(filter);
+                osc2.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + 1.5);
+                osc2.stop(now + 1.5);
+            },
+
+            harpReveal() {
+                const scale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
+                scale.forEach((freq, idx) => {
+                    this.playNote(freq, 'triangle', 0.65, idx * 0.045, 0.13);
+                    this.playNote(freq * 2, 'sine', 0.4, idx * 0.045, 0.04);
+                });
+            },
+
+            wrongAnswer() {
+                this.playNote(329.63, 'triangle', 0.28, 0, 0.12);
+                this.playNote(293.66, 'triangle', 0.35, 0.15, 0.12);
+                this.playNote(246.94, 'sine', 0.45, 0.3, 0.12);
+            },
+
+            tick(urgent = false) {
+                if (urgent) {
+                    this.playNote(880, 'triangle', 0.09, 0, 0.14);
+                    this.playNote(440, 'sine', 0.09, 0.03, 0.1);
+                } else {
+                    this.playNote(523.25, 'sine', 0.05, 0, 0.05);
+                }
+            },
+
+            podiumStep(rank) {
+                if (rank === 3) {
+                    [392.00, 493.88, 587.33].forEach((f, i) => this.playNote(f, 'triangle', 0.4, i * 0.08, 0.15));
+                } else if (rank === 2) {
+                    [440.00, 554.37, 659.25, 880.00].forEach((f, i) => this.playNote(f, 'triangle', 0.45, i * 0.08, 0.16));
+                } else if (rank === 1) {
+                    this.shofar();
+                    const grand = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
+                    grand.forEach((f, i) => this.playNote(f, 'triangle', 0.8, 0.25 + i * 0.07, 0.18));
+                }
+            },
+
+            startBGM(mode = 'lobby') {
+                this.currentBgmMode = mode;
+                if (this.bgmInterval) clearInterval(this.bgmInterval);
+                if (!this.musicEnabled) return;
+
+                const lobbyChords = [
+                    [261.63, 329.63, 392.00, 523.25],
+                    [220.00, 261.63, 329.63, 440.00],
+                    [174.61, 220.00, 261.63, 349.23],
+                    [196.00, 246.94, 293.66, 392.00]
+                ];
+                const quizPattern = [261.63, 329.63, 392.00, 329.63, 293.66, 349.23, 440.00, 349.23];
+
+                const stepTime = mode === 'question' ? 280 : 520;
+                this.bgmInterval = setInterval(() => {
+                    if (!this.musicEnabled || !this.ctx || this.ctx.state !== 'running') return;
+                    if (mode === 'lobby') {
+                        const chord = lobbyChords[Math.floor(this.stepIndex / 4) % lobbyChords.length];
+                        const note = chord[this.stepIndex % 4];
+                        this.playBgmTone(note, 'sine', 0.9, 0.032);
+                    } else if (mode === 'question') {
+                        const note = quizPattern[this.stepIndex % quizPattern.length];
+                        this.playBgmTone(note, 'triangle', 0.22, 0.04);
+                    }
+                    this.stepIndex++;
+                }, stepTime);
+            },
+
+            playBgmTone(freq, type, duration, vol) {
+                if (!this.musicEnabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, now);
+                gain.gain.setValueAtTime(0.0005, now);
+                gain.gain.linearRampToValueAtTime(vol, now + 0.04);
+                gain.gain.exponentialRampToValueAtTime(0.0005, now + duration);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + duration + 0.02);
+            },
+
+            stopBGM() {
+                if (this.bgmInterval) clearInterval(this.bgmInterval);
+                this.bgmInterval = null;
+            }
+        };
+
+        window.toggleMusic = function() {
+            SoundEngine.init();
+            SoundEngine.musicEnabled = !SoundEngine.musicEnabled;
+            const btn = document.getElementById('btn-toggle-music');
+            const icon = document.getElementById('music-icon');
+            const label = document.getElementById('music-label');
+            if (SoundEngine.musicEnabled) {
+                btn.classList.remove('muted');
+                icon.innerText = '🎵';
+                label.innerText = 'Music On';
+                if (SoundEngine.currentBgmMode) SoundEngine.startBGM(SoundEngine.currentBgmMode);
+            } else {
+                btn.classList.add('muted');
+                icon.innerText = '🔇';
+                label.innerText = 'Music Off';
+                SoundEngine.stopBGM();
+            }
+        };
+
+        window.toggleSFX = function() {
+            SoundEngine.init();
+            SoundEngine.sfxEnabled = !SoundEngine.sfxEnabled;
+            const btn = document.getElementById('btn-toggle-sfx');
+            const icon = document.getElementById('sfx-icon');
+            const label = document.getElementById('sfx-label');
+            if (SoundEngine.sfxEnabled) {
+                btn.classList.remove('muted');
+                icon.innerText = '🔔';
+                label.innerText = 'SFX On';
+                SoundEngine.click();
+            } else {
+                btn.classList.add('muted');
+                icon.innerText = '🔕';
+                label.innerText = 'SFX Off';
+            }
+        };
+
+        window.playShofarCall = function() {
+            SoundEngine.shofar();
+        };
+
+        document.addEventListener('pointerdown', () => {
+            SoundEngine.init();
+        }, { once: true });
+
+        let db, auth, userId;
+        const NUMBER_OF_QUESTIONS_PER_GAME = 10;
+        const CUSTOM_STORAGE_KEY = 'bible_trivia_custom_sermon_questions_v1';
+        let customQuestions = [];
+
+        // =========================================================================
+        // 📜 CUSTOM SERMON QUESTION BUILDER LOGIC
+        // =========================================================================
+        function loadCustomQuestions() {
+            try {
+                const raw = localStorage.getItem(CUSTOM_STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) customQuestions = parsed;
+                }
+            } catch (e) {
+                console.warn('Could not load saved custom questions:', e);
+            }
+            updateCustomQuestionsUI();
+        }
+
+        function saveCustomQuestions() {
+            try {
+                localStorage.setItem(CUSTOM_STORAGE_KEY, JSON.stringify(customQuestions));
+            } catch (e) {
+                console.warn('Could not save custom questions:', e);
+            }
+            updateCustomQuestionsUI();
+        }
+
+        function updateCorrectRadioUI() {
+            SoundEngine.click();
+            const selected = document.querySelector('input[name="custom-correct-ans"]:checked')?.value || "0";
+            for (let i = 0; i < 4; i++) {
+                const wrap = document.getElementById(`custom-opt-wrap-${i}`);
+                if (wrap) {
+                    wrap.classList.toggle('is-correct', String(i) === String(selected));
+                }
+            }
+        }
+
+        function openCustomBuilder() {
+            loadCustomQuestions();
+            showScreen('screen-custom-builder');
+        }
+
+        function addCustomQuestion() {
+            const qText = document.getElementById('custom-q-text').value.trim();
+            const opt0 = document.getElementById('custom-opt-0').value.trim();
+            const opt1 = document.getElementById('custom-opt-1').value.trim();
+            const opt2 = document.getElementById('custom-opt-2').value.trim();
+            const opt3 = document.getElementById('custom-opt-3').value.trim();
+            const refText = document.getElementById('custom-q-ref').value.trim() || "Sermon Note";
+            const correctIdx = Number(document.querySelector('input[name="custom-correct-ans"]:checked')?.value || 0);
+
+            if (!qText) return showError("Please enter a question prompt.");
+            if (!opt0 || !opt1 || !opt2 || !opt3) return showError("Please fill in all 4 answer choices.");
+
+            customQuestions.push({
+                q: qText,
+                options: [opt0, opt1, opt2, opt3],
+                a: correctIdx,
+                ref: refText
+            });
+
+            document.getElementById('custom-q-text').value = '';
+            document.getElementById('custom-opt-0').value = '';
+            document.getElementById('custom-opt-1').value = '';
+            document.getElementById('custom-opt-2').value = '';
+            document.getElementById('custom-opt-3').value = '';
+            document.getElementById('custom-q-ref').value = '';
+
+            saveCustomQuestions();
+            SoundEngine.playerJoin();
+            showToast("Question added!");
+        }
+
+        function deleteCustomQuestion(index) {
+            SoundEngine.click();
+            customQuestions.splice(index, 1);
+            saveCustomQuestions();
+        }
+
+        function clearAllCustomQuestions() {
+            if (customQuestions.length === 0) return;
+            SoundEngine.click();
+            customQuestions = [];
+            saveCustomQuestions();
+            showToast("Cleared custom questions.");
+        }
+
+        function updateCustomQuestionsUI() {
+            const badge = document.getElementById('custom-count-badge');
+            const counter = document.getElementById('custom-list-counter');
+            const listEl = document.getElementById('custom-questions-list');
+            const launchBtn = document.getElementById('btn-launch-custom');
+
+            if (badge) badge.innerText = `${customQuestions.length} Saved`;
+            if (counter) counter.innerText = `${customQuestions.length}`;
+            if (launchBtn) launchBtn.disabled = customQuestions.length === 0;
+
+            if (!listEl) return;
+            listEl.innerHTML = '';
+
+            if (customQuestions.length === 0) {
+                listEl.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-center text-slate-400 p-4 text-xs">No custom questions yet. Add your first question on the left.</div>`;
+                return;
+            }
+
+            customQuestions.forEach((item, idx) => {
+                const row = document.createElement('div');
+                row.className = 'p-3 rounded-xl bg-indigo-950/70 border border-white/10 flex justify-between items-start gap-2';
+                
+                const info = document.createElement('div');
+                info.className = 'min-w-0 flex-grow';
+
+                const qTitle = document.createElement('div');
+                qTitle.className = 'text-xs font-bold text-white truncate';
+                qTitle.textContent = `${idx + 1}. ${item.q}`;
+
+                const ansMeta = document.createElement('div');
+                ansMeta.className = 'text-[11px] font-medium text-emerald-300 truncate mt-0.5';
+                ansMeta.textContent = `✓ ${item.options[item.a]} (${item.ref})`;
+
+                info.append(qTitle, ansMeta);
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'text-rose-300 hover:text-rose-200 px-2 py-1 text-xs font-bold shrink-0';
+                delBtn.innerText = '✕';
+                delBtn.title = 'Remove Question';
+                delBtn.onclick = () => deleteCustomQuestion(idx);
+
+                row.append(info, delBtn);
+                listEl.appendChild(row);
+            });
+        }
+
+        function launchCustomRoom() {
+            if (customQuestions.length === 0) {
+                return showError("Add at least 1 custom question before launching.");
+            }
+            createRoom('custom');
+        }
+
+        window.openCustomBuilder = openCustomBuilder;
+        window.addCustomQuestion = addCustomQuestion;
+        window.deleteCustomQuestion = deleteCustomQuestion;
+        window.clearAllCustomQuestions = clearAllCustomQuestions;
+        window.updateCorrectRadioUI = updateCorrectRadioUI;
+        window.launchCustomRoom = launchCustomRoom;
+
+        // =========================================================================
+        // 🎨 36 CHILDREN'S STORYBOOK BIBLE CHARACTER AVATARS (CUSTOM SVG ENGINE)
+        // =========================================================================
+        const bibleHeroes = [
+            { name: "King David", bg1: "#f59e0b", bg2: "#7c2d12", skin: "#f3c69f", hair: "#b45309", robe: "#dc2626", beard: "none", head: "crown", prop: "harp", smile: "big" },
+            { name: "Queen Esther", bg1: "#ec4899", bg2: "#581c87", skin: "#f5cba7", hair: "#1e1b4b", robe: "#9333ea", beard: "none", head: "tiara", prop: "star", smile: "sweet" },
+            { name: "Prophet Moses", bg1: "#38bdf8", bg2: "#1e3a8a", skin: "#d99b72", hair: "#f8fafc", robe: "#b91c1c", beard: "long", head: "hood", prop: "staff", smile: "calm" },
+            { name: "Captain Noah", bg1: "#2dd4bf", bg2: "#115e59", skin: "#e5a97c", hair: "#e2e8f0", robe: "#78350f", beard: "full", head: "band", prop: "dove", smile: "big" },
+            { name: "Mother Mary", bg1: "#60a5fa", bg2: "#1e3a8a", skin: "#f5cba7", hair: "#3b2314", robe: "#2563eb", beard: "none", head: "veil_blue", prop: "lily", smile: "sweet" },
+            { name: "Mighty Samson", bg1: "#f97316", bg2: "#7c2d12", skin: "#d29062", hair: "#271509", robe: "#b45309", beard: "short", head: "locks", prop: "shield", smile: "big" },
+            { name: "Judge Deborah", bg1: "#a855f7", bg2: "#3b0764", skin: "#c68659", hair: "#1c1917", robe: "#0d9488", beard: "none", head: "wrap_gold", prop: "palm", smile: "calm" },
+            { name: "King Solomon", bg1: "#facc15", bg2: "#713f12", skin: "#e0a375", hair: "#1c1917", robe: "#7e22ce", beard: "trimmed", head: "crown", prop: "scroll", smile: "calm" },
+            { name: "Daniel", bg1: "#fb923c", bg2: "#9a3412", skin: "#eab389", hair: "#451a03", robe: "#1d4ed8", beard: "none", head: "band", prop: "lion", smile: "big" },
+            { name: "Faithful Ruth", bg1: "#fbbf24", bg2: "#92400e", skin: "#f3c69f", hair: "#5c2d16", robe: "#d97706", beard: "none", head: "veil_warm", prop: "wheat", smile: "sweet" },
+            { name: "Father Abraham", bg1: "#818cf8", bg2: "#1e1b4b", skin: "#d99b72", hair: "#f1f5f9", robe: "#4338ca", beard: "long", head: "turban", prop: "star", smile: "calm" },
+            { name: "Princess Sarah", bg1: "#f472b6", bg2: "#831843", skin: "#f5cba7", hair: "#94a3b8", robe: "#db2777", beard: "none", head: "veil_gold", prop: "star", smile: "big" },
+            { name: "Dreamer Joseph", bg1: "#34d399", bg2: "#064e3b", skin: "#eab389", hair: "#3b2314", robe: "#ec4899", beard: "none", head: "egypt", prop: "wheat", smile: "big" },
+            { name: "Commander Joshua", bg1: "#f87171", bg2: "#7f1d1d", skin: "#c68659", hair: "#271509", robe: "#dc2626", beard: "short", head: "helmet", prop: "sword", smile: "calm" },
+            { name: "Miriam", bg1: "#22d3ee", bg2: "#164e63", skin: "#e0a375", hair: "#271509", robe: "#0891b2", beard: "none", head: "wrap_gold", prop: "tambourine", smile: "big" },
+            { name: "Prophet Elijah", bg1: "#fb7185", bg2: "#881337", skin: "#d99b72", hair: "#cbd5e1", robe: "#78350f", beard: "long", head: "hood", prop: "flame", smile: "calm" },
+            { name: "Prophetess Hannah", bg1: "#c084fc", bg2: "#4c1d95", skin: "#f3c69f", hair: "#451a03", robe: "#6d28d9", beard: "none", head: "veil_blue", prop: "lamp", smile: "sweet" },
+            { name: "Jonah", bg1: "#38bdf8", bg2: "#0c4a6e", skin: "#eab389", hair: "#475569", robe: "#0284c7", beard: "full", head: "band", prop: "fish", smile: "big" },
+            { name: "Apostle Peter", bg1: "#60a5fa", bg2: "#172554", skin: "#d99b72", hair: "#94a3b8", robe: "#0369a1", beard: "full", head: "band", prop: "fish", smile: "big" },
+            { name: "Apostle Paul", bg1: "#f59e0b", bg2: "#451a03", skin: "#e5a97c", hair: "#451a03", robe: "#991b1b", beard: "trimmed", head: "band", prop: "scroll", smile: "calm" },
+            { name: "Mary Magdalene", bg1: "#f43f5e", bg2: "#4c0519", skin: "#f5cba7", hair: "#7c2d12", robe: "#be123c", beard: "none", head: "veil_warm", prop: "lily", smile: "sweet" },
+            { name: "Brave Gideon", bg1: "#fbbf24", bg2: "#78350f", skin: "#d29062", hair: "#3b2314", robe: "#b45309", beard: "short", head: "helmet", prop: "lamp", smile: "big" },
+            { name: "Rebekah", bg1: "#2dd4bf", bg2: "#134e4a", skin: "#eab389", hair: "#271509", robe: "#0d9488", beard: "none", head: "veil_gold", prop: "lamp", smile: "sweet" },
+            { name: "John the Baptist", bg1: "#a3e635", bg2: "#365314", skin: "#c68659", hair: "#3b2314", robe: "#854d0e", beard: "full", head: "locks", prop: "staff", smile: "calm" },
+            { name: "Rachel", bg1: "#e879f9", bg2: "#701a75", skin: "#f5cba7", hair: "#451a03", robe: "#a21caf", beard: "none", head: "wrap_gold", prop: "lamb", smile: "sweet" },
+            { name: "Young Samuel", bg1: "#818cf8", bg2: "#312e81", skin: "#f3c69f", hair: "#451a03", robe: "#4f46e5", beard: "none", head: "band", prop: "lamp", smile: "big" },
+            { name: "Lydia of Thyatira", bg1: "#c084fc", bg2: "#3b0764", skin: "#e5a97c", hair: "#1e1b4b", robe: "#7e22ce", beard: "none", head: "tiara", prop: "scroll", smile: "sweet" },
+            { name: "High Priest Aaron", bg1: "#facc15", bg2: "#713f12", skin: "#d99b72", hair: "#e2e8f0", robe: "#1d4ed8", beard: "long", head: "mitre", prop: "staff", smile: "calm" },
+            { name: "Priscilla", bg1: "#fb7185", bg2: "#881337", skin: "#f3c69f", hair: "#5c2d16", robe: "#e11d48", beard: "none", head: "veil_gold", prop: "scroll", smile: "sweet" },
+            { name: "Caleb", bg1: "#4ade80", bg2: "#14532d", skin: "#c68659", hair: "#64748b", robe: "#15803d", beard: "trimmed", head: "helmet", prop: "shield", smile: "big" },
+            { name: "Abigail", bg1: "#fb923c", bg2: "#7c2d12", skin: "#f5cba7", hair: "#3b2314", robe: "#ea580c", beard: "none", head: "veil_warm", prop: "dove", smile: "sweet" },
+            { name: "Nehemiah", bg1: "#60a5fa", bg2: "#1e3a8a", skin: "#d29062", hair: "#1c1917", robe: "#2563eb", beard: "trimmed", head: "turban", prop: "scroll", smile: "calm" },
+            { name: "Naomi", bg1: "#a78bfa", bg2: "#4c1d95", skin: "#e5a97c", hair: "#cbd5e1", robe: "#6d28d9", beard: "none", head: "veil_blue", prop: "wheat", smile: "calm" },
+            { name: "Stephen", bg1: "#fde047", bg2: "#854d0e", skin: "#f3c69f", hair: "#5c2d16", robe: "#ca8a04", beard: "none", head: "halo", prop: "palm", smile: "big" },
+            { name: "Tabitha (Dorcas)", bg1: "#38bdf8", bg2: "#0369a1", skin: "#eab389", hair: "#271509", robe: "#0284c7", beard: "none", head: "wrap_gold", prop: "lily", smile: "sweet" },
+            { name: "Evangelist Luke", bg1: "#34d399", bg2: "#065f46", skin: "#f3c69f", hair: "#451a03", robe: "#059669", beard: "short", head: "band", prop: "scroll", smile: "big" }
+        ];
+
+        function getAvatarHTML(idx) {
+            const safeIndex = Math.abs(Number(idx) || 0) % bibleHeroes.length;
+            const h = bibleHeroes[safeIndex];
+            const uid = `hero-${safeIndex}-${Math.random().toString(36).substring(2, 7)}`;
+
+            let backHair = '';
+            let topHeadgear = '';
+
+            if (h.head === 'veil_blue' || h.head === 'veil_warm' || h.head === 'veil_gold') {
+                const vCol = h.head === 'veil_blue' ? '#1d4ed8' : h.head === 'veil_warm' ? '#b45309' : '#eab308';
+                const vTrim = '#fef08a';
+                backHair = `<path d="M18 46 C16 72, 22 92, 26 98 L74 98 C78 92, 84 72, 82 46 C80 22, 66 15, 50 15 C34 15, 20 22, 18 46 Z" fill="${vCol}"/>
+                            <path d="M26 36 Q50 22 74 36" stroke="${vTrim}" stroke-width="3" fill="none"/>`;
+                topHeadgear = `<path d="M24 40 C26 22, 40 16, 50 16 C60 16, 74 22, 76 40 C66 28, 34 28, 24 40 Z" fill="${vCol}" stroke="${vTrim}" stroke-width="2"/>`;
+            } else if (h.head === 'hood') {
+                backHair = `<path d="M16 48 C14 75, 20 94, 24 100 L76 100 C80 94, 86 75, 84 48 C82 20, 68 14, 50 14 C32 14, 18 20, 16 48 Z" fill="${h.robe}"/>`;
+                topHeadgear = `<path d="M22 42 C24 20, 38 14, 50 14 C62 14, 76 20, 78 42 C66 28, 34 28, 22 42 Z" fill="${h.robe}" stroke="#fde047" stroke-width="1.5"/>`;
+            } else if (h.head === 'locks') {
+                backHair = `<path d="M20 42 C14 62, 16 84, 24 94 L76 94 C84 84, 86 62, 80 42 C76 22, 64 16, 50 16 C36 16, 24 22, 20 42 Z" fill="${h.hair}"/>
+                            <circle cx="21" cy="62" r="7" fill="${h.hair}"/><circle cx="79" cy="62" r="7" fill="${h.hair}"/>
+                            <circle cx="23" cy="76" r="6" fill="${h.hair}"/><circle cx="77" cy="76" r="6" fill="${h.hair}"/>`;
+                topHeadgear = `<path d="M25 38 C28 22, 72 22, 75 38 C65 28, 35 28, 25 38 Z" fill="${h.hair}"/>`;
+            } else {
+                backHair = `<path d="M23 44 C20 62, 24 78, 28 84 L72 84 C76 78, 80 62, 77 44 C75 22, 64 18, 50 18 C36 18, 25 22, 23 44 Z" fill="${h.hair}"/>`;
+            }
+
+            if (h.head === 'crown') {
+                topHeadgear = `<path d="M25 35 C28 22, 72 22, 75 35 Z" fill="${h.hair}"/>
+                               <polygon points="24,33 28,15 40,26 50,11 60,26 72,15 76,33" fill="#facc15" stroke="#a16207" stroke-width="2" stroke-linejoin="round"/>
+                               <circle cx="50" cy="22" r="3" fill="#ef4444"/><circle cx="36" cy="26" r="2.2" fill="#3b82f6"/><circle cx="64" cy="26" r="2.2" fill="#10b981"/>`;
+            } else if (h.head === 'tiara') {
+                topHeadgear = `<path d="M24 38 C28 22, 72 22, 76 38 C64 28, 36 28, 24 38 Z" fill="${h.hair}"/>
+                               <path d="M30 31 Q50 10 70 31 Z" fill="#fde047" stroke="#ca8a04" stroke-width="2"/>
+                               <polygon points="50,15 54,23 50,28 46,23" fill="#ec4899"/>
+                               <circle cx="39" cy="26" r="2" fill="#38bdf8"/><circle cx="61" cy="26" r="2" fill="#38bdf8"/>`;
+            } else if (h.head === 'band') {
+                topHeadgear = `<path d="M25 37 C28 20, 72 20, 75 37 C65 28, 35 28, 25 37 Z" fill="${h.hair}"/>
+                               <rect x="24" y="28" width="52" height="6" rx="3" fill="#f59e0b" stroke="#78350f" stroke-width="1.5"/>`;
+            } else if (h.head === 'wrap_gold') {
+                topHeadgear = `<path d="M22 38 C22 18, 78 18, 78 38 C66 28, 34 28, 22 38 Z" fill="#f59e0b" stroke="#fef08a" stroke-width="2"/>
+                               <circle cx="50" cy="24" r="4" fill="#ec4899" stroke="#fef08a" stroke-width="1.5"/>`;
+            } else if (h.head === 'turban') {
+                topHeadgear = `<ellipse cx="50" cy="26" rx="28" ry="13" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+                               <path d="M26 28 Q50 38 74 28" stroke="#e2e8f0" stroke-width="3" fill="none"/>
+                               <circle cx="50" cy="23" r="4" fill="#eab308"/>`;
+            } else if (h.head === 'egypt') {
+                backHair = `<polygon points="16,32 84,32 90,88 10,88" fill="#1e3a8a" stroke="#facc15" stroke-width="2.5"/>`;
+                topHeadgear = `<path d="M22 34 C26 18, 74 18, 78 34 Z" fill="#facc15"/>
+                               <rect x="22" y="29" width="56" height="6" fill="#0284c7"/>
+                               <circle cx="50" cy="26" r="4" fill="#ef4444" stroke="#fef08a" stroke-width="1.5"/>`;
+            } else if (h.head === 'helmet') {
+                topHeadgear = `<path d="M46 8 Q50 2 54 8 L56 22 L44 22 Z" fill="#dc2626"/>
+                               <path d="M23 36 C23 16, 77 16, 77 36 Z" fill="#fbbf24" stroke="#92400e" stroke-width="2"/>
+                               <rect x="48" y="26" width="4" height="12" rx="2" fill="#92400e"/>`;
+            } else if (h.head === 'mitre') {
+                topHeadgear = `<path d="M26 34 C24 12, 50 8, 50 8 C50 8, 76 12, 74 34 Z" fill="#f8fafc" stroke="#eab308" stroke-width="2.5"/>
+                               <rect x="26" y="29" width="48" height="6" rx="2" fill="#eab308"/>`;
+            } else if (h.head === 'halo') {
+                topHeadgear = `<ellipse cx="50" cy="14" rx="22" ry="5" fill="none" stroke="#fef08a" stroke-width="3.5"/>
+                               <path d="M25 37 C28 20, 72 20, 75 37 C65 28, 35 28, 25 37 Z" fill="${h.hair}"/>`;
+            }
+
+            let beardSVG = '';
+            if (h.beard === 'long') {
+                beardSVG = `<path d="M30 56 C30 82, 42 94, 50 94 C58 94, 70 82, 70 56 C63 62, 56 64, 50 64 C44 64, 37 62, 30 56 Z" fill="${h.hair}"/>`;
+            } else if (h.beard === 'full') {
+                beardSVG = `<path d="M30 55 C30 76, 40 84, 50 84 C60 84, 70 76, 70 55 C63 61, 56 63, 50 63 C44 63, 37 61, 30 55 Z" fill="${h.hair}"/>`;
+            } else if (h.beard === 'trimmed' || h.beard === 'short') {
+                beardSVG = `<path d="M32 56 C33 70, 42 76, 50 76 C58 76, 67 70, 68 56 C62 61, 56 63, 50 63 C44 63, 38 61, 32 56 Z" fill="${h.hair}"/>`;
+            }
+
+            const mouthSVG = h.smile === 'big'
+                ? `<path d="M43 58 Q50 66 57 58 Z" fill="#ffffff" stroke="#7c2d12" stroke-width="1.8"/>`
+                : `<path d="M44 59 Q50 64 56 59" stroke="#7c2d12" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+
+            let propSVG = '';
+            if (h.prop === 'harp') {
+                propSVG = `<path d="M72 68 Q68 88 84 88 L86 70 Z" fill="none" stroke="#fde047" stroke-width="3"/><line x1="75" y1="72" x2="75" y2="85" stroke="#fef08a" stroke-width="1.2"/><line x1="79" y1="72" x2="79" y2="86" stroke="#fef08a" stroke-width="1.2"/>`;
+            } else if (h.prop === 'staff') {
+                propSVG = `<path d="M78 96 L78 58 C78 48, 88 48, 88 56 C88 61, 82 62, 82 58" fill="none" stroke="#fde047" stroke-width="4" stroke-linecap="round"/>`;
+            } else if (h.prop === 'dove' || h.prop === 'lamb') {
+                propSVG = `<circle cx="78" cy="78" r="9" fill="#ffffff"/><circle cx="81" cy="76" r="1.5" fill="#1e293b"/><path d="M85 77 L90 75 L86 80 Z" fill="#f59e0b"/>`;
+            } else if (h.prop === 'scroll') {
+                propSVG = `<rect x="68" y="72" width="18" height="14" rx="3" fill="#fef3c7" stroke="#b45309" stroke-width="2"/><line x1="72" y1="77" x2="82" y2="77" stroke="#b45309" stroke-width="1.5"/><line x1="72" y1="81" x2="80" y2="81" stroke="#b45309" stroke-width="1.5"/>`;
+            } else if (h.prop === 'sword') {
+                propSVG = `<line x1="78" y1="62" x2="78" y2="90" stroke="#e2e8f0" stroke-width="4" stroke-linecap="round"/><line x1="71" y1="72" x2="85" y2="72" stroke="#eab308" stroke-width="3" stroke-linecap="round"/>`;
+            } else if (h.prop === 'shield') {
+                propSVG = `<path d="M70 70 L86 70 L86 80 C86 87, 78 92, 78 92 C78 92, 70 87, 70 80 Z" fill="#eab308" stroke="#fef08a" stroke-width="2"/>`;
+            } else if (h.prop === 'lamp' || h.prop === 'flame') {
+                propSVG = `<path d="M78 64 C78 64, 85 73, 81 80 C78 84, 74 80, 75 74 Z" fill="#fde047"/><circle cx="78" cy="77" r="3" fill="#f97316"/>`;
+            } else if (h.prop === 'fish') {
+                propSVG = `<path d="M66 78 Q78 68 88 78 Q78 88 66 78 Z" fill="#38bdf8" stroke="#bae6fd" stroke-width="1.5"/>`;
+            } else {
+                propSVG = `<polygon points="78,66 81,73 88,73 82,78 84,85 78,81 72,85 74,78 68,73 75,73" fill="#fde047"/>`;
+            }
+
+            return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${h.name}">
+                <defs>
+                    <radialGradient id="${uid}" cx="35%" cy="25%" r="75%">
+                        <stop offset="0%" stop-color="${h.bg1}"/>
+                        <stop offset="100%" stop-color="${h.bg2}"/>
+                    </radialGradient>
+                </defs>
+                <rect width="100" height="100" rx="50" fill="url(#${uid})"/>
+                <circle cx="50" cy="46" r="34" fill="#fef08a" opacity="0.16"/>
+                ${backHair}
+                <path d="M16 98 C18 74, 34 68, 50 68 C66 68, 82 74, 84 98 Z" fill="${h.robe}" stroke="#fef08a" stroke-width="2"/>
+                <path d="M37 70 Q50 82 63 70" fill="none" stroke="#fde047" stroke-width="3"/>
+                <rect x="43" y="58" width="14" height="14" rx="5" fill="${h.skin}"/>
+                <circle cx="27" cy="48" r="5" fill="${h.skin}"/>
+                <circle cx="73" cy="48" r="5" fill="${h.skin}"/>
+                <ellipse cx="50" cy="46" rx="22" ry="23" fill="${h.skin}"/>
+                <ellipse cx="36" cy="52" rx="4.2" ry="2.5" fill="#f43f5e" opacity="0.38"/>
+                <ellipse cx="64" cy="52" rx="4.2" ry="2.5" fill="#f43f5e" opacity="0.38"/>
+                <circle cx="41" cy="45" r="3.6" fill="#1e1b4b"/>
+                <circle cx="59" cy="45" r="3.6" fill="#1e1b4b"/>
+                <circle cx="42.2" cy="43.8" r="1.3" fill="#ffffff"/>
+                <circle cx="60.2" cy="43.8" r="1.3" fill="#ffffff"/>
+                <path d="M36 39 Q41 36 45 39" stroke="${h.hair}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                <path d="M55 39 Q59 36 64 39" stroke="${h.hair}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                <path d="M49 48 Q50 52 52 50" stroke="#b45309" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                ${beardSVG}
+                ${mouthSVG}
+                ${topHeadgear}
+                ${propSVG}
+            </svg>`;
+        }
+
+        function getHeroName(idx) {
+            const safeIndex = Math.abs(Number(idx) || 0) % bibleHeroes.length;
+            return bibleHeroes[safeIndex].name;
+        }
+
+        // =========================================================================
+        // 150+ DATABASE WITH BIBLE REFERENCES
+        // =========================================================================
+        const questionsDB = {
+            easy: [
+                { q: "Who built the ark?", options: ["Moses", "Abraham", "Noah", "David"], a: 2, ref: "Genesis 6:13-22" },
+                { q: "What is the first book of the Bible?", options: ["Exodus", "Genesis", "Psalms", "Matthew"], a: 1, ref: "Genesis" },
+                { q: "Who was swallowed by a great fish?", options: ["Peter", "Jonah", "Paul", "James"], a: 1, ref: "Jonah 1:17" },
+                { q: "Where was Jesus born?", options: ["Nazareth", "Jerusalem", "Bethlehem", "Jericho"], a: 2, ref: "Matthew 2:1" },
+                { q: "How many disciples did Jesus choose?", options: ["10", "12", "7", "40"], a: 1, ref: "Luke 6:13" },
+                { q: "Who killed Goliath?", options: ["Saul", "Samson", "David", "Jonathan"], a: 2, ref: "1 Samuel 17" },
+                { q: "What did Jesus walk on?", options: ["Fire", "Air", "Water", "Clouds"], a: 2, ref: "Matthew 14:25" },
+                { q: "Who was the mother of Jesus?", options: ["Elizabeth", "Mary", "Martha", "Ruth"], a: 1, ref: "Luke 1:30" },
+                { q: "What did God create on the first day?", options: ["Animals", "Water", "Light", "Man"], a: 2, ref: "Genesis 1:3" },
+                { q: "Who parted the Red Sea?", options: ["Aaron", "Joshua", "Moses", "Elijah"], a: 2, ref: "Exodus 14:21" },
+                { q: "What garden did Adam and Eve live in?", options: ["Gethsemane", "Eden", "Babylon", "Olive"], a: 1, ref: "Genesis 2:8" },
+                { q: "Who betrayed Jesus?", options: ["Peter", "John", "Judas", "Thomas"], a: 2, ref: "Luke 22:47" },
+                { q: "What animal tempted Eve?", options: ["Lion", "Serpent", "Eagle", "Wolf"], a: 1, ref: "Genesis 3:1" },
+                { q: "How many days did creation take?", options: ["7", "6", "5", "3"], a: 1, ref: "Genesis 1" },
+                { q: "Who received the 10 Commandments?", options: ["Abraham", "Moses", "Jacob", "Joseph"], a: 1, ref: "Exodus 20" },
+                { q: "What was Jesus' earthly father's trade?", options: ["Fisherman", "Tax Collector", "Carpenter", "Shepherd"], a: 2, ref: "Matthew 13:55" },
+                { q: "Who was cast into a lion's den?", options: ["Daniel", "David", "Joseph", "Shadrach"], a: 0, ref: "Daniel 6:16" },
+                { q: "What did David use to defeat Goliath?", options: ["Sword", "Spear", "Sling and stone", "Bow and arrow"], a: 2, ref: "1 Samuel 17:50" },
+                { q: "Who denied Jesus three times?", options: ["Judas", "Peter", "John", "Andrew"], a: 1, ref: "Luke 22:34" },
+                { q: "What is the last book of the Bible?", options: ["Jude", "Acts", "Revelation", "Malachi"], a: 2, ref: "Revelation" },
+                { q: "Who was the strongest man in the Bible?", options: ["Goliath", "David", "Samson", "Paul"], a: 2, ref: "Judges 14-16" },
+                { q: "What did Jesus turn water into?", options: ["Blood", "Wine", "Milk", "Oil"], a: 1, ref: "John 2:9" },
+                { q: "Who was the first man created?", options: ["Noah", "Abraham", "Adam", "Seth"], a: 2, ref: "Genesis 2:7" },
+                { q: "How many tribes of Israel were there?", options: ["10", "12", "7", "40"], a: 1, ref: "Genesis 49:28" },
+                { q: "Who led the Israelites after Moses?", options: ["Aaron", "Caleb", "Joshua", "Gideon"], a: 2, ref: "Joshua 1:1-2" },
+                { q: "What did the wise men follow to find Jesus?", options: ["A map", "An angel", "A star", "A prophet"], a: 2, ref: "Matthew 2:2" },
+                { q: "Who was Jesus' cousin who baptized Him?", options: ["James", "John the Baptist", "Luke", "Peter"], a: 1, ref: "Matthew 3:13" },
+                { q: "What bird returned to Noah with an olive branch?", options: ["Raven", "Dove", "Eagle", "Sparrow"], a: 1, ref: "Genesis 8:11" },
+                { q: "Who climbed a sycamore tree to see Jesus?", options: ["Nicodemus", "Matthew", "Zacchaeus", "Bartimaeus"], a: 2, ref: "Luke 19:4" },
+                { q: "What food did Jesus use to feed the 5,000?", options: ["Bread and wine", "Loaves and fishes", "Manna", "Figs and olives"], a: 1, ref: "Matthew 14:17" },
+                { q: "Who was raised from the dead by Jesus after 4 days?", options: ["Lazarus", "Jairus' daughter", "The widow's son", "John"], a: 0, ref: "John 11:39" },
+                { q: "Which disciple was known as the 'Doubter'?", options: ["Peter", "Judas", "Thomas", "Philip"], a: 2, ref: "John 20:24-25" },
+                { q: "What fell from the sky to feed the Israelites?", options: ["Quail", "Manna", "Locusts", "Apples"], a: 1, ref: "Exodus 16:15" },
+                { q: "Who wore a coat of many colors?", options: ["Jacob", "Benjamin", "Joseph", "Isaac"], a: 2, ref: "Genesis 37:3" },
+                { q: "Where were the disciples when the Holy Spirit arrived?", options: ["The Temple", "The Upper Room", "The Garden", "Mount Sinai"], a: 1, ref: "Acts 2:1" },
+                { q: "How many plagues did God send on Egypt?", options: ["7", "10", "12", "40"], a: 1, ref: "Exodus 7-12" },
+                { q: "Who was the first murderer in the Bible?", options: ["Satan", "Cain", "Lamech", "Esau"], a: 1, ref: "Genesis 4:8" },
+                { q: "What city's walls fell after people marched around them?", options: ["Jerusalem", "Jericho", "Babylon", "Nineveh"], a: 1, ref: "Joshua 6:20" },
+                { q: "Who was sold into slavery by his brothers?", options: ["Moses", "David", "Joseph", "Isaac"], a: 2, ref: "Genesis 37:28" },
+                { q: "What is the longest book in the Bible?", options: ["Genesis", "Isaiah", "Jeremiah", "Psalms"], a: 3, ref: "Psalms" },
+                { q: "Who was swallowed by a whale?", options: ["Noah", "Moses", "Jonah", "Elijah"], a: 2, ref: "Jonah 1:17" },
+                { q: "What was the name of the sea Moses parted?", options: ["Dead Sea", "Red Sea", "Sea of Galilee", "Mediterranean"], a: 1, ref: "Exodus 14" },
+                { q: "Who fought the battle of Jericho?", options: ["Moses", "David", "Joshua", "Gideon"], a: 2, ref: "Joshua 6" },
+                { q: "What was placed at the entrance of Eden to guard it?", options: ["A cherubim with a flaming sword", "A great wall", "A lion", "An angel of light"], a: 0, ref: "Genesis 3:24" },
+                { q: "Who was the first king of Israel?", options: ["David", "Solomon", "Saul", "Samuel"], a: 2, ref: "1 Samuel 9:17" },
+                { q: "Who had a dream about a ladder reaching to heaven?", options: ["Abraham", "Isaac", "Jacob", "Joseph"], a: 2, ref: "Genesis 28:12" },
+                { q: "What instrument did David play for King Saul?", options: ["Flute", "Harp", "Trumpet", "Tambourine"], a: 1, ref: "1 Samuel 16:23" },
+                { q: "Who survived being thrown into a fiery furnace?", options: ["Daniel", "Shadrach, Meshach, Abednego", "Peter, James, John", "Elijah"], a: 1, ref: "Daniel 3" },
+                { q: "What was the name of Abraham's wife?", options: ["Rachel", "Rebekah", "Sarah", "Leah"], a: 2, ref: "Genesis 11:29" },
+                { q: "Who was the mother of John the Baptist?", options: ["Mary", "Elizabeth", "Martha", "Anna"], a: 1, ref: "Luke 1:13" }
+            ],
+            medium: [
+                { q: "Who wrote most of the Psalms?", options: ["Solomon", "Moses", "David", "Asaph"], a: 2, ref: "Psalms (Davidic Authorship)" },
+                { q: "What kind of wood was the Ark of the Covenant made of?", options: ["Cedar", "Acacia", "Olive", "Oak"], a: 1, ref: "Exodus 25:10" },
+                { q: "On which mountain did Moses receive the Ten Commandments?", options: ["Mount Carmel", "Mount Zion", "Mount Sinai", "Mount Olives"], a: 2, ref: "Exodus 19:20" },
+                { q: "How many days was Lazarus dead before Jesus raised him?", options: ["2 days", "3 days", "4 days", "7 days"], a: 2, ref: "John 11:39" },
+                { q: "Who was the tax collector that climbed a tree to see Jesus?", options: ["Matthew", "Zacchaeus", "Luke", "Bartholomew"], a: 1, ref: "Luke 19:2-4" },
+                { q: "Which prophet called down fire from heaven on Mount Carmel?", options: ["Elisha", "Isaiah", "Elijah", "Jeremiah"], a: 2, ref: "1 Kings 18:38" },
+                { q: "Who was Paul's main companion on his first missionary journey?", options: ["Silas", "Barnabas", "Timothy", "Luke"], a: 1, ref: "Acts 13:2" },
+                { q: "What was the name of the servant whose ear Peter cut off?", options: ["Malchus", "Cornelius", "Ananias", "Jairus"], a: 0, ref: "John 18:10" },
+                { q: "Which book comes after the Gospels in the New Testament?", options: ["Romans", "Acts", "Corinthians", "Hebrews"], a: 1, ref: "Acts of the Apostles" },
+                { q: "Who was the oldest man mentioned in the Bible?", options: ["Adam", "Noah", "Methuselah", "Enoch"], a: 2, ref: "Genesis 5:27" },
+                { q: "What island was John on when he wrote Revelation?", options: ["Cyprus", "Malta", "Patmos", "Crete"], a: 2, ref: "Revelation 1:9" },
+                { q: "Who was the first Christian martyr?", options: ["James", "Stephen", "Peter", "Paul"], a: 1, ref: "Acts 7:59" },
+                { q: "What was Matthew's profession before following Jesus?", options: ["Fisherman", "Tentmaker", "Tax Collector", "Doctor"], a: 2, ref: "Matthew 9:9" },
+                { q: "Who was the mother of Samuel?", options: ["Sarah", "Hannah", "Rachel", "Elizabeth"], a: 1, ref: "1 Samuel 1:20" },
+                { q: "Which King built the first temple in Jerusalem?", options: ["David", "Saul", "Solomon", "Hezekiah"], a: 2, ref: "1 Kings 6:2" },
+                { q: "What did Jacob give Joseph that made his brothers jealous?", options: ["A gold ring", "A silver cup", "A coat of many colors", "A flock of sheep"], a: 2, ref: "Genesis 37:3" },
+                { q: "Who interpreted Pharaoh's dreams?", options: ["Moses", "Daniel", "Joseph", "Aaron"], a: 2, ref: "Genesis 41:25" },
+                { q: "What city was Jesus entering on Palm Sunday?", options: ["Bethlehem", "Nazareth", "Jerusalem", "Jericho"], a: 2, ref: "Matthew 21:1" },
+                { q: "Who was chosen to replace Judas Iscariot?", options: ["Paul", "Matthias", "Barnabas", "Stephen"], a: 1, ref: "Acts 1:26" },
+                { q: "What was the name of Moses' brother?", options: ["Miriam", "Joshua", "Aaron", "Caleb"], a: 2, ref: "Exodus 4:14" },
+                { q: "Which woman was a judge in Israel?", options: ["Ruth", "Esther", "Deborah", "Rahab"], a: 2, ref: "Judges 4:4" },
+                { q: "Who walked on water with Jesus?", options: ["John", "James", "Peter", "Andrew"], a: 2, ref: "Matthew 14:29" },
+                { q: "What did God use to create Eve?", options: ["Dust", "Water", "Adam's rib", "Light"], a: 2, ref: "Genesis 2:22" },
+                { q: "Who was thrown into the lion's den?", options: ["Daniel", "David", "Joseph", "Jeremiah"], a: 0, ref: "Daniel 6" },
+                { q: "Which Gospel was written by a doctor?", options: ["Matthew", "Mark", "Luke", "John"], a: 2, ref: "Colossians 4:14" },
+                { q: "Who hid the spies in Jericho?", options: ["Ruth", "Naomi", "Rahab", "Sarah"], a: 2, ref: "Joshua 2:4" },
+                { q: "What was the sign of God's covenant with Noah?", options: ["A dove", "An olive branch", "A rainbow", "A burning bush"], a: 2, ref: "Genesis 9:13" },
+                { q: "Who was the father of King David?", options: ["Saul", "Jesse", "Samuel", "Solomon"], a: 1, ref: "1 Samuel 16:1" },
+                { q: "What river was Jesus baptized in?", options: ["Nile", "Euphrates", "Jordan", "Tigris"], a: 2, ref: "Matthew 3:13" },
+                { q: "Who recognized Jesus as the Messiah when He was presented at the temple?", options: ["Simeon", "Zechariah", "Nicodemus", "Caiaphas"], a: 0, ref: "Luke 2:25-32" },
+                { q: "What were the names of the two trees in the Garden of Eden?", options: ["Life and Knowledge", "Good and Evil", "Truth and Wisdom", "Faith and Hope"], a: 0, ref: "Genesis 2:9" },
+                { q: "Who was blinded on the road to Damascus?", options: ["Peter", "Stephen", "Saul (Paul)", "Barnabas"], a: 2, ref: "Acts 9:8" },
+                { q: "What was the name of the giant Philistine David killed?", options: ["Goliath", "Samson", "King Og", "Anak"], a: 0, ref: "1 Samuel 17:4" },
+                { q: "Who was the wife of Isaac?", options: ["Sarah", "Rebekah", "Rachel", "Leah"], a: 1, ref: "Genesis 24:67" },
+                { q: "What language was most of the New Testament originally written in?", options: ["Hebrew", "Aramaic", "Greek", "Latin"], a: 2, ref: "Biblical Greek" },
+                { q: "Who was the Persian King who married Esther?", options: ["Cyrus", "Darius", "Xerxes (Ahasuerus)", "Artaxerxes"], a: 2, ref: "Esther 2:16" },
+                { q: "What feast were the disciples celebrating during the Last Supper?", options: ["Pentecost", "Tabernacles", "Passover", "Purim"], a: 2, ref: "Luke 22:15" },
+                { q: "Who was the high priest during Jesus' trial?", options: ["Annas", "Caiaphas", "Pilate", "Herod"], a: 1, ref: "Matthew 26:57" },
+                { q: "What did John the Baptist eat in the wilderness?", options: ["Bread and honey", "Locusts and wild honey", "Fish and bread", "Manna"], a: 1, ref: "Matthew 3:4" },
+                { q: "Who was the Roman governor who sentenced Jesus to death?", options: ["Herod", "Caesar", "Pilate", "Felix"], a: 2, ref: "Matthew 27:26" },
+                { q: "Which tribe of Israel served as priests?", options: ["Judah", "Benjamin", "Levi", "Dan"], a: 2, ref: "Numbers 3:6" },
+                { q: "Who was the father of John the Baptist?", options: ["Joseph", "Zechariah", "Simeon", "Joachim"], a: 1, ref: "Luke 1:13" },
+                { q: "What metal was the snake Moses made in the wilderness?", options: ["Gold", "Silver", "Bronze", "Iron"], a: 2, ref: "Numbers 21:9" },
+                { q: "Who translated the writing on the wall for King Belshazzar?", options: ["Isaiah", "Ezekiel", "Daniel", "Jeremiah"], a: 2, ref: "Daniel 5:17" },
+                { q: "Which prophet married a prostitute named Gomer?", options: ["Amos", "Hosea", "Micah", "Joel"], a: 1, ref: "Hosea 1:3" },
+                { q: "Who was the mother of King Solomon?", options: ["Michal", "Abigail", "Bathsheba", "Tamar"], a: 2, ref: "2 Samuel 12:24" },
+                { q: "What did God provide as a substitute sacrifice for Isaac?", options: ["A lamb", "A dove", "A ram caught in a thicket", "A bull"], a: 2, ref: "Genesis 22:13" },
+                { q: "Who was the first apostle to deny Jesus?", options: ["Judas", "Thomas", "Peter", "John"], a: 2, ref: "Matthew 26:69-75" },
+                { q: "What happened to Lot's wife when she looked back at Sodom?", options: ["Turned to stone", "Turned to a pillar of salt", "Was struck by lightning", "Fell into a pit"], a: 1, ref: "Genesis 19:26" },
+                { q: "Which king asked God for wisdom?", options: ["David", "Saul", "Solomon", "Josiah"], a: 2, ref: "1 Kings 3:9" }
+            ],
+            hard: [
+                { q: "Who was the father of Maher-shalal-hash-baz?", options: ["Jeremiah", "Isaiah", "Ezekiel", "Hosea"], a: 1, ref: "Isaiah 8:3" },
+                { q: "How many years did Nebuchadnezzar live like a wild animal?", options: ["3 years", "7 years", "12 years", "40 years"], a: 1, ref: "Daniel 4:32" },
+                { q: "Who is the only woman whose age is mentioned in the Bible?", options: ["Eve", "Mary", "Sarah", "Esther"], a: 2, ref: "Genesis 23:1" },
+                { q: "In Revelation, which church was described as 'lukewarm'?", options: ["Ephesus", "Smyrna", "Laodicea", "Sardis"], a: 2, ref: "Revelation 3:16" },
+                { q: "Who was the left-handed judge who killed King Eglon?", options: ["Othniel", "Ehud", "Shamgar", "Gideon"], a: 1, ref: "Judges 3:15" },
+                { q: "What was the name of Moses' wife?", options: ["Miriam", "Zipporah", "Jochebed", "Shiphrah"], a: 1, ref: "Exodus 2:21" },
+                { q: "Which King of Judah had his life extended by 15 years?", options: ["Josiah", "Hezekiah", "Uzziah", "Manasseh"], a: 1, ref: "2 Kings 20:6" },
+                { q: "What type of tree was Jesus cursing when it withered?", options: ["Olive", "Fig", "Sycamore", "Cedar"], a: 1, ref: "Mark 11:13" },
+                { q: "Who was the commander of Jabin's army defeated by Barak and Deborah?", options: ["Sisera", "Abner", "Joab", "Goliath"], a: 0, ref: "Judges 4:2" },
+                { q: "Which prophet was a herdsman and a gatherer of sycamore fruit?", options: ["Hosea", "Amos", "Micah", "Habakkuk"], a: 1, ref: "Amos 7:14" },
+                { q: "What was the name of the valley where David defeated Goliath?", options: ["Jezreel", "Kidron", "Elah", "Achor"], a: 2, ref: "1 Samuel 17:2" },
+                { q: "Who drove a tent peg through Sisera's temple?", options: ["Deborah", "Jael", "Rahab", "Ruth"], a: 1, ref: "Judges 4:21" },
+                { q: "What was the name of the man who fell out of a window while Paul was preaching?", options: ["Eutychus", "Trophimus", "Aristarchus", "Secundus"], a: 0, ref: "Acts 20:9" },
+                { q: "Which son of David rebelled and stole the hearts of the people of Israel?", options: ["Amnon", "Absalom", "Adonijah", "Solomon"], a: 1, ref: "2 Samuel 15:6" },
+                { q: "What was the name of the priest of Midian whose daughter Moses married?", options: ["Jethro", "Balaam", "Melchizedek", "Eli"], a: 0, ref: "Exodus 3:1" },
+                { q: "Who was the King of Salem who blessed Abraham?", options: ["Abimelech", "Melchizedek", "Chedorlaomer", "Bera"], a: 1, ref: "Genesis 14:18" },
+                { q: "Which prophet experienced a vision of a valley of dry bones?", options: ["Isaiah", "Jeremiah", "Ezekiel", "Daniel"], a: 2, ref: "Ezekiel 37" },
+                { q: "What was the name of the disciple who replaced Judas?", options: ["Barnabas", "Silas", "Matthias", "Justus"], a: 2, ref: "Acts 1:26" },
+                { q: "Who was the proconsul of Achaia when Paul was brought before the tribunal?", options: ["Festus", "Felix", "Gallio", "Sergius Paulus"], a: 2, ref: "Acts 18:12" },
+                { q: "What island was Paul shipwrecked on?", options: ["Cyprus", "Crete", "Malta", "Sicily"], a: 2, ref: "Acts 28:1" },
+                { q: "Which Israelite tribe had no inheritance of land?", options: ["Reuben", "Simeon", "Levi", "Dan"], a: 2, ref: "Joshua 13:33" },
+                { q: "Who was the father of the sons of thunder (James and John)?", options: ["Alphaeus", "Zebedee", "Jonah", "Simon"], a: 1, ref: "Mark 3:17" },
+                { q: "What was the name of the Pharisee who came to Jesus by night?", options: ["Caiaphas", "Nicodemus", "Joseph of Arimathea", "Gamaliel"], a: 1, ref: "John 3:1-2" },
+                { q: "Who was the King of Israel who married Jezebel?", options: ["Omri", "Ahab", "Jeroboam", "Jehu"], a: 1, ref: "1 Kings 16:31" },
+                { q: "What was the name of the silversmith in Ephesus who started a riot against Paul?", options: ["Alexander", "Demetrius", "Hymenaeus", "Philetus"], a: 1, ref: "Acts 19:24" },
+                { q: "Which prophet spoke of a time when swords would be beaten into plowshares?", options: ["Isaiah", "Jeremiah", "Ezekiel", "Daniel"], a: 0, ref: "Isaiah 2:4 / Micah 4:3" },
+                { q: "Who was the father of King Saul?", options: ["Kish", "Ner", "Abner", "Jesse"], a: 0, ref: "1 Samuel 9:1" },
+                { q: "What was the name of the place where Jesus was crucified, meaning 'Place of a Skull'?", options: ["Gethsemane", "Golgotha", "Bethany", "Emmaus"], a: 1, ref: "John 19:17" },
+                { q: "Which of these women was NOT included in the genealogy of Jesus in Matthew?", options: ["Tamar", "Rahab", "Ruth", "Esther"], a: 3, ref: "Matthew 1" },
+                { q: "Who was the prophet that confronted King David about his sin with Bathsheba?", options: ["Samuel", "Nathan", "Gad", "Elijah"], a: 1, ref: "2 Samuel 12" },
+                { q: "What type of insect did John the Baptist eat?", options: ["Grasshoppers", "Locusts", "Crickets", "Beetles"], a: 1, ref: "Matthew 3:4" },
+                { q: "Who was the Roman centurion who sent for Peter in Acts 10?", options: ["Julius", "Cornelius", "Claudius Lysias", "Festus"], a: 1, ref: "Acts 10:1" },
+                { q: "What was the name of the paralyzed man Peter healed in Lydda?", options: ["Aeneas", "Dorcas", "Tabitha", "Elymas"], a: 0, ref: "Acts 9:33" },
+                { q: "Which King of Judah rebuilt the high places his father Hezekiah had destroyed?", options: ["Amon", "Josiah", "Manasseh", "Jehoiakim"], a: 2, ref: "2 Kings 21:3" },
+                { q: "What was the name of the city where the followers of Jesus were first called Christians?", options: ["Jerusalem", "Rome", "Antioch", "Ephesus"], a: 2, ref: "Acts 11:26" },
+                { q: "Who was the prophetess that praised God when Jesus was presented at the temple?", options: ["Miriam", "Deborah", "Huldah", "Anna"], a: 3, ref: "Luke 2:36" },
+                { q: "Which of the twelve tribes of Israel was the first to cross the Jordan River?", options: ["Judah", "Reuben", "Gad", "Ephraim"], a: 1, ref: "Joshua 4:12" }, 
+                { q: "What was the name of the sorcerer Paul struck blind in Paphos?", options: ["Simon", "Elymas", "Sceva", "Demetrius"], a: 1, ref: "Acts 13:8" },
+                { q: "Who was the father of Joshua?", options: ["Nun", "Caleb", "Jephunneh", "Aaron"], a: 0, ref: "Joshua 1:1" },
+                { q: "Which King of Israel built the city of Samaria?", options: ["Jeroboam", "Baasha", "Omri", "Ahab"], a: 2, ref: "1 Kings 16:24" },
+                { q: "What was the name of the angel who appeared to Mary?", options: ["Michael", "Gabriel", "Raphael", "Uriel"], a: 1, ref: "Luke 1:26-27" },
+                { q: "Who was the commander of David's army?", options: ["Abner", "Joab", "Benaiah", "Amasa"], a: 1, ref: "2 Samuel 8:16" },
+                { q: "What was the name of the son born to David and Bathsheba after their first child died?", options: ["Absalom", "Adonijah", "Solomon", "Amnon"], a: 2, ref: "2 Samuel 12:24" },
+                { q: "Which prophet was taken up to heaven in a whirlwind?", options: ["Elisha", "Enoch", "Elijah", "Moses"], a: 2, ref: "2 Kings 2:11" },
+                { q: "What was the name of the king of Babylon who besieged Jerusalem?", options: ["Belshazzar", "Darius", "Cyrus", "Nebuchadnezzar"], a: 3, ref: "2 Kings 24:10" },
+                { q: "Who was the female judge who led Israel into battle against Jabin?", options: ["Jael", "Deborah", "Miriam", "Huldah"], a: 1, ref: "Judges 4:4" },
+                { q: "What was the name of the servant girl who answered the door when Peter escaped from prison?", options: ["Rhoda", "Lydia", "Priscilla", "Chloe"], a: 0, ref: "Acts 12:13" },
+                { q: "Which prophet had a vision of a flying scroll?", options: ["Zechariah", "Malachi", "Haggai", "Zephaniah"], a: 0, ref: "Zechariah 5:1" },
+                { q: "Who was the king of Judah when the Book of the Law was found in the temple?", options: ["Hezekiah", "Manasseh", "Josiah", "Jehoiakim"], a: 2, ref: "2 Kings 22:8" },
+                { q: "What was the name of the high priest's servant whose ear was cut off by Peter?", options: ["Malchus", "Cornelius", "Ananias", "Caiaphas"], a: 0, ref: "John 18:10" }
+            ]
+        };
+
+        let currentRole = null; 
+        let myGameCode = '';
+        let gameData = null;
+        let playersData = [];
+        let unsubscribeGame = null;
+        let unsubscribePlayers = null;
+        let hostTimerInterval = null;
+        let isProcessingEnd = false;
+        let selectedPlayerAvatar = 0; 
+        let podiumRevealTimeouts = [];
+        let podiumRevealRunning = false;
+        let confettiAnimationFrame = null;
+        let lastTickSecond = null;
+        
+        const allScreens = ['screen-loading', 'screen-home', 'screen-host-setup', 'screen-custom-builder', 'screen-host-lobby', 'screen-host-question', 'screen-host-reveal', 'screen-host-leaderboard', 'screen-player-join', 'screen-player-lobby', 'screen-player-question', 'screen-player-reveal', 'screen-player-leaderboard'];
+
+        window.showScreen = showScreen; window.closeError = closeError; window.createRoom = createRoom; window.playerJoinRoom = playerJoinRoom; window.startHostGame = startHostGame; window.submitAnswer = submitAnswer; window.hostNextQuestion = hostNextQuestion; window.goHomeAndClean = goHomeAndClean; window.copyJoinLink = copyJoinLink; window.selectAvatar = selectAvatar;
+
+        function showScreen(screenId) {
+            SoundEngine.click();
+            allScreens.forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('active'); });
+            const target = document.getElementById(screenId);
+            if (target) setTimeout(() => target.classList.add('active'), 50);
+        }
+
+        function showError(msg) {
+            SoundEngine.wrongAnswer();
+            document.getElementById('error-message').innerText = msg;
+            const modal = document.getElementById('error-modal');
+            const content = document.getElementById('error-content');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => content.classList.remove('scale-95'), 10);
+        }
+
+        function closeError() { 
+            SoundEngine.click();
+            const modal = document.getElementById('error-modal');
+            const content = document.getElementById('error-content');
+            content.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('opacity-0', 'pointer-events-none'), 200);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('-translate-y-[150%]');
+            setTimeout(() => toast.classList.add('-translate-y-[150%]'), 3000);
+        }
+
+        function copyJoinLink() {
+            SoundEngine.click();
+            const linkInput = document.getElementById('display-join-link');
+            linkInput.classList.remove('hidden'); linkInput.select(); linkInput.setSelectionRange(0, 99999);
+            try { document.execCommand('copy'); showToast("Invite link copied to clipboard!"); } catch (err) { showError("Unable to copy. Try scanning the QR code."); }
+            window.getSelection().removeAllRanges(); linkInput.classList.add('hidden');
+        }
+
+        function selectAvatar(id) {
+            SoundEngine.click();
+            selectedPlayerAvatar = id;
+            document.querySelectorAll('.avatar-wrap').forEach(btn => btn.classList.remove('selected'));
+            const activeBtn = document.getElementById(`btn-${id}`);
+            if (activeBtn) activeBtn.classList.add('selected');
+            const previewEl = document.getElementById('selected-hero-preview');
+            const nameEl = document.getElementById('selected-hero-name');
+            if (previewEl) previewEl.innerHTML = getAvatarHTML(id);
+            if (nameEl) nameEl.innerText = getHeroName(id);
+        }
+
+        function populateAvatars() {
+            const grid = document.getElementById('avatar-grid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            bibleHeroes.forEach((hero, idx) => {
+                const btn = document.createElement('div');
+                btn.className = `avatar-wrap ${idx === 0 ? 'selected' : ''}`;
+                btn.id = `btn-${idx}`;
+                btn.title = hero.name;
+                btn.innerHTML = getAvatarHTML(idx);
+                btn.onclick = () => selectAvatar(idx);
+                grid.appendChild(btn);
+            });
+            const previewEl = document.getElementById('selected-hero-preview');
+            const nameEl = document.getElementById('selected-hero-name');
+            if (previewEl) previewEl.innerHTML = getAvatarHTML(0);
+            if (nameEl) nameEl.innerText = getHeroName(0);
+        }
+
+        function generateQRCode(url) {
+            const qrContainer = document.getElementById("qrcode");
+            qrContainer.innerHTML = "";
+            try { new QRCode(qrContainer, { text: url, width: 132, height: 132, colorDark : "#1e1b4b", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
+            } catch(e) { qrContainer.innerHTML = "<span class='text-xs text-red-500 font-bold'>QR Error</span>"; }
+        }
+
+        async function initApp() {
+            populateAvatars();
+            loadCustomQuestions();
+            if (window.location.protocol === 'file:') {
+                showScreen('screen-home');
+                setTimeout(() => showError('This file was opened directly from your device. Firebase sign-in needs the published HTTPS game link. Open the live site to play online.'), 80);
+                return;
+            }
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = initializeFirestore(app, { experimentalForceLongPolling: true });
+                auth = getAuth(app);
+
+                await signInAnonymously(auth);
+                if (!auth.currentUser) throw new Error("Authentication failed");
+                userId = auth.currentUser.uid;
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const roomFromUrl = urlParams.get('room');
+                
+                if (roomFromUrl) {
+                    const inputField = document.getElementById('join-code');
+                    if (inputField) inputField.value = roomFromUrl.toUpperCase();
+                    showScreen('screen-player-join');
+                } else {
+                    showScreen('screen-home');
+                }
+            } catch (error) {
+                console.error("Firebase init error:", error);
+                showScreen('screen-home');
+                let errorMsg = `Error: ${error.message}`;
+                if (error.code === 'auth/invalid-api-key') errorMsg = "Developer: Please paste your real Firebase API keys into the game code.";
+                else if (error.code === 'auth/admin-restricted-operation' || error.code === 'auth/operation-not-allowed') errorMsg = "Host: Enable 'Anonymous' sign-in in your Firebase Authentication dashboard.";
+                else if (error.code === 'auth/network-request-failed') errorMsg = "Could not connect to Firebase Authentication. Check your internet connection and reopen the game.";
+                showError(errorMsg);
+            }
+        }
+
+        window.addEventListener('load', initApp);
+
+        async function createRoom(difficulty) {
+            if (!userId) return showError("Not connected to server.");
+            SoundEngine.shofar();
+            SoundEngine.startBGM('lobby');
+
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            myGameCode = '';
+            for(let i=0; i<5; i++) myGameCode += chars.charAt(Math.floor(Math.random() * chars.length));
+            
+            document.getElementById('display-game-code').innerText = myGameCode;
+            document.getElementById('host-in-game-code').innerText = myGameCode;
+            const baseUrl = window.location.href.split('?')[0];
+            const joinUrl = `${baseUrl}?room=${myGameCode}`;
+            document.getElementById('display-join-link').value = joinUrl;
+            
+            try {
+                let finalSequence = [];
+                let roomPayload = {};
+                const durationMs = getQuestionDurationMs(difficulty);
+
+                if (difficulty === 'custom') {
+                    finalSequence = Array.from({ length: customQuestions.length }, (_, i) => i);
+                    roomPayload = {
+                        status: 'lobby',
+                        difficulty: 'custom',
+                        questionDuration: durationMs,
+                        customQuestions: customQuestions,
+                        currentQ: 0,
+                        qOrder: finalSequence,
+                        hostId: userId,
+                        startTime: 0,
+                        endTime: 0
+                    };
+                } else {
+                    const totalAvailable = questionsDB[difficulty].length;
+                    const availableIndices = Array.from({length: totalAvailable}, (_, i) => i);
+                    for (let i = availableIndices.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [availableIndices[i], availableIndices[j]] = [availableIndices[j], availableIndices[i]];
+                    }
+                    finalSequence = availableIndices.slice(0, Math.min(NUMBER_OF_QUESTIONS_PER_GAME, totalAvailable));
+                    roomPayload = {
+                        status: 'lobby',
+                        difficulty: difficulty,
+                        questionDuration: durationMs,
+                        currentQ: 0,
+                        qOrder: finalSequence,
+                        hostId: userId,
+                        startTime: 0,
+                        endTime: 0
+                    };
+                }
+
+                const gameRef = doc(db, 'games', myGameCode);
+                await setDoc(gameRef, roomPayload);
+                
+                currentRole = 'host';
+                gameData = roomPayload;
+                setupListeners();
+                
+                showScreen('screen-host-lobby');
+                setTimeout(() => generateQRCode(joinUrl), 100);
+            } catch (e) { 
+                console.error(e);
+                showError(`Failed to create room: ${e.message}\nEnsure Firestore Database Rules are in test mode.`); 
+            }
+        }
+
+        function setupListeners() {
+            if(unsubscribeGame) unsubscribeGame();
+            if(unsubscribePlayers) unsubscribePlayers();
+            
+            const gameRef = doc(db, 'games', myGameCode);
+            unsubscribeGame = onSnapshot(gameRef, (docSnap) => {
+                if (docSnap.exists()) handleGameStateChange(docSnap.data());
+                else { goHomeAndClean(); showError("The host has ended the game."); }
+            }, (error) => { console.error("Game sync error", error); });
+
+            const playersQuery = query(collection(db, 'players'), where('gameId', '==', myGameCode));
+            unsubscribePlayers = onSnapshot(playersQuery, (snapshot) => {
+                playersData = [];
+                snapshot.forEach(doc => playersData.push({ id: doc.id, ...doc.data() }));
+                handlePlayersChange();
+            }, (error) => { console.error("Players sync error", error); });
+        }
+
+        async function startHostGame() {
+            if(playersData.length === 0) return;
+            SoundEngine.shofar();
+            const gameRef = doc(db, 'games', myGameCode);
+            const now = Date.now();
+            const durationMs = getQuestionDurationMs(gameData?.difficulty);
+            await updateDoc(gameRef, { status: 'question', startTime: now, endTime: now + durationMs, currentQ: 0 });
+        }
+
+        function isFirestoreConnectionError(error) {
+            const message = String(error?.message || '').toLowerCase();
+            return navigator.onLine === false || error?.code === 'unavailable' || message.includes('client is offline') || message.includes('network') || message.includes('webchannel');
+        }
+
+        async function getRoomSnapshotWithRetry(gameRef) {
+            const retryDelays = [0, 700, 1500];
+            for (let attempt = 0; attempt < retryDelays.length; attempt++) {
+                if (retryDelays[attempt]) await new Promise(resolve => setTimeout(resolve, retryDelays[attempt]));
+                try {
+                    return await getDoc(gameRef);
+                } catch (error) {
+                    const shouldRetry = isFirestoreConnectionError(error) && navigator.onLine !== false && attempt < retryDelays.length - 1;
+                    if (!shouldRetry) throw error;
+                }
+            }
+            throw new Error('Could not reach the game server.');
+        }
+
+        async function playerJoinRoom() {
+            if (!userId) return showError("Not connected to server.");
+            const joinButton = document.getElementById('btn-join-game');
+            const statusMessage = document.getElementById('join-status');
+            if (joinButton.disabled) return;
+            const codeInput = document.getElementById('join-code').value.trim().toUpperCase();
+            const nameInput = document.getElementById('join-name').value.trim();
+            
+            if(!/^[A-HJ-NP-Z2-9]{5}$/.test(codeInput)) { showError('Enter the 5-character game PIN shown by your host.'); return; }
+            if(!nameInput) { showError('Please enter a nickname to join the game.'); return; }
+            if(navigator.onLine === false) { showError('Your device appears to be offline. Reconnect to the internet, then try again.'); return; }
+            
+            joinButton.disabled = true;
+            joinButton.innerText = 'Connecting…';
+            statusMessage.innerText = 'Joining room…';
+            try {
+                const gameRef = doc(db, 'games', codeInput);
+                const docSnap = await getRoomSnapshotWithRetry(gameRef);
+                
+                if (docSnap.exists() && docSnap.data().status === 'lobby') {
+                    const playerRef = doc(db, 'players', userId);
+                    await setDoc(playerRef, { gameId: codeInput, name: nameInput, avatar: selectedPlayerAvatar, score: 0, currentAnswer: -1, lastPoints: 0, answeredAt: 0 });
+
+                    myGameCode = codeInput; currentRole = 'player';
+                    SoundEngine.playerJoin();
+                    SoundEngine.startBGM('lobby');
+                    
+                    document.getElementById('player-avatar-display').innerHTML = getAvatarHTML(selectedPlayerAvatar);
+                    document.getElementById('player-nickname-display').innerText = nameInput;
+                    document.getElementById('player-hero-title').innerText = `Playing as ${getHeroName(selectedPlayerAvatar)}`;
+                    document.getElementById('player-in-game-code').innerText = myGameCode;
+                    
+                    setupListeners();
+                    showScreen('screen-player-lobby');
+                    if(window.history.replaceState) window.history.replaceState({}, document.title, window.location.href.split('?')[0]);
+                } else {
+                    showError('We couldn’t find an open game with that PIN. Check the code with your host.');
+                }
+            } catch(e) {
+                console.error('Join game error:', e);
+                if (isFirestoreConnectionError(e)) {
+                    showError('We couldn’t reach the game server. Check your internet connection and try again.');
+                } else if (e?.code === 'permission-denied') {
+                    showError('This game is not accepting connections right now. Ask the host to check the game settings.');
+                } else {
+                    showError('We couldn’t join this game right now. Please check the PIN and try again.');
+                }
+            } finally {
+                joinButton.disabled = false;
+                joinButton.innerText = 'Join Game';
+                statusMessage.innerText = '';
+            }
+        }
+
+        async function submitAnswer(index) {
+            if (currentRole !== 'player') return;
+            SoundEngine.click();
+            for(let i=0; i<4; i++) document.getElementById(`p-btn-${i}`).disabled = true;
+            
+            const overlay = document.getElementById('player-waiting-overlay');
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            
+            const pRef = doc(db, 'players', userId);
+            await updateDoc(pRef, { currentAnswer: index, answeredAt: Date.now() });
+        }
+
+        function handleGameStateChange(newData) {
+            const oldStatus = gameData ? gameData.status : null;
+            const oldQ = gameData ? gameData.currentQ : null;
+            gameData = newData;
+            
+            if (currentRole === 'host') {
+                if (newData.status === 'question' && (oldStatus !== 'question' || oldQ !== newData.currentQ)) renderHostQuestion();
+                else if (newData.status === 'reveal' && oldStatus !== 'reveal') renderHostReveal();
+                else if (newData.status === 'leaderboard' && oldStatus !== 'leaderboard') renderHostLeaderboard();
+            } else if (currentRole === 'player') {
+                if (newData.status === 'question' && (oldStatus !== 'question' || oldQ !== newData.currentQ)) renderPlayerQuestion();
+                else if (newData.status === 'reveal' && oldStatus !== 'reveal') renderPlayerReveal();
+                else if (newData.status === 'leaderboard' && oldStatus !== 'leaderboard') renderPlayerLeaderboard();
+            }
+        }
+
+        function handlePlayersChange() {
+            if (currentRole === 'host' && gameData?.status === 'lobby') updateLobbyUI();
+            if (currentRole === 'host' && gameData?.status === 'question') {
+                const answered = playersData.filter(p => p.currentAnswer !== -1).length;
+                document.getElementById('host-answer-count').innerText = `${answered} / ${playersData.length} Answers`;
+                if (answered > 0 && answered === playersData.length) processEndQuestion();
+            }
+            if (currentRole === 'host' && gameData?.status === 'leaderboard') renderHostLeaderboard(false);
+            if (currentRole === 'player') {
+                const me = playersData.find(p => p.id === userId);
+                if (me) {
+                    document.getElementById('player-score-top').innerText = `${me.score} PTS`;
+                    document.getElementById('player-current-score').innerText = me.score;
+                    if (gameData?.status === 'reveal') renderPlayerReveal(false);
+                }
+                if (gameData?.status === 'leaderboard') renderPlayerLeaderboard();
+            }
+        }
+
+        function updateLobbyUI() {
+            document.getElementById('host-player-count').innerText = playersData.length;
+            const listEl = document.getElementById('host-player-list');
+            const msg = document.getElementById('waiting-msg');
+            const btn = document.getElementById('btn-start-game');
+            
+            if (playersData.length > 0) {
+                if(msg) msg.style.display = 'none';
+                btn.disabled = false;
+                const existingIds = Array.from(listEl.children).map(c => c.dataset.id).filter(id => id);
+                playersData.forEach(p => {
+                    if (!existingIds.includes(p.id)) {
+                        SoundEngine.playerJoin();
+                        const card = document.createElement('div'); card.dataset.id = p.id;
+                        card.className = 'flex flex-col items-center bg-indigo-950/70 p-3 rounded-2xl border border-yellow-400/35 w-32 text-center shrink-0 transition-transform hover:-translate-y-1 shadow-lg';
+                        card.innerHTML = `<div class="w-16 h-16 mb-2 border-2 border-yellow-300 rounded-full overflow-hidden">${getAvatarHTML(p.avatar)}</div><div class="text-sm font-bold text-white truncate w-full">${p.name}</div><div class="text-[11px] font-medium text-yellow-200/80 truncate w-full">${getHeroName(p.avatar)}</div>`;
+                        card.style.opacity = '0'; card.style.transform = 'scale(0.8)';
+                        listEl.appendChild(card);
+                        setTimeout(() => { card.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'; card.style.opacity = '1'; card.style.transform = 'scale(1)'; }, 50);
+                    }
+                });
+            } else {
+                if(msg) msg.style.display = 'flex';
+                btn.disabled = true;
+                listEl.innerHTML = '<div class="w-full h-full flex flex-col items-center justify-center text-slate-400 font-medium text-sm gap-3" id="waiting-msg"><svg class="w-12 h-12 animate-bounce opacity-50 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>Waiting for players to join...</div>';
+            }
+        }
+
+        function getCurrentQuestionData() {
+            if (!gameData) return questionsDB['easy'][0];
+            if (gameData.difficulty === 'custom' && Array.isArray(gameData.customQuestions) && gameData.customQuestions.length > 0) {
+                const idx = (gameData.qOrder && gameData.qOrder.length > 0) ? gameData.qOrder[gameData.currentQ] : gameData.currentQ;
+                return gameData.customQuestions[idx] || gameData.customQuestions[0];
+            }
+            if (!gameData.qOrder) return questionsDB['easy'][0]; 
+            const actualIndex = (gameData.qOrder && gameData.qOrder.length > 0) ? gameData.qOrder[gameData.currentQ] : 0;
+            const bank = questionsDB[gameData.difficulty] || questionsDB['easy'];
+            return bank[actualIndex] || questionsDB['easy'][0];
+        }
+
+        function getTotalQuestionsInMatch() {
+            if (!gameData) return 10;
+            if (gameData.qOrder && gameData.qOrder.length > 0) return gameData.qOrder.length;
+            if (gameData.difficulty === 'custom' && Array.isArray(gameData.customQuestions)) return gameData.customQuestions.length;
+            return (questionsDB[gameData.difficulty] || questionsDB['easy']).length;
+        }
+
+        function sortPlayersByScore(players) {
+            return [...players].sort((a, b) => (Number(b.score) || 0) - (Number(a.score) || 0) || String(a.name || '').localeCompare(String(b.name || '')));
+        }
+
+        function createLeaderboardRow(player, rank) {
+            const row = document.createElement('li');
+            const score = Number(player.score) || 0;
+            row.className = `leaderboard-row ${rank <= 3 ? 'top-three-row' : ''}`;
+            row.setAttribute('aria-label', `${player.name || 'Player'}, rank ${rank}, ${score} points`);
+
+            const rankLabel = document.createElement('span');
+            rankLabel.className = 'leaderboard-rank';
+            rankLabel.textContent = `#${rank}`;
+
+            const avatar = document.createElement('span');
+            avatar.className = 'leaderboard-row-avatar';
+            avatar.innerHTML = getAvatarHTML(player.avatar);
+
+            const nameWrap = document.createElement('div');
+            nameWrap.className = 'min-w-0';
+            const name = document.createElement('div');
+            name.className = 'leaderboard-row-name';
+            name.textContent = player.name || 'Player';
+            const heroSub = document.createElement('div');
+            heroSub.className = 'text-[11px] font-medium text-slate-300 truncate';
+            heroSub.textContent = getHeroName(player.avatar);
+            nameWrap.append(name, heroSub);
+
+            const points = document.createElement('span');
+            points.className = 'leaderboard-points';
+            points.textContent = `${score.toLocaleString()} pts`;
+
+            row.append(rankLabel, avatar, nameWrap, points);
+            return row;
+        }
+
+        function renderLeaderboardRows(listId, players, startRank = 1) {
+            const list = document.getElementById(listId);
+            if (!list) return;
+            list.replaceChildren(...players.map((player, index) => createLeaderboardRow(player, startRank + index)));
+        }
+
+        function setLeaderboardAnnouncement(message) {
+            const announcement = document.getElementById('leaderboard-announcement');
+            announcement.classList.remove('announcement-pop');
+            announcement.textContent = message;
+            void announcement.offsetWidth;
+            announcement.classList.add('announcement-pop');
+        }
+
+        function stopConfetti() {
+            if (confettiAnimationFrame !== null) cancelAnimationFrame(confettiAnimationFrame);
+            confettiAnimationFrame = null;
+            const canvas = document.getElementById('confetti-canvas');
+            const context = canvas?.getContext('2d');
+            if (context) {
+                context.setTransform(1, 0, 0, 1, 0, 0);
+                context.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function launchConfetti() {
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const canvas = document.getElementById('confetti-canvas');
+            const context = canvas?.getContext('2d');
+            if (!canvas || !context) return;
+
+            stopConfetti();
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = width * pixelRatio;
+            canvas.height = height * pixelRatio;
+            context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+            const colors = ['#fde047', '#f59e0b', '#f472b6', '#60a5fa', '#34d399', '#fb7185', '#ffffff'];
+            const particles = Array.from({ length: 190 }, () => ({
+                x: width * (0.5 + (Math.random() - 0.5) * 0.2),
+                y: height * (0.38 + (Math.random() - 0.5) * 0.12),
+                vx: (Math.random() - 0.5) * 18,
+                vy: -Math.random() * 14 - 3,
+                gravity: 0.22 + Math.random() * 0.16,
+                spin: (Math.random() - 0.5) * 0.22,
+                rotation: Math.random() * Math.PI,
+                width: 5 + Math.random() * 7,
+                height: 7 + Math.random() * 10,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                delay: Math.random() * 160,
+                life: 2300 + Math.random() * 1100
+            }));
+            const startedAt = performance.now();
+
+            const drawFrame = now => {
+                context.clearRect(0, 0, width, height);
+                const elapsed = now - startedAt;
+                let activeParticles = 0;
+                particles.forEach(particle => {
+                    const age = elapsed - particle.delay;
+                    if (age < 0 || age >= particle.life) return;
+                    activeParticles++;
+                    particle.vy += particle.gravity;
+                    particle.vx *= 0.994;
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.rotation += particle.spin;
+
+                    context.save();
+                    context.globalAlpha = Math.max(0, 1 - age / particle.life);
+                    context.fillStyle = particle.color;
+                    context.translate(particle.x, particle.y);
+                    context.rotate(particle.rotation);
+                    context.fillRect(-particle.width / 2, -particle.height / 2, particle.width, particle.height);
+                    context.restore();
+                });
+                if (activeParticles) confettiAnimationFrame = requestAnimationFrame(drawFrame);
+                else stopConfetti();
+            };
+
+            confettiAnimationFrame = requestAnimationFrame(drawFrame);
+        }
+
+        function renderHostQuestion() {
+            isProcessingEnd = false;
+            lastTickSecond = null;
+            showScreen('screen-host-question');
+            SoundEngine.startBGM('question');
+
+            const qData = getCurrentQuestionData();
+            const durationMs = gameData.questionDuration || getQuestionDurationMs(gameData.difficulty);
+            document.getElementById('host-question-text').innerText = qData.q;
+            const totalQForMatch = getTotalQuestionsInMatch();
+            document.getElementById('host-question-counter').innerText = `Q ${gameData.currentQ + 1} / ${totalQForMatch}`;
+            
+            for(let i=0; i<4; i++) document.getElementById(`host-ans-${i}`).innerText = qData.options[i];
+            document.getElementById('host-answer-count').innerText = `0 / ${playersData.length} Answers`;
+            
+            clearInterval(hostTimerInterval);
+            hostTimerInterval = setInterval(() => {
+                const remaining = gameData.endTime - Date.now();
+                const seconds = Math.ceil(remaining / 1000);
+                if (remaining <= 0) {
+                    clearInterval(hostTimerInterval);
+                    document.getElementById('host-timer-text').innerText = '0';
+                    document.getElementById('host-timer-bar').style.width = '0%';
+                    processEndQuestion();
+                } else {
+                    document.getElementById('host-timer-text').innerText = seconds;
+                    document.getElementById('host-timer-bar').style.width = `${(remaining / durationMs) * 100}%`;
+                    if (seconds !== lastTickSecond) {
+                        lastTickSecond = seconds;
+                        if (seconds <= 5) SoundEngine.tick(true);
+                    }
+                    if (seconds <= 5) {
+                        document.getElementById('host-timer-bar').classList.add('timer-urgent');
+                        document.getElementById('host-timer-text').classList.add('text-rose-400');
+                    } else {
+                        document.getElementById('host-timer-bar').classList.remove('timer-urgent');
+                        document.getElementById('host-timer-text').classList.remove('text-rose-400');
+                    }
+                }
+            }, 100);
+        }
+
+        async function processEndQuestion() {
+            if (isProcessingEnd || currentRole !== 'host') return;
+            isProcessingEnd = true; clearInterval(hostTimerInterval);
+            
+            const qData = getCurrentQuestionData();
+            const durationMs = gameData.questionDuration || getQuestionDurationMs(gameData.difficulty);
+            const batch = writeBatch(db);
+            
+            playersData.forEach(player => {
+                let newScore = player.score || 0;
+                let points = 0;
+                if (player.currentAnswer === qData.a) {
+                    const timeTaken = player.answeredAt - gameData.startTime;
+                    const clamped = Math.max(0, Math.min(durationMs, timeTaken));
+                    points = Math.round(500 + ((durationMs - clamped) / durationMs) * 500);
+                    newScore += points;
+                }
+                const pRef = doc(db, 'players', player.id);
+                batch.update(pRef, { score: newScore, lastPoints: points });
+            });
+            
+            const gameRef = doc(db, 'games', myGameCode);
+            batch.update(gameRef, { status: 'reveal' });
+            await batch.commit();
+        }
+
+        function renderHostReveal() {
+            showScreen('screen-host-reveal');
+            SoundEngine.stopBGM();
+            SoundEngine.harpReveal();
+
+            const qData = getCurrentQuestionData();
+            document.getElementById('host-correct-answer').innerText = qData.options[qData.a];
+            document.getElementById('host-correct-ref-text').innerText = qData.ref || 'Scripture Reference';
+            
+            const counts = [0, 0, 0, 0];
+            playersData.forEach(p => { if(p.currentAnswer >= 0 && p.currentAnswer <= 3) counts[p.currentAnswer]++; });
+            for(let i=0; i<4; i++) document.getElementById(`host-count-${i}`).innerText = counts[i];
+        }
+
+        async function hostNextQuestion() {
+            const nextQ = gameData.currentQ + 1;
+            const gameRef = doc(db, 'games', myGameCode);
+            const maxQ = getTotalQuestionsInMatch();
+            const durationMs = gameData.questionDuration || getQuestionDurationMs(gameData.difficulty);
+            
+            if (nextQ >= maxQ) {
+                await updateDoc(gameRef, { status: 'leaderboard' });
+            } else {
+                SoundEngine.shofar();
+                const batch = writeBatch(db);
+                playersData.forEach(p => batch.update(doc(db, 'players', p.id), { currentAnswer: -1, lastPoints: 0 }));
+                const now = Date.now();
+                batch.update(gameRef, { status: 'question', currentQ: nextQ, startTime: now, endTime: now + durationMs });
+                await batch.commit();
+            }
+        }
+
+        function renderHostLeaderboard(animate = true) {
+            const leaderboardScreen = document.getElementById('screen-host-leaderboard');
+            if (animate || !leaderboardScreen.classList.contains('active')) showScreen('screen-host-leaderboard');
+            SoundEngine.stopBGM();
+            const sorted = sortPlayersByScore(playersData);
+            if (animate) {
+                podiumRevealTimeouts.forEach(clearTimeout);
+                podiumRevealTimeouts = [];
+                podiumRevealRunning = true;
+                stopConfetti();
+                setLeaderboardAnnouncement('Get ready for the final results…');
+            }
+            const setPodium = (rank, p) => {
+                const el = document.getElementById(`podium-${rank}`);
+                if(!el) return;
+                if (animate) el.classList.remove('is-revealed');
+                if(p) {
+                    document.getElementById(`podium-${rank}-avatar`).innerHTML = getAvatarHTML(p.avatar);
+                    document.getElementById(`podium-${rank}-name`).innerText = p.name;
+                    document.getElementById(`podium-${rank}-score`).innerText = `${(Number(p.score) || 0).toLocaleString()} PTS`;
+                    el.classList.remove('is-empty');
+                } else {
+                    el.classList.add('is-empty');
+                }
+            };
+            setPodium(1, sorted[0]); setPodium(2, sorted[1]); setPodium(3, sorted[2]);
+
+            renderLeaderboardRows('host-leaderboard-rest', sorted, 1);
+            document.getElementById('host-leaderboard-empty').classList.toggle('hidden', sorted.length > 0);
+
+            const revealOrder = [3, 2, 1].filter(rank => Boolean(sorted[rank - 1]));
+            const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!animate) {
+                if (!podiumRevealRunning) revealOrder.forEach(rank => document.getElementById(`podium-${rank}`).classList.add('is-revealed'));
+                return;
+            }
+            if (!revealOrder.length) {
+                podiumRevealRunning = false;
+                setLeaderboardAnnouncement('No scores yet.');
+                return;
+            }
+
+            let timeline = 0;
+            revealOrder.forEach((rank, index) => {
+                const player = sorted[rank - 1];
+                const placeName = rank === 3 ? 'third' : rank === 2 ? 'second' : 'first';
+                const intro = rank === 3 ? 'Third place goes to…' : rank === 2 ? 'Second place goes to…' : 'And 1st place goes to…';
+                podiumRevealTimeouts.push(setTimeout(() => setLeaderboardAnnouncement(intro), timeline));
+
+                timeline += reduceMotion ? 0 : 900;
+                podiumRevealTimeouts.push(setTimeout(() => {
+                    document.getElementById(`podium-${rank}`).classList.add('is-revealed');
+                    SoundEngine.podiumStep(rank);
+                    if (rank === 1) {
+                        setLeaderboardAnnouncement(`👑 ${player.name || 'Our champion'} takes 1st place!`);
+                        launchConfetti();
+                    } else {
+                        setLeaderboardAnnouncement(`${player.name || 'Player'} takes ${placeName} place!`);
+                    }
+                    if (index === revealOrder.length - 1) podiumRevealRunning = false;
+                }, timeline));
+
+                timeline += reduceMotion ? 0 : 1600;
+            });
+        }
+
+        function renderPlayerQuestion() {
+            showScreen('screen-player-question');
+            SoundEngine.startBGM('question');
+            const qData = getCurrentQuestionData();
+            const totalQForMatch = getTotalQuestionsInMatch();
+            document.getElementById('player-question-counter').innerText = `Question ${gameData.currentQ + 1} of ${totalQForMatch}`;
+            const overlay = document.getElementById('player-waiting-overlay');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            
+            for(let i=0; i<4; i++) {
+                const button = document.getElementById(`p-btn-${i}`);
+                document.getElementById(`p-ans-${i}`).innerText = qData.options[i];
+                button.disabled = false;
+            }
+        }
+
+        function renderPlayerReveal(playSound = true) {
+            if(!gameData || gameData.status !== 'reveal') return; 
+            showScreen('screen-player-reveal');
+            SoundEngine.stopBGM();
+            
+            const me = playersData.find(p => p.id === userId);
+            const qData = getCurrentQuestionData();
+            const isCorrect = me && me.currentAnswer === qData.a;
+
+            if (playSound) {
+                if (isCorrect) SoundEngine.harpReveal();
+                else SoundEngine.wrongAnswer();
+            }
+            
+            const glow = document.getElementById('reveal-glow');
+            const icon = document.getElementById('reveal-icon');
+            const title = document.getElementById('player-reveal-title');
+            const sub = document.getElementById('player-reveal-subtitle');
+            const ptsContainer = document.getElementById('player-reveal-points-container');
+            const refBadge = document.getElementById('player-reveal-ref');
+            
+            if(qData.ref) {
+                refBadge.innerText = `📖 ${qData.ref}`;
+                refBadge.classList.remove('hidden');
+            } else {
+                refBadge.classList.add('hidden');
+            }
+            
+            if (isCorrect) {
+                glow.className = 'absolute inset-0 opacity-20 pointer-events-none bg-emerald-500';
+                icon.className = 'w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 relative z-10 border-2 border-emerald-300 bg-emerald-500/25 text-emerald-300';
+                icon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>';
+                title.innerText = "Correct!"; title.className = "text-2xl font-display font-bold mb-1 relative z-10 text-emerald-300";
+                
+                const streakMsgs = ["Great job!", "Spot on!", "Right answer!", "Well done!"];
+                sub.innerText = streakMsgs[Math.floor(Math.random() * streakMsgs.length)];
+                
+                if (me.lastPoints > 0) document.getElementById('player-reveal-points').innerText = `+${me.lastPoints}`;
+                else document.getElementById('player-reveal-points').innerText = `...`;
+                ptsContainer.style.display = 'block';
+            } else {
+                glow.className = 'absolute inset-0 opacity-20 pointer-events-none bg-rose-600';
+                icon.className = 'w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 relative z-10 border-2 border-rose-300 bg-rose-500/25 text-rose-300';
+                icon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>';
+                title.innerText = "Incorrect"; title.className = "text-2xl font-display font-bold mb-1 relative z-10 text-rose-300";
+                sub.innerText = "Keep studying the Word!";
+                ptsContainer.style.display = 'none';
+            }
+        }
+
+        function renderPlayerLeaderboard() {
+            if (!document.getElementById('screen-player-leaderboard').classList.contains('active')) {
+                showScreen('screen-player-leaderboard');
+                SoundEngine.stopBGM();
+                SoundEngine.harpReveal();
+            }
+            const sorted = sortPlayersByScore(playersData);
+            const myRank = sorted.findIndex(p => p.id === userId) + 1;
+            const me = playersData.find(p => p.id === userId);
+            
+            document.getElementById('player-final-score').innerText = me ? (Number(me.score) || 0).toLocaleString() : 0;
+            document.getElementById('player-final-avatar').innerHTML = me ? getAvatarHTML(me.avatar) : '';
+            
+            let titleText = `Player`;
+            if(myRank === 1) titleText = "🥇 1st Place";
+            else if(myRank === 2) titleText = "🥈 2nd Place";
+            else if(myRank === 3) titleText = "🥉 3rd Place";
+            else titleText = `#${myRank} Place`;
+            
+            document.getElementById('player-final-rank').innerText = titleText;
+            document.getElementById('player-final-rank-sub').innerText = `Played as ${me ? getHeroName(me.avatar) : 'Hero'}`;
+            renderLeaderboardRows('player-final-leaderboard', sorted);
+        }
+
+        function goHomeAndClean() {
+            if(unsubscribeGame) unsubscribeGame(); if(unsubscribePlayers) unsubscribePlayers();
+            clearInterval(hostTimerInterval);
+            SoundEngine.stopBGM();
+            podiumRevealTimeouts.forEach(clearTimeout);
+            podiumRevealTimeouts = [];
+            podiumRevealRunning = false;
+            stopConfetti();
+            currentRole = null; myGameCode = ''; gameData = null;
+            if(new URLSearchParams(window.location.search).get('room') && window.history.replaceState) {
+                window.history.replaceState({}, document.title, window.location.href.split('?')[0]);
+            }
+            showScreen('screen-home');
+            document.getElementById('join-code').value = ''; document.getElementById('join-name').value = '';
+        }
+    </script>
+</body>
+</html>
