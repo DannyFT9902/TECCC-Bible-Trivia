@@ -702,8 +702,8 @@
                 </div>
                 <div class="flex flex-wrap gap-3 w-full md:w-auto relative z-10">
                     <input type="text" id="display-join-link" readonly class="hidden" value="">
-                    <button onclick="playShofarCall()" class="px-4 py-3.5 btn-secondary rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5" title="Sound the Shofar Horn">
-                        📯 Horn
+                    <button onclick="playShofarCall()" class="px-4 py-3.5 btn-secondary rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5" title="Sound the Roman Trumpet Fanfare">
+                        🎺 Trumpet
                     </button>
                     <button onclick="copyJoinLink()" class="px-5 py-3.5 btn-secondary rounded-xl font-semibold flex-1 md:flex-none text-sm flex items-center justify-center gap-2">
                         <svg class="w-4 h-4 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
@@ -1122,7 +1122,7 @@
         }
 
         // =========================================================================
-        // 🎶 SANCTUARY WEB AUDIO SYNTHESIZER (WITH SNARE DRUM ROLLS & FANFARES)
+        // 🎶 UPGRADED WEB AUDIO SYNTHESIZER (CAESAR BRASS TRUMPET & UPBEAT HAPPY BGM)
         // =========================================================================
         const SoundEngine = {
             ctx: null,
@@ -1174,6 +1174,74 @@
                 gain.connect(this.ctx.destination);
                 osc.start(now);
                 osc.stop(now + duration + 0.02);
+            },
+
+            // Helper: Synthesizes a single crisp, bright Roman Brass Trumpet Note
+            playBrassNote(freq, startOffset, duration, vol = 0.16) {
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime + startOffset;
+
+                const osc1 = this.ctx.createOscillator();
+                const osc2 = this.ctx.createOscillator();
+                const subOsc = this.ctx.createOscillator();
+                const filter = this.ctx.createBiquadFilter();
+                const gain = this.ctx.createGain();
+
+                osc1.type = 'sawtooth';
+                osc2.type = 'sawtooth';
+                subOsc.type = 'triangle';
+
+                // Slight detune for a rich, imperial brass ensemble chorus
+                osc1.frequency.setValueAtTime(freq, now);
+                osc2.frequency.setValueAtTime(freq * 1.004, now);
+                subOsc.frequency.setValueAtTime(freq * 0.5, now);
+
+                // Brass filter "blare" envelope (opens brightly on attack, then settles warm)
+                filter.type = 'lowpass';
+                filter.Q.setValueAtTime(2.2, now);
+                filter.frequency.setValueAtTime(freq * 1.5, now);
+                filter.frequency.exponentialRampToValueAtTime(freq * 6.5, now + 0.045);
+                filter.frequency.exponentialRampToValueAtTime(freq * 3.8, now + duration);
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.linearRampToValueAtTime(vol, now + 0.03);
+                gain.gain.setValueAtTime(vol * 0.9, now + Math.max(0.04, duration - 0.08));
+                gain.gain.exponentialRampToValueAtTime(0.0008, now + duration);
+
+                osc1.connect(filter);
+                osc2.connect(filter);
+                subOsc.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc1.start(now);
+                osc2.start(now);
+                subOsc.start(now);
+                osc1.stop(now + duration + 0.03);
+                osc2.stop(now + duration + 0.03);
+                subOsc.stop(now + duration + 0.03);
+            },
+
+            // Victorious Roman Imperial Trumpet Fanfare (Caesar / Ancient Herald Style)
+            shofar() {
+                if (!this.sfxEnabled) return;
+                this.init();
+                if (!this.ctx) return;
+
+                // Heraldic Trumpet Call: G4 -> C5 -> E5 -> G5 (with glorious fifth/third harmony)
+                const fanfare = [
+                    { f: 392.00, h: 196.00, t: 0.00, d: 0.14, v: 0.14 }, // G4 pickup
+                    { f: 523.25, h: 261.63, t: 0.15, d: 0.14, v: 0.15 }, // C5
+                    { f: 659.25, h: 329.63, t: 0.30, d: 0.14, v: 0.16 }, // E5
+                    { f: 783.99, h: 523.25, t: 0.46, d: 0.68, v: 0.19 }  // G5 + C5 Royal Sustained Triumph
+                ];
+
+                fanfare.forEach(note => {
+                    this.playBrassNote(note.f, note.t, note.d, note.v);
+                    this.playBrassNote(note.h, note.t, note.d, note.v * 0.65);
+                });
+                // Add a third harmony note (E5) on the final victorious blast
+                this.playBrassNote(659.25, 0.46, 0.68, 0.12);
             },
 
             drumRoll(durationSeconds = 1.4, intensity = 1.0) {
@@ -1236,51 +1304,6 @@
                 notes.forEach((n, i) => this.playNote(n, 'triangle', 0.28, i * 0.06, 0.12));
             },
 
-            shofar() {
-                if (!this.sfxEnabled) return;
-                this.init();
-                if (!this.ctx) return;
-                const now = this.ctx.currentTime;
-
-                const osc1 = this.ctx.createOscillator();
-                const osc2 = this.ctx.createOscillator();
-                const filter = this.ctx.createBiquadFilter();
-                const gain = this.ctx.createGain();
-
-                osc1.type = 'sawtooth';
-                osc2.type = 'triangle';
-
-                osc1.frequency.setValueAtTime(220, now);
-                osc1.frequency.exponentialRampToValueAtTime(329.63, now + 0.28);
-                osc1.frequency.setValueAtTime(329.63, now + 0.9);
-                osc1.frequency.exponentialRampToValueAtTime(349.23, now + 1.25);
-
-                osc2.frequency.setValueAtTime(221.5, now);
-                osc2.frequency.exponentialRampToValueAtTime(331.2, now + 0.28);
-                osc2.frequency.setValueAtTime(331.2, now + 0.9);
-                osc2.frequency.exponentialRampToValueAtTime(351.0, now + 1.25);
-
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(650, now);
-                filter.frequency.linearRampToValueAtTime(1450, now + 0.5);
-                filter.frequency.linearRampToValueAtTime(900, now + 1.4);
-
-                gain.gain.setValueAtTime(0.001, now);
-                gain.gain.linearRampToValueAtTime(0.22, now + 0.18);
-                gain.gain.setValueAtTime(0.22, now + 0.95);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 1.45);
-
-                osc1.connect(filter);
-                osc2.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.ctx.destination);
-
-                osc1.start(now);
-                osc2.start(now);
-                osc1.stop(now + 1.5);
-                osc2.stop(now + 1.5);
-            },
-
             harpReveal() {
                 const scale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
                 scale.forEach((freq, idx) => {
@@ -1306,42 +1329,107 @@
 
             podiumStep(rank) {
                 if (rank === 3) {
-                    [392.00, 493.88, 587.33, 783.99].forEach((f, i) => this.playNote(f, 'triangle', 0.45, i * 0.07, 0.16));
+                    this.playBrassNote(392.00, 0.0, 0.15, 0.14);
+                    this.playBrassNote(493.88, 0.15, 0.15, 0.15);
+                    this.playBrassNote(587.33, 0.30, 0.45, 0.17);
                 } else if (rank === 2) {
-                    [440.00, 554.37, 659.25, 880.00, 1108.73].forEach((f, i) => this.playNote(f, 'triangle', 0.5, i * 0.07, 0.17));
+                    this.playBrassNote(440.00, 0.0, 0.14, 0.14);
+                    this.playBrassNote(554.37, 0.14, 0.14, 0.15);
+                    this.playBrassNote(659.25, 0.28, 0.14, 0.16);
+                    this.playBrassNote(880.00, 0.42, 0.50, 0.18);
                 } else if (rank === 1) {
+                    // Grand Roman Champion Fanfare
                     this.shofar();
-                    const grand = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98, 2093.00];
+                    const grand = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
                     grand.forEach((f, i) => {
-                        this.playNote(f, 'triangle', 0.9, 0.15 + i * 0.065, 0.2);
-                        this.playNote(f * 0.5, 'sawtooth', 0.65, 0.15 + i * 0.065, 0.08);
+                        this.playNote(f, 'triangle', 0.85, 0.45 + i * 0.06, 0.16);
                     });
                 }
             },
 
+            // Soft Percussion Shaker/Hat for Upbeat Game Groove
+            playBgmPerc(vol = 0.015) {
+                if (!this.musicEnabled || !this.ctx) return;
+                const noiseBuf = this.getNoiseBuffer();
+                if (!noiseBuf) return;
+                const now = this.ctx.currentTime;
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = noiseBuf;
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'highpass';
+                filter.frequency.setValueAtTime(5500, now);
+                const gain = this.ctx.createGain();
+                gain.gain.setValueAtTime(0.0005, now);
+                gain.gain.linearRampToValueAtTime(vol, now + 0.004);
+                gain.gain.exponentialRampToValueAtTime(0.0005, now + 0.045);
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+                noise.start(now);
+                noise.stop(now + 0.05);
+            },
+
+            // Upbeat, Happy Marimba & Bass Game Show Background Music
             startBGM(mode = 'lobby') {
                 this.currentBgmMode = mode;
                 if (this.bgmInterval) clearInterval(this.bgmInterval);
                 if (!this.musicEnabled) return;
 
-                const lobbyChords = [
-                    [261.63, 329.63, 392.00, 523.25],
-                    [220.00, 261.63, 329.63, 440.00],
-                    [174.61, 220.00, 261.63, 349.23],
-                    [196.00, 246.94, 293.66, 392.00]
+                // Joyful C-Major / G-Major / F-Major Bouncy Marimba Melody (Lobby)
+                const lobbyMelody = [
+                    523.25, 659.25, 783.99, 659.25, 880.00, 783.99, 659.25, 523.25,
+                    587.33, 659.25, 783.99, 880.00, 783.99, 659.25, 587.33, 493.88,
+                    523.25, 659.25, 783.99, 1046.50, 880.00, 783.99, 659.25, 523.25,
+                    698.46, 783.99, 880.00, 698.46, 783.99, 587.33, 659.25, 523.25
                 ];
-                const quizPattern = [261.63, 329.63, 392.00, 329.63, 293.66, 349.23, 440.00, 349.23];
+                const lobbyBass = [
+                    130.81, 0, 196.00, 0, 220.00, 0, 196.00, 0,
+                    146.83, 0, 220.00, 0, 196.00, 0, 146.83, 196.00,
+                    130.81, 0, 196.00, 0, 174.61, 0, 130.81, 0,
+                    174.61, 0, 130.81, 0, 196.00, 0, 130.81, 0
+                ];
 
-                const stepTime = mode === 'question' ? 280 : 520;
+                // Energetic Upbeat Quiz Show Melody & Bass (Active Question)
+                const quizMelody = [
+                    523.25, 0, 659.25, 783.99, 880.00, 783.99, 659.25, 523.25,
+                    587.33, 0, 698.46, 880.00, 783.99, 698.46, 587.33, 493.88,
+                    523.25, 659.25, 783.99, 880.00, 1046.50, 880.00, 783.99, 659.25,
+                    698.46, 587.33, 523.25, 659.25, 783.99, 0, 523.25, 0
+                ];
+                const quizBass = [
+                    130.81, 130.81, 196.00, 196.00, 220.00, 220.00, 196.00, 196.00,
+                    146.83, 146.83, 174.61, 174.61, 196.00, 196.00, 146.83, 196.00,
+                    130.81, 130.81, 196.00, 196.00, 220.00, 220.00, 174.61, 174.61,
+                    174.61, 146.83, 130.81, 164.81, 196.00, 196.00, 130.81, 0
+                ];
+
+                const stepTime = mode === 'question' ? 190 : 230;
                 this.bgmInterval = setInterval(() => {
                     if (!this.musicEnabled || !this.ctx || this.ctx.state !== 'running') return;
+                    const idx = this.stepIndex % 32;
+
                     if (mode === 'lobby') {
-                        const chord = lobbyChords[Math.floor(this.stepIndex / 4) % lobbyChords.length];
-                        const note = chord[this.stepIndex % 4];
-                        this.playBgmTone(note, 'sine', 0.9, 0.032);
+                        const mNote = lobbyMelody[idx];
+                        const bNote = lobbyBass[idx];
+                        if (mNote > 0) {
+                            this.playBgmTone(mNote, 'triangle', 0.21, 0.045);
+                            this.playBgmTone(mNote * 2, 'sine', 0.09, 0.015); // Bright marimba overtone
+                        }
+                        if (bNote > 0) {
+                            this.playBgmTone(bNote, 'sine', 0.35, 0.055);
+                        }
+                        if (idx % 2 === 1) this.playBgmPerc(0.012);
                     } else if (mode === 'question') {
-                        const note = quizPattern[this.stepIndex % quizPattern.length];
-                        this.playBgmTone(note, 'triangle', 0.22, 0.04);
+                        const mNote = quizMelody[idx];
+                        const bNote = quizBass[idx];
+                        if (mNote > 0) {
+                            this.playBgmTone(mNote, 'triangle', 0.16, 0.05);
+                            this.playBgmTone(mNote * 2, 'sine', 0.08, 0.018);
+                        }
+                        if (bNote > 0) {
+                            this.playBgmTone(bNote, 'triangle', 0.18, 0.05);
+                        }
+                        this.playBgmPerc(idx % 2 === 1 ? 0.018 : 0.008);
                     }
                     this.stepIndex++;
                 }, stepTime);
@@ -1355,7 +1443,7 @@
                 osc.type = type;
                 osc.frequency.setValueAtTime(freq, now);
                 gain.gain.setValueAtTime(0.0005, now);
-                gain.gain.linearRampToValueAtTime(vol, now + 0.04);
+                gain.gain.linearRampToValueAtTime(vol, now + 0.012);
                 gain.gain.exponentialRampToValueAtTime(0.0005, now + duration);
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
@@ -2329,7 +2417,6 @@
             return Math.round(score / correct);
         }
 
-        // Builds rich leaderboard rows with Fastest, Slowest, Avg Speed Pts, and Total Score
         function createLeaderboardRow(player, rank) {
             const row = document.createElement('li');
             const score = Number(player.score) || 0;
@@ -2363,7 +2450,6 @@
             heroSub.textContent = `${getHeroName(player.avatar)} · ✅ ${correctCount} · 🔥 ${bestStreak}`;
             nameWrap.append(name, heroSub);
 
-            // Desktop Stat Columns
             const fastEl = document.createElement('span');
             fastEl.className = 'stat-pill text-emerald-300 hidden md:inline-block';
             fastEl.title = 'Fastest Question Answered';
@@ -2383,7 +2469,6 @@
             points.className = 'leaderboard-points';
             points.textContent = `${score.toLocaleString()} pts`;
 
-            // Mobile Compact Stat Strip
             const mobileStrip = document.createElement('div');
             mobileStrip.className = 'mobile-stats-strip md:hidden';
             mobileStrip.innerHTML = `
@@ -2526,7 +2611,6 @@
             }, 100);
         }
 
-        // Calculates points AND tracks Fastest Time, Slowest Time, Correct Count, and Best Streak
         async function processEndQuestion() {
             if (isProcessingEnd || currentRole !== 'host') return;
             isProcessingEnd = true; clearInterval(hostTimerInterval);
@@ -2550,7 +2634,6 @@
                     const rawTaken = player.answeredAt - gameData.startTime;
                     const clamped = Math.max(100, Math.min(durationMs, rawTaken));
 
-                    // Track fastest and slowest answer times across all answered questions
                     if (fastestTimeMs === null || clamped < fastestTimeMs) fastestTimeMs = clamped;
                     if (slowestTimeMs === null || clamped > slowestTimeMs) slowestTimeMs = clamped;
 
@@ -2713,7 +2796,6 @@
                     ? '🥁 Drum roll… 2nd place goes to…'
                     : '🥁 Drum roll for the Victorious One… 1st place goes to…';
 
-                // Stage 1: Drum roll before this podium spot
                 podiumRevealTimeouts.push(setTimeout(() => {
                     setLeaderboardAnnouncement(intro, true);
                     SoundEngine.drumRoll(drumDurationSec, rank === 1 ? 1.25 : 1.0);
@@ -2721,7 +2803,6 @@
 
                 timeline += drumDurationMs;
 
-                // Stage 2: Reveal Podium Hero + Play Fanfare
                 podiumRevealTimeouts.push(setTimeout(() => {
                     document.getElementById(`podium-${rank}`).classList.add('is-revealed');
                     SoundEngine.podiumStep(rank);
@@ -2732,7 +2813,6 @@
                         setLeaderboardAnnouncement(`🎉 ${player.name || 'Player'} claims ${placeName} place!`, false);
                     }
 
-                    // After the top 3 are revealed, wait 5 seconds (5000ms), then shrink podium & expand full leaderboard on one screen
                     if (index === revealOrder.length - 1) {
                         podiumRevealTimeouts.push(setTimeout(() => {
                             podiumRevealRunning = false;
@@ -2834,7 +2914,6 @@
             document.getElementById('player-final-rank').innerText = titleText;
             document.getElementById('player-final-rank-sub').innerText = `${me ? me.name : 'You'} · Played as ${me ? getHeroName(me.avatar) : 'Hero'}`;
 
-            // Populate Player Personal Performance Analytics Cards
             if (me) {
                 const correctCount = Number(me.correctCount) || 0;
                 const accuracyPct = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
