@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bible Trivia: Divine Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -39,7 +39,7 @@
         /* --- Rich Celestial Background --- */
         .aurora-bg {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
             z-index: 0;
             overflow: hidden;
             background: radial-gradient(circle at 50% 15%, #1e1b4b 0%, #090514 65%, #05020a 100%);
@@ -89,12 +89,11 @@
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border: 1.5px solid var(--gold-border);
-            border-radius: 24px;
+            border-radius: 22px;
             box-shadow: 
-                0 24px 48px -12px rgba(0, 0, 0, 0.8),
+                0 20px 44px -12px rgba(0, 0, 0, 0.8),
                 inset 0 1px 2px rgba(255, 255, 255, 0.15);
             position: relative;
-            overflow: hidden;
         }
 
         /* --- Tactile 3D Buttons --- */
@@ -239,14 +238,15 @@
         .grad-primary { background-image: linear-gradient(180deg, #ffffff 0%, #fef08a 60%, #f59e0b 100%); }
         .grad-gold { background-image: linear-gradient(180deg, #fef9c3 0%, #fde047 55%, #eab308 100%); }
         
+        /* Responsive Screen Containers supporting all mobile browser bars (100dvh) */
         .screen-container { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100dvh;
             display: flex; flex-direction: column; opacity: 0; pointer-events: none;
             transform: scale(0.98); transition: opacity 0.3s ease, transform 0.3s ease; z-index: 10;
         }
         .screen-container.active { opacity: 1; pointer-events: auto; transform: scale(1); }
 
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
         .custom-scroll::-webkit-scrollbar-track { background: rgba(9, 5, 20, 0.4); border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(250, 204, 21, 0.45); border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #fde047; }
@@ -257,16 +257,23 @@
 
         button, input, textarea { font: inherit; }
         button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid rgba(254, 240, 138, 0.9); outline-offset: 2px; }
-        .eyebrow { color: #fde047; font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+        .eyebrow { color: #fde047; font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
         .home-card { background: linear-gradient(160deg, rgba(49, 27, 92, 0.9), rgba(19, 14, 43, 0.95) 58%, rgba(59, 23, 69, 0.9)); }
-        .screen-scroll { overflow-y: auto; overscroll-behavior: contain; }
-        #screen-player-question { overflow-y: auto; overscroll-behavior: contain; }
+        
+        /* Smooth Native Mobile Scrolling without clipping child cards */
+        .screen-scroll {
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+        }
+        #screen-player-question { overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
         .player-question-layout { min-height: 100%; }
-        .answer-grid { grid-template-rows: repeat(2, minmax(126px, 1fr)); min-height: min(76vh, 680px); }
-        .ans-btn { justify-content: flex-start; gap: 14px; padding: clamp(14px, 2.4vw, 24px); min-width: 0; min-height: 126px; text-align: left; }
-        .ans-choice-symbol { width: clamp(38px, 5vw, 52px); height: clamp(38px, 5vw, 52px); position: relative; flex: 0 0 auto; display: grid; place-items: center; background: rgba(0,0,0,0.2); border-radius: 14px; border: 1px solid rgba(255,255,255,0.22); padding: 8px; }
+        .answer-grid { grid-template-rows: repeat(2, minmax(112px, 1fr)); flex-grow: 1; }
+        .ans-btn { justify-content: flex-start; gap: 14px; padding: clamp(12px, 2.4vw, 24px); min-width: 0; min-height: 112px; text-align: left; }
+        .ans-choice-symbol { width: clamp(36px, 5vw, 52px); height: clamp(36px, 5vw, 52px); position: relative; flex: 0 0 auto; display: grid; place-items: center; background: rgba(0,0,0,0.2); border-radius: 14px; border: 1px solid rgba(255,255,255,0.22); padding: 7px; }
         .ans-choice-symbol .shape-icon { width: 100%; height: 100%; margin: 0; }
-        .ans-copy { min-width: 0; color: #fff; font-size: clamp(.95rem, 2.1vw, 1.2rem); font-weight: 700; line-height: 1.3; overflow-wrap: anywhere; }
+        .ans-copy { min-width: 0; color: #fff; font-size: clamp(.9rem, 2.1vw, 1.2rem); font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
         
         /* --- Host Single-Viewport Shrinking Podium & Leaderboard --- */
         #screen-host-leaderboard {
@@ -298,9 +305,9 @@
         .podium-pedestal, .podium-avatar, .podium-name, .podium-score, .podium-label {
             transition: all 0.75s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .podium-2-pedestal { height: 9.5rem; }
-        .podium-1-pedestal { height: 13.5rem; }
-        .podium-3-pedestal { height: 7.5rem; }
+        .podium-2-pedestal { height: 8.5rem; }
+        .podium-1-pedestal { height: 12rem; }
+        .podium-3-pedestal { height: 6.5rem; }
         @media (min-width: 768px) {
             .podium-2-pedestal { height: 12rem; }
             .podium-1-pedestal { height: 16.5rem; }
@@ -312,17 +319,17 @@
             flex-grow: 0;
             padding-top: 0 !important;
         }
-        #host-leaderboard-main.is-compact .podium-2-pedestal { height: 2.3rem !important; padding-top: 0.2rem !important; }
-        #host-leaderboard-main.is-compact .podium-1-pedestal { height: 3.1rem !important; padding-top: 0.25rem !important; }
-        #host-leaderboard-main.is-compact .podium-3-pedestal { height: 1.9rem !important; padding-top: 0.15rem !important; }
-        #host-leaderboard-main.is-compact .podium-pedestal span { font-size: 1.25rem !important; line-height: 1 !important; }
-        #host-leaderboard-main.is-compact #podium-1-avatar { width: 3.2rem !important; height: 3.2rem !important; margin-bottom: 0.25rem !important; }
+        #host-leaderboard-main.is-compact .podium-2-pedestal { height: 2rem !important; padding-top: 0.15rem !important; }
+        #host-leaderboard-main.is-compact .podium-1-pedestal { height: 2.7rem !important; padding-top: 0.2rem !important; }
+        #host-leaderboard-main.is-compact .podium-3-pedestal { height: 1.7rem !important; padding-top: 0.1rem !important; }
+        #host-leaderboard-main.is-compact .podium-pedestal span { font-size: 1.15rem !important; line-height: 1 !important; }
+        #host-leaderboard-main.is-compact #podium-1-avatar { width: 2.8rem !important; height: 2.8rem !important; margin-bottom: 0.2rem !important; }
         #host-leaderboard-main.is-compact #podium-2-avatar,
-        #host-leaderboard-main.is-compact #podium-3-avatar { width: 2.5rem !important; height: 2.5rem !important; margin-bottom: 0.2rem !important; }
-        #host-leaderboard-main.is-compact .podium-name { font-size: 0.85rem !important; margin-bottom: 0.1rem !important; }
-        #host-leaderboard-main.is-compact .podium-score { font-size: 0.68rem !important; padding: 0.1rem 0.5rem !important; margin-bottom: 0.35rem !important; }
-        #host-leaderboard-main.is-compact .podium-label { font-size: 0.65rem !important; margin-bottom: 0.15rem !important; }
-        #host-leaderboard-main.is-compact #host-lb-title { font-size: 1.5rem !important; margin-bottom: 0 !important; }
+        #host-leaderboard-main.is-compact #podium-3-avatar { width: 2.2rem !important; height: 2.2rem !important; margin-bottom: 0.15rem !important; }
+        #host-leaderboard-main.is-compact .podium-name { font-size: 0.8rem !important; margin-bottom: 0.05rem !important; }
+        #host-leaderboard-main.is-compact .podium-score { font-size: 0.65rem !important; padding: 0.08rem 0.45rem !important; margin-bottom: 0.25rem !important; }
+        #host-leaderboard-main.is-compact .podium-label { font-size: 0.6rem !important; margin-bottom: 0.1rem !important; }
+        #host-leaderboard-main.is-compact #host-lb-title { font-size: 1.25rem !important; margin-bottom: 0 !important; }
 
         /* Full Standings Drawer on Host Screen */
         .full-standings-panel {
@@ -385,6 +392,7 @@
             border-radius: 14px;
             background: rgba(15, 11, 33, 0.65);
             transition: transform 0.2s ease;
+            flex-shrink: 0;
         }
         .leaderboard-row:hover { transform: translateX(3px); }
         .leaderboard-row-avatar { width: 38px; height: 38px; overflow: hidden; border-radius: 50%; background: rgba(255,255,255,.08); border: 2px solid rgba(250, 204, 21, 0.4); }
@@ -394,7 +402,7 @@
         .stat-pill {
             text-align: center;
             font-variant-numeric: tabular-nums;
-            font-size: 0.78rem;
+            font-size: 0.75rem;
             font-weight: 700;
             padding: 3px 6px;
             border-radius: 8px;
@@ -402,7 +410,7 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             white-space: nowrap;
         }
-        .leaderboard-points { color: #fde047; font-variant-numeric: tabular-nums; font-weight: 800; font-size: 0.85rem; text-align: right; white-space: nowrap; background: rgba(234, 179, 8, 0.14); padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(250, 204, 21, 0.25); justify-self: end; }
+        .leaderboard-points { color: #fde047; font-variant-numeric: tabular-nums; font-weight: 800; font-size: 0.82rem; text-align: right; white-space: nowrap; background: rgba(234, 179, 8, 0.14); padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(250, 204, 21, 0.25); justify-self: end; }
         .top-three-row { border-color: rgba(250, 204, 21, .45); background: linear-gradient(100deg, rgba(234, 179, 8, .18), rgba(30, 27, 75, .65)); }
 
         #confetti-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 40; }
@@ -432,30 +440,31 @@
             background: rgba(16, 185, 129, 0.22) !important;
         }
 
-        @media (max-width: 720px) {
+        @media (max-width: 767px) {
             .leaderboard-header-grid { display: none; }
             .leaderboard-row {
-                grid-template-columns: 42px 36px minmax(0, 1fr) auto;
+                grid-template-columns: 38px 34px minmax(0, 1fr) auto;
                 row-gap: 6px;
-                padding: 10px;
+                padding: 9px 10px;
             }
+            .leaderboard-row-avatar { width: 34px; height: 34px; }
             .leaderboard-row .stat-pill {
-                grid-column: span 1;
-                font-size: 0.7rem;
+                font-size: 0.68rem;
+                padding: 2.5px 4px;
             }
             .leaderboard-row .mobile-stats-strip {
                 grid-column: 1 / -1;
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
-                gap: 6px;
-                padding-top: 4px;
-                border-top: 1px solid rgba(255,255,255,0.06);
+                gap: 5px;
+                padding-top: 5px;
+                border-top: 1px solid rgba(255,255,255,0.08);
             }
         }
         @media (max-width: 520px) {
-            .answer-grid { gap: 10px; grid-template-rows: repeat(2, minmax(118px, 1fr)); min-height: min(76vh, 620px); }
+            .answer-grid { gap: 10px; grid-template-rows: repeat(2, minmax(105px, 1fr)); }
             .ans-btn { flex-direction: row; justify-content: flex-start; gap: 10px; padding: 10px; text-align: left; }
-            .ans-choice-symbol { width: 34px; height: 34px; padding: 6px; }
+            .ans-choice-symbol { width: 32px; height: 32px; padding: 5px; }
             .ans-copy { font-size: clamp(.8rem, 3.2vw, .95rem); }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -475,12 +484,12 @@
     <canvas id="confetti-canvas" aria-hidden="true"></canvas>
 
     <!-- Floating Audio Controls -->
-    <div class="fixed top-3 right-3 z-50 flex items-center gap-2">
-        <button id="btn-toggle-music" onclick="toggleMusic()" class="sound-pill px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-semibold text-yellow-100" title="Toggle Sanctuary Music">
+    <div class="fixed top-2.5 right-3 z-50 flex items-center gap-1.5">
+        <button id="btn-toggle-music" onclick="toggleMusic()" class="sound-pill px-2.5 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-semibold text-yellow-100" title="Toggle Sanctuary Music">
             <span id="music-icon">🎵</span>
             <span class="hidden sm:inline" id="music-label">Music On</span>
         </button>
-        <button id="btn-toggle-sfx" onclick="toggleSFX()" class="sound-pill px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-semibold text-yellow-100" title="Toggle Sound Effects">
+        <button id="btn-toggle-sfx" onclick="toggleSFX()" class="sound-pill px-2.5 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-semibold text-yellow-100" title="Toggle Sound Effects">
             <span id="sfx-icon">🔔</span>
             <span class="hidden sm:inline" id="sfx-label">SFX On</span>
         </button>
@@ -488,7 +497,7 @@
 
     <!-- Modals & Toasts -->
     <div id="error-modal" class="fixed inset-0 z-[100] flex items-center justify-center opacity-0 pointer-events-none bg-black/75 backdrop-blur-md transition-opacity duration-300">
-        <div class="bento-card p-8 w-full max-w-md mx-4 text-center transform scale-95 transition-transform duration-300" id="error-content">
+        <div class="bento-card p-7 w-full max-w-md mx-4 text-center transform scale-95 transition-transform duration-300" id="error-content">
             <div class="w-14 h-14 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-400">
                 <svg class="w-7 h-7 text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
             </div>
@@ -516,22 +525,22 @@
     </div>
 
     <!-- Home -->
-    <div id="screen-home" class="screen-container justify-center items-center p-6">
-        <div class="bento-card home-card p-7 md:p-10 w-full max-w-lg text-center flex flex-col items-center">
-            <div class="mb-7 text-center relative z-10">
-                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-b from-yellow-300/20 to-amber-600/20 border border-yellow-300/50 flex items-center justify-center shadow-lg">
-                    <svg class="w-9 h-9 text-yellow-300" viewBox="0 0 24 24" fill="currentColor">
+    <div id="screen-home" class="screen-container screen-scroll justify-center items-center p-4 sm:p-6">
+        <div class="bento-card home-card p-6 sm:p-10 w-full max-w-lg text-center flex flex-col items-center my-auto shrink-0">
+            <div class="mb-6 text-center relative z-10">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3.5 rounded-2xl bg-gradient-to-b from-yellow-300/20 to-amber-600/20 border border-yellow-300/50 flex items-center justify-center shadow-lg">
+                    <svg class="w-8 h-8 sm:w-9 sm:h-9 text-yellow-300" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
                     </svg>
                 </div>
-                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-200 text-xs font-semibold mb-3">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-200 text-xs font-semibold mb-2.5">
                     Divine Edition
                 </div>
-                <h1 class="font-display text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-2">Bible Trivia</h1>
-                <p class="mt-2 max-w-sm mx-auto text-sm leading-relaxed text-slate-300">Pick your Bible character, join the room, and test your knowledge of Scripture.</p>
+                <h1 class="font-display text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-2">Bible Trivia</h1>
+                <p class="mt-1 max-w-sm mx-auto text-xs sm:text-sm leading-relaxed text-slate-300">Pick your Bible character, join the room, and test your knowledge of Scripture.</p>
             </div>
-            <div class="w-full flex flex-col gap-3.5 relative z-10">
-                <button onclick="showScreen('screen-player-join')" class="w-full py-4 btn-primary rounded-2xl text-lg font-bold flex items-center justify-center gap-2">
+            <div class="w-full flex flex-col gap-3 relative z-10">
+                <button onclick="showScreen('screen-player-join')" class="w-full py-3.5 sm:py-4 btn-primary rounded-2xl text-base sm:text-lg font-bold flex items-center justify-center gap-2">
                     <span>Join Live Game</span>
                 </button>
                 <p class="-mt-1 text-xs text-slate-400">Have a 5-character Room PIN or QR Code?</p>
@@ -540,7 +549,7 @@
                     <span class="flex-shrink-0 mx-4 text-xs font-semibold text-slate-400 uppercase">Or</span>
                     <div class="flex-grow border-t border-white/10"></div>
                 </div>
-                <button onclick="showScreen('screen-host-setup')" class="w-full py-3.5 btn-secondary rounded-2xl text-base font-semibold">
+                <button onclick="showScreen('screen-host-setup')" class="w-full py-3.5 btn-secondary rounded-2xl text-sm sm:text-base font-semibold">
                     Host a Match
                 </button>
             </div>
@@ -548,35 +557,35 @@
     </div>
 
     <!-- Host Setup -->
-    <div id="screen-host-setup" class="screen-container justify-center items-center p-4 sm:p-6">
-        <div class="bento-card p-6 sm:p-8 w-full max-w-lg max-h-[92vh] overflow-y-auto custom-scroll">
-            <button onclick="showScreen('screen-home')" class="relative z-10 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 mb-4 transition-colors">
+    <div id="screen-host-setup" class="screen-container screen-scroll justify-center items-center p-4 sm:p-6">
+        <div class="bento-card p-5 sm:p-8 w-full max-w-lg my-auto shrink-0">
+            <button onclick="showScreen('screen-home')" class="relative z-10 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 mb-3 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 Back
             </button>
-            <h2 class="font-display text-2xl font-bold text-center mb-1 text-white relative z-10">Select Difficulty</h2>
-            <p class="text-center text-xs text-slate-300 mb-5 relative z-10">10 randomized questions per game</p>
-            <div class="flex flex-col gap-3 relative z-10">
-                <button onclick="createRoom('easy')" class="w-full py-4 px-5 rounded-2xl btn-secondary flex justify-between items-center group">
+            <h2 class="font-display text-xl sm:text-2xl font-bold text-center mb-1 text-white relative z-10">Select Difficulty</h2>
+            <p class="text-center text-xs text-slate-300 mb-4 relative z-10">10 randomized questions per game</p>
+            <div class="flex flex-col gap-2.5 sm:gap-3 relative z-10">
+                <button onclick="createRoom('easy')" class="w-full py-3.5 px-4 sm:px-5 rounded-2xl btn-secondary flex justify-between items-center group">
                     <div class="text-left">
                         <div class="text-base sm:text-lg font-bold text-emerald-300">👼 Baby Christian</div>
                         <div class="text-xs text-slate-300 mt-0.5">Beginner stories & heroes · 10s timer</div>
                     </div>
-                    <span class="text-xs font-semibold bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 px-3 py-1 rounded-full shrink-0">10s · Easy</span>
+                    <span class="text-xs font-semibold bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 px-2.5 py-1 rounded-full shrink-0">10s · Easy</span>
                 </button>
-                <button onclick="createRoom('medium')" class="w-full py-4 px-5 rounded-2xl btn-secondary flex justify-between items-center group">
+                <button onclick="createRoom('medium')" class="w-full py-3.5 px-4 sm:px-5 rounded-2xl btn-secondary flex justify-between items-center group">
                     <div class="text-left">
                         <div class="text-base sm:text-lg font-bold text-amber-300">⚔️ Bible Warrior</div>
                         <div class="text-xs text-slate-300 mt-0.5">Parables, prophets & kings · 15s timer</div>
                     </div>
-                    <span class="text-xs font-semibold bg-amber-500/20 border border-amber-400/30 text-amber-200 px-3 py-1 rounded-full shrink-0">15s · Med</span>
+                    <span class="text-xs font-semibold bg-amber-500/20 border border-amber-400/30 text-amber-200 px-2.5 py-1 rounded-full shrink-0">15s · Med</span>
                 </button>
-                <button onclick="createRoom('hard')" class="w-full py-4 px-5 rounded-2xl btn-secondary flex justify-between items-center group">
+                <button onclick="createRoom('hard')" class="w-full py-3.5 px-4 sm:px-5 rounded-2xl btn-secondary flex justify-between items-center group">
                     <div class="text-left">
                         <div class="text-base sm:text-lg font-bold text-rose-300">👑 Transcendent</div>
                         <div class="text-xs text-slate-300 mt-0.5">Deep scripture & history · 20s timer</div>
                     </div>
-                    <span class="text-xs font-semibold bg-rose-500/20 border border-rose-400/30 text-rose-200 px-3 py-1 rounded-full shrink-0">20s · Hard</span>
+                    <span class="text-xs font-semibold bg-rose-500/20 border border-rose-400/30 text-rose-200 px-2.5 py-1 rounded-full shrink-0">20s · Hard</span>
                 </button>
 
                 <div class="relative flex items-center py-1">
@@ -585,35 +594,35 @@
                     <div class="flex-grow border-t border-white/10"></div>
                 </div>
 
-                <button onclick="openCustomBuilder()" class="w-full py-4 px-5 rounded-2xl btn-secondary flex justify-between items-center group border-yellow-400/40">
+                <button onclick="openCustomBuilder()" class="w-full py-3.5 px-4 sm:px-5 rounded-2xl btn-secondary flex justify-between items-center group border-yellow-400/40">
                     <div class="text-left">
                         <div class="text-base sm:text-lg font-bold text-yellow-200">📜 Custom Sermon Builder</div>
                         <div class="text-xs text-slate-300 mt-0.5">Create your own Sunday sermon questions</div>
                     </div>
-                    <span id="custom-count-badge" class="text-xs font-semibold bg-yellow-400/20 border border-yellow-300/40 text-yellow-200 px-3 py-1 rounded-full shrink-0">0 Saved</span>
+                    <span id="custom-count-badge" class="text-xs font-semibold bg-yellow-400/20 border border-yellow-300/40 text-yellow-200 px-2.5 py-1 rounded-full shrink-0">0 Saved</span>
                 </button>
             </div>
         </div>
     </div>
 
     <!-- Host Custom Sermon Builder Screen -->
-    <div id="screen-custom-builder" class="screen-container justify-center items-center p-3 sm:p-6">
-        <div class="bento-card p-5 sm:p-7 w-full max-w-4xl h-[92vh] flex flex-col">
+    <div id="screen-custom-builder" class="screen-container screen-scroll justify-center items-center p-3 sm:p-6">
+        <div class="bento-card p-4 sm:p-7 w-full max-w-4xl lg:h-[90vh] flex flex-col my-auto shrink-0">
             <div class="flex flex-wrap justify-between items-center gap-3 mb-4 relative z-10 shrink-0">
                 <button onclick="showScreen('screen-host-setup')" class="text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     Back
                 </button>
-                <h2 class="font-display text-lg sm:text-xl font-bold text-white">Custom Sermon Questions</h2>
+                <h2 class="font-display text-base sm:text-xl font-bold text-white">Custom Sermon Questions</h2>
                 <button onclick="clearAllCustomQuestions()" class="text-xs font-semibold text-rose-300 hover:text-rose-200 underline">Clear All</button>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-grow min-h-0 relative z-10 overflow-y-auto lg:overflow-hidden custom-scroll pr-1">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-grow min-h-0 relative z-10 lg:overflow-hidden">
                 <!-- Left Form: Add Question -->
-                <div class="lg:col-span-7 flex flex-col gap-3 bg-black/30 p-4 rounded-2xl border border-white/10 overflow-y-auto custom-scroll">
+                <div class="lg:col-span-7 flex flex-col gap-3 bg-black/30 p-3.5 sm:p-4 rounded-2xl border border-white/10 lg:overflow-y-auto custom-scroll">
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-1">Question</label>
-                        <textarea id="custom-q-text" rows="2" maxlength="160" placeholder="e.g., What was the main theme of today's sermon in Romans 8?" class="input-premium w-full p-3 rounded-xl text-sm font-medium resize-none"></textarea>
+                        <textarea id="custom-q-text" rows="2" maxlength="160" placeholder="e.g., What was the main theme of today's sermon in Romans 8?" class="input-premium w-full p-2.5 rounded-xl text-sm font-medium resize-none"></textarea>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -662,10 +671,10 @@
                         </div>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row gap-3 items-end mt-1">
+                    <div class="flex flex-col sm:flex-row gap-2.5 items-end mt-1">
                         <div class="w-full sm:flex-grow">
                             <label class="block text-xs font-semibold text-slate-300 mb-1">Bible Verse Reference (Optional)</label>
-                            <input type="text" id="custom-q-ref" maxlength="45" placeholder="e.g., Romans 8:28" class="input-premium w-full px-3 py-2.5 rounded-xl text-xs">
+                            <input type="text" id="custom-q-ref" maxlength="45" placeholder="e.g., Romans 8:28" class="input-premium w-full px-3 py-2 rounded-xl text-xs">
                         </div>
                         <button onclick="addCustomQuestion()" class="w-full sm:w-auto px-5 py-2.5 btn-secondary rounded-xl font-semibold text-xs text-yellow-200 shrink-0">
                             + Add Question
@@ -674,13 +683,13 @@
                 </div>
 
                 <!-- Right Column: Question List & Launch -->
-                <div class="lg:col-span-5 flex flex-col bg-black/30 p-4 rounded-2xl border border-white/10 min-h-[220px] lg:min-h-0">
-                    <div class="flex justify-between items-center mb-3 shrink-0">
+                <div class="lg:col-span-5 flex flex-col bg-black/30 p-3.5 sm:p-4 rounded-2xl border border-white/10 min-h-[200px] lg:min-h-0">
+                    <div class="flex justify-between items-center mb-2.5 shrink-0">
                         <span class="text-xs font-semibold text-slate-300">Saved Questions</span>
                         <span id="custom-list-counter" class="text-xs font-bold bg-yellow-400/20 text-yellow-200 px-2.5 py-0.5 rounded-full">0</span>
                     </div>
-                    <div id="custom-questions-list" class="flex-grow overflow-y-auto custom-scroll flex flex-col gap-2 pr-1"></div>
-                    <button onclick="launchCustomRoom()" id="btn-launch-custom" class="w-full py-3.5 btn-primary rounded-xl text-sm font-bold mt-4 shrink-0" disabled>
+                    <div id="custom-questions-list" class="flex-grow overflow-y-auto custom-scroll flex flex-col gap-2 pr-1 max-h-52 lg:max-h-none"></div>
+                    <button onclick="launchCustomRoom()" id="btn-launch-custom" class="w-full py-3.5 btn-primary rounded-xl text-sm font-bold mt-3 shrink-0" disabled>
                         Launch Custom Game
                     </button>
                 </div>
@@ -689,42 +698,42 @@
     </div>
 
     <!-- Host Lobby -->
-    <div id="screen-host-lobby" class="screen-container p-6 overflow-hidden">
-        <div class="max-w-6xl w-full mx-auto h-full flex flex-col gap-6 pt-6 sm:pt-2">
-            <div class="bento-card p-6 flex flex-col md:flex-row justify-between items-center gap-6 shrink-0">
-                <div class="flex flex-col md:flex-row items-center gap-6 relative z-10">
-                    <div>
-                        <p class="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1 text-center md:text-left">Join with Room PIN:</p>
-                        <div class="text-5xl md:text-6xl font-display font-black text-yellow-300 tracking-wider" id="display-game-code">00000</div>
+    <div id="screen-host-lobby" class="screen-container p-3 sm:p-6 overflow-hidden">
+        <div class="max-w-6xl w-full mx-auto h-full flex flex-col gap-4 sm:gap-6 pt-8 sm:pt-2">
+            <div class="bento-card p-4 sm:p-6 flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6 shrink-0">
+                <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 relative z-10">
+                    <div class="text-center sm:text-left">
+                        <p class="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-0.5">Join with Room PIN:</p>
+                        <div class="text-4xl sm:text-6xl font-display font-black text-yellow-300 tracking-wider" id="display-game-code">00000</div>
                     </div>
-                    <div class="h-16 w-px bg-white/10 hidden md:block"></div>
-                    <div class="bg-white p-3 rounded-2xl shadow-xl shrink-0" id="qrcode"></div>
+                    <div class="h-16 w-px bg-white/10 hidden sm:block"></div>
+                    <div class="bg-white p-2.5 rounded-2xl shadow-xl shrink-0" id="qrcode"></div>
                 </div>
-                <div class="flex flex-wrap gap-3 w-full md:w-auto relative z-10">
+                <div class="flex flex-wrap gap-2.5 w-full md:w-auto relative z-10">
                     <input type="text" id="display-join-link" readonly class="hidden" value="">
-                    <button onclick="playShofarCall()" class="px-4 py-3.5 btn-secondary rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5" title="Sound the Roman Trumpet Fanfare">
+                    <button onclick="playShofarCall()" class="px-3.5 py-3 btn-secondary rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5" title="Sound the Roman Trumpet Fanfare">
                         🎺 Trumpet
                     </button>
-                    <button onclick="copyJoinLink()" class="px-5 py-3.5 btn-secondary rounded-xl font-semibold flex-1 md:flex-none text-sm flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                    <button onclick="copyJoinLink()" class="px-4 py-3 btn-secondary rounded-xl font-semibold flex-1 md:flex-none text-xs sm:text-sm flex items-center justify-center gap-1.5">
+                        <svg class="w-4 h-4 text-yellow-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                         Copy Link
                     </button>
-                    <button onclick="startHostGame()" id="btn-start-game" class="px-8 py-3.5 btn-primary rounded-xl font-bold flex-1 md:flex-none text-base" disabled>
+                    <button onclick="startHostGame()" id="btn-start-game" class="px-6 sm:px-8 py-3 btn-primary rounded-xl font-bold flex-1 md:flex-none text-sm sm:text-base" disabled>
                         Start Game
                     </button>
                 </div>
             </div>
 
-            <div class="bento-card p-6 flex-grow flex flex-col min-h-0">
-                <div class="flex justify-between items-center mb-5 relative z-10">
-                    <h3 class="text-lg font-display font-bold text-white">Players Joined</h3>
-                    <div class="bg-yellow-400/15 border border-yellow-400/30 text-yellow-200 font-semibold px-3.5 py-1 rounded-full text-xs">
+            <div class="bento-card p-4 sm:p-6 flex-grow flex flex-col min-h-0">
+                <div class="flex justify-between items-center mb-4 relative z-10 shrink-0">
+                    <h3 class="text-base sm:text-lg font-display font-bold text-white">Players Joined</h3>
+                    <div class="bg-yellow-400/15 border border-yellow-400/30 text-yellow-200 font-semibold px-3 py-1 rounded-full text-xs">
                         <span id="host-player-count">0</span> Ready
                     </div>
                 </div>
-                <div id="host-player-list" class="flex flex-wrap gap-3.5 overflow-y-auto custom-scroll content-start flex-grow relative z-10 p-1">
+                <div id="host-player-list" class="flex flex-wrap gap-3 overflow-y-auto custom-scroll content-start flex-grow relative z-10 p-1">
                     <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 font-medium text-sm gap-3" id="waiting-msg">
-                        <svg class="w-12 h-12 animate-bounce opacity-50 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <svg class="w-10 h-10 animate-bounce opacity-50 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         Waiting for players to join...
                     </div>
                 </div>
@@ -733,25 +742,25 @@
     </div>
 
     <!-- Host Question -->
-    <div id="screen-host-question" class="screen-container p-6">
-        <div class="max-w-6xl w-full mx-auto h-full flex flex-col gap-5 pt-6 sm:pt-2">
-            <div class="flex justify-between items-center">
-                <div class="bento-card px-4 py-2 text-xs font-semibold text-slate-300">
+    <div id="screen-host-question" class="screen-container p-3 sm:p-6 overflow-y-auto">
+        <div class="max-w-6xl w-full mx-auto h-full flex flex-col gap-3 sm:gap-5 pt-8 sm:pt-2">
+            <div class="flex justify-between items-center shrink-0">
+                <div class="bento-card px-3.5 py-1.5 text-xs font-semibold text-slate-300">
                     PIN: <span id="host-in-game-code" class="text-yellow-300 tracking-wider ml-1 font-bold"></span>
                 </div>
-                <div class="bento-card px-5 py-2 text-xs font-bold text-yellow-300" id="host-question-counter">Q 1 / 10</div>
+                <div class="bento-card px-4 py-1.5 text-xs font-bold text-yellow-300" id="host-question-counter">Q 1 / 10</div>
             </div>
             
-            <div class="bento-card p-8 md:p-12 flex-grow flex items-center justify-center text-center relative overflow-y-auto custom-scroll">
-                <h2 id="host-question-text" class="font-bold text-white leading-snug z-10 w-full" style="font-size: clamp(1.5rem, 3.4vw, 3rem); word-wrap: break-word;">Question goes here?</h2>
+            <div class="bento-card p-5 sm:p-10 flex-grow flex items-center justify-center text-center relative overflow-y-auto custom-scroll min-h-[120px]">
+                <h2 id="host-question-text" class="font-bold text-white leading-snug z-10 w-full" style="font-size: clamp(1.25rem, 3.2vw, 2.8rem); word-wrap: break-word;">Question goes here?</h2>
             </div>
             
-            <div class="flex items-center gap-5">
-                <div class="shrink-0 w-20 h-20 rounded-full bento-card flex items-center justify-center">
-                    <span id="host-timer-text" class="text-3xl font-display font-extrabold text-yellow-300 tabular-nums">10</span>
+            <div class="flex items-center gap-3 sm:gap-5 shrink-0">
+                <div class="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full bento-card flex items-center justify-center">
+                    <span id="host-timer-text" class="text-2xl sm:text-3xl font-display font-extrabold text-yellow-300 tabular-nums">10</span>
                 </div>
-                <div class="flex-grow bento-card p-4">
-                    <div class="timer-track mb-2 relative z-10"><div id="host-timer-bar" class="timer-fill w-full"></div></div>
+                <div class="flex-grow bento-card p-3 sm:p-4">
+                    <div class="timer-track mb-1.5 relative z-10"><div id="host-timer-bar" class="timer-fill w-full"></div></div>
                     <div class="flex justify-between text-xs font-semibold text-slate-300 relative z-10">
                         <span>Time Remaining</span>
                         <span id="host-answer-count" class="text-yellow-300">0 Answers</span>
@@ -759,66 +768,66 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 shrink-0">
-                <div class="ans-btn ans-red p-5 flex items-center">
-                    <span class="ans-choice-symbol mr-4"><svg class="shape-icon" viewBox="0 0 24 24"><polygon points="12 2 22 20 2 20"/></svg></span>
-                    <span class="text-lg md:text-xl font-bold text-white break-words" id="host-ans-0">Answer 1</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-4 shrink-0">
+                <div class="ans-btn ans-red p-3.5 sm:p-5 flex items-center min-h-0">
+                    <span class="ans-choice-symbol mr-3"><svg class="shape-icon" viewBox="0 0 24 24"><polygon points="12 2 22 20 2 20"/></svg></span>
+                    <span class="text-base sm:text-xl font-bold text-white break-words" id="host-ans-0">Answer 1</span>
                 </div>
-                <div class="ans-btn ans-blue p-5 flex items-center">
-                    <span class="ans-choice-symbol mr-4"><svg class="shape-icon" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/></svg></span>
-                    <span class="text-lg md:text-xl font-bold text-white break-words" id="host-ans-1">Answer 2</span>
+                <div class="ans-btn ans-blue p-3.5 sm:p-5 flex items-center min-h-0">
+                    <span class="ans-choice-symbol mr-3"><svg class="shape-icon" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/></svg></span>
+                    <span class="text-base sm:text-xl font-bold text-white break-words" id="host-ans-1">Answer 2</span>
                 </div>
-                <div class="ans-btn ans-yellow p-5 flex items-center">
-                    <span class="ans-choice-symbol mr-4"><svg class="shape-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></span>
-                    <span class="text-lg md:text-xl font-bold text-white break-words" id="host-ans-2">Answer 3</span>
+                <div class="ans-btn ans-yellow p-3.5 sm:p-5 flex items-center min-h-0">
+                    <span class="ans-choice-symbol mr-3"><svg class="shape-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></span>
+                    <span class="text-base sm:text-xl font-bold text-white break-words" id="host-ans-2">Answer 3</span>
                 </div>
-                <div class="ans-btn ans-green p-5 flex items-center">
-                    <span class="ans-choice-symbol mr-4"><svg class="shape-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg></span>
-                    <span class="text-lg md:text-xl font-bold text-white break-words" id="host-ans-3">Answer 4</span>
+                <div class="ans-btn ans-green p-3.5 sm:p-5 flex items-center min-h-0">
+                    <span class="ans-choice-symbol mr-3"><svg class="shape-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg></span>
+                    <span class="text-base sm:text-xl font-bold text-white break-words" id="host-ans-3">Answer 4</span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Host Reveal -->
-    <div id="screen-host-reveal" class="screen-container p-6 justify-center items-center">
-        <div class="max-w-4xl w-full flex flex-col gap-6 text-center">
+    <div id="screen-host-reveal" class="screen-container screen-scroll p-4 sm:p-6 justify-center items-center">
+        <div class="max-w-4xl w-full flex flex-col gap-5 text-center my-auto shrink-0 pt-6 sm:pt-0">
             <h2 class="eyebrow text-emerald-300">Correct Answer</h2>
-            <div class="bento-card p-10 relative overflow-hidden flex flex-col items-center justify-center">
-                <div id="host-correct-answer" class="text-3xl md:text-5xl font-extrabold text-white relative z-10 w-full" style="word-wrap: break-word;">Answer Text Here</div>
-                <div id="host-correct-ref" class="mt-4 px-5 py-1.5 bg-yellow-400/15 border border-yellow-300/40 rounded-full text-sm md:text-base font-semibold text-yellow-200 relative z-10 flex items-center gap-2">
+            <div class="bento-card p-6 sm:p-10 relative flex flex-col items-center justify-center shrink-0">
+                <div id="host-correct-answer" class="text-2xl sm:text-5xl font-extrabold text-white relative z-10 w-full" style="word-wrap: break-word;">Answer Text Here</div>
+                <div id="host-correct-ref" class="mt-4 px-4 py-1.5 bg-yellow-400/15 border border-yellow-300/40 rounded-full text-xs sm:text-base font-semibold text-yellow-200 relative z-10 flex items-center gap-2">
                     📖 <span id="host-correct-ref-text">Reference</span>
                 </div>
             </div>
             
-            <div class="grid grid-cols-4 gap-4 md:gap-8 max-w-3xl mx-auto w-full mt-2">
-                <div class="flex flex-col items-center gap-2">
-                    <div class="w-full ans-btn ans-red aspect-square flex items-center justify-center"><svg class="w-9 h-9 md:w-11 md:h-11 fill-white" viewBox="0 0 24 24"><polygon points="12 2 22 20 2 20"/></svg></div>
-                    <span class="text-2xl font-bold text-white tabular-nums" id="host-count-0">0</span>
+            <div class="grid grid-cols-4 gap-3 sm:gap-8 max-w-2xl mx-auto w-full shrink-0">
+                <div class="flex flex-col items-center gap-1.5">
+                    <div class="w-full ans-btn ans-red aspect-square min-h-0 p-2 flex items-center justify-center"><svg class="w-7 h-7 sm:w-10 sm:h-10 fill-white" viewBox="0 0 24 24"><polygon points="12 2 22 20 2 20"/></svg></div>
+                    <span class="text-lg sm:text-2xl font-bold text-white tabular-nums" id="host-count-0">0</span>
                 </div>
-                <div class="flex flex-col items-center gap-2">
-                    <div class="w-full ans-btn ans-blue aspect-square flex items-center justify-center"><svg class="w-9 h-9 md:w-11 md:h-11 fill-white" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/></svg></div>
-                    <span class="text-2xl font-bold text-white tabular-nums" id="host-count-1">0</span>
+                <div class="flex flex-col items-center gap-1.5">
+                    <div class="w-full ans-btn ans-blue aspect-square min-h-0 p-2 flex items-center justify-center"><svg class="w-7 h-7 sm:w-10 sm:h-10 fill-white" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/></svg></div>
+                    <span class="text-lg sm:text-2xl font-bold text-white tabular-nums" id="host-count-1">0</span>
                 </div>
-                <div class="flex flex-col items-center gap-2">
-                    <div class="w-full ans-btn ans-yellow aspect-square flex items-center justify-center"><svg class="w-9 h-9 md:w-11 md:h-11 fill-white" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></div>
-                    <span class="text-2xl font-bold text-white tabular-nums" id="host-count-2">0</span>
+                <div class="flex flex-col items-center gap-1.5">
+                    <div class="w-full ans-btn ans-yellow aspect-square min-h-0 p-2 flex items-center justify-center"><svg class="w-7 h-7 sm:w-10 sm:h-10 fill-white" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></div>
+                    <span class="text-lg sm:text-2xl font-bold text-white tabular-nums" id="host-count-2">0</span>
                 </div>
-                <div class="flex flex-col items-center gap-2">
-                    <div class="w-full ans-btn ans-green aspect-square flex items-center justify-center"><svg class="w-9 h-9 md:w-11 md:h-11 fill-white" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg></div>
-                    <span class="text-2xl font-bold text-white tabular-nums" id="host-count-3">0</span>
+                <div class="flex flex-col items-center gap-1.5">
+                    <div class="w-full ans-btn ans-green aspect-square min-h-0 p-2 flex items-center justify-center"><svg class="w-7 h-7 sm:w-10 sm:h-10 fill-white" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg></div>
+                    <span class="text-lg sm:text-2xl font-bold text-white tabular-nums" id="host-count-3">0</span>
                 </div>
             </div>
 
-            <button onclick="hostNextQuestion()" class="mx-auto mt-2 px-14 py-4 btn-primary rounded-2xl text-lg font-bold w-full md:w-auto">
-                Next Question <svg class="inline w-5 h-5 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+            <button onclick="hostNextQuestion()" class="mx-auto mt-1 px-12 py-3.5 sm:py-4 btn-primary rounded-2xl text-base sm:text-lg font-bold w-full sm:w-auto shrink-0">
+                Next Question <svg class="inline w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
             </button>
         </div>
     </div>
 
     <!-- Host Leaderboard (Single-Screen Shrinking Podium + Full Standings Drawer) -->
-    <div id="screen-host-leaderboard" class="screen-container p-3 sm:p-5 relative">
-        <main id="host-leaderboard-main" class="max-w-6xl w-full h-full mx-auto flex flex-col gap-3 relative z-10 pt-5 sm:pt-2 overflow-hidden">
+    <div id="screen-host-leaderboard" class="screen-container p-2.5 sm:p-5 relative">
+        <main id="host-leaderboard-main" class="max-w-6xl w-full h-full mx-auto flex flex-col gap-2.5 relative z-10 pt-8 sm:pt-2 overflow-hidden">
             <header class="text-center shrink-0 flex flex-col items-center">
                 <div class="flex items-center gap-3">
                     <span class="eyebrow">Final Results</span>
@@ -826,60 +835,60 @@
                         Skip Reveal Wait
                     </button>
                 </div>
-                <h1 id="host-lb-title" class="font-display text-2xl sm:text-4xl font-extrabold text-white tracking-tight transition-all duration-500">Championship Podium & Standings</h1>
-                <p id="leaderboard-announcement" class="mt-0.5 min-h-7 text-base sm:text-xl font-bold text-yellow-200 px-4 py-0.5 rounded-full" aria-live="polite">Get ready for the final results…</p>
+                <h1 id="host-lb-title" class="font-display text-xl sm:text-4xl font-extrabold text-white tracking-tight transition-all duration-500">Championship Podium & Standings</h1>
+                <p id="leaderboard-announcement" class="mt-0.5 min-h-6 text-sm sm:text-xl font-bold text-yellow-200 px-3 py-0.5 rounded-full" aria-live="polite">Get ready for the final results…</p>
             </header>
 
             <!-- Top 3 Podium (Starts Tall, Shrinks 5s After 1st Place Reveal) -->
             <section aria-label="Top three players" class="w-full podium-section-wrapper shrink-0">
-                <div class="w-full max-w-4xl mx-auto flex items-end justify-center gap-3 sm:gap-6">
+                <div class="w-full max-w-4xl mx-auto flex items-end justify-center gap-2 sm:gap-6">
                     <!-- Rank 2 -->
                     <div id="podium-2" class="podium-item w-1/3 flex flex-col items-center order-1 relative">
-                        <div class="podium-label text-xs font-semibold text-slate-300 mb-1.5 text-center">🥈 2nd Place</div>
-                        <div id="podium-2-avatar" class="podium-avatar w-14 h-14 sm:w-20 sm:h-20 rounded-full mb-2 bg-slate-800 border-2 border-slate-200 overflow-hidden"></div>
-                        <div id="podium-2-name" class="podium-name font-bold text-sm sm:text-lg mb-0.5 text-white truncate w-full text-center">Name</div>
-                        <div id="podium-2-score" class="podium-score font-semibold text-slate-100 mb-2.5 bg-slate-400/20 border border-slate-300/30 px-2.5 py-0.5 rounded-full text-xs">0 PTS</div>
-                        <div class="podium-pedestal podium-2-pedestal w-full bento-card !rounded-b-none flex justify-center pt-3 bg-gradient-to-b from-slate-300/20 to-transparent">
-                            <span class="text-3xl sm:text-5xl font-display font-extrabold text-slate-200/70">2</span>
+                        <div class="podium-label text-[11px] sm:text-xs font-semibold text-slate-300 mb-1 text-center">🥈 2nd Place</div>
+                        <div id="podium-2-avatar" class="podium-avatar w-12 h-12 sm:w-20 sm:h-20 rounded-full mb-1.5 bg-slate-800 border-2 border-slate-200 overflow-hidden"></div>
+                        <div id="podium-2-name" class="podium-name font-bold text-xs sm:text-lg mb-0.5 text-white truncate w-full text-center">Name</div>
+                        <div id="podium-2-score" class="podium-score font-semibold text-slate-100 mb-2 bg-slate-400/20 border border-slate-300/30 px-2 py-0.5 rounded-full text-[11px] sm:text-xs">0 PTS</div>
+                        <div class="podium-pedestal podium-2-pedestal w-full bento-card !rounded-b-none flex justify-center pt-2.5 bg-gradient-to-b from-slate-300/20 to-transparent">
+                            <span class="text-2xl sm:text-5xl font-display font-extrabold text-slate-200/70">2</span>
                         </div>
                     </div>
 
                     <!-- Rank 1 -->
                     <div id="podium-1" class="podium-item podium-1 w-1/3 flex flex-col items-center order-2 relative z-20">
-                        <div class="podium-label text-xs sm:text-sm font-bold text-yellow-300 mb-1.5 flex items-center gap-1 text-center">
+                        <div class="podium-label text-xs sm:text-sm font-bold text-yellow-300 mb-1 flex items-center gap-1 text-center">
                             👑 1st Place
                         </div>
-                        <div id="podium-1-avatar" class="podium-avatar w-18 h-18 sm:w-24 sm:h-24 rounded-full mb-2 ring-3 ring-yellow-300 bg-slate-800 overflow-hidden"></div>
-                        <div id="podium-1-name" class="podium-name font-bold text-base sm:text-xl mb-0.5 text-yellow-100 truncate w-full text-center">Name</div>
-                        <div id="podium-1-score" class="podium-score font-bold text-yellow-200 mb-3 bg-yellow-500/20 px-3 py-0.5 rounded-full border border-yellow-300/50 text-xs">0 PTS</div>
-                        <div class="podium-pedestal podium-1-pedestal w-full bento-card !rounded-b-none flex justify-center pt-4 bg-gradient-to-b from-yellow-400/30 to-transparent">
-                            <span class="text-4xl sm:text-6xl font-display font-extrabold text-yellow-300">1</span>
+                        <div id="podium-1-avatar" class="podium-avatar w-16 h-16 sm:w-24 sm:h-24 rounded-full mb-1.5 ring-3 ring-yellow-300 bg-slate-800 overflow-hidden"></div>
+                        <div id="podium-1-name" class="podium-name font-bold text-sm sm:text-xl mb-0.5 text-yellow-100 truncate w-full text-center">Name</div>
+                        <div id="podium-1-score" class="podium-score font-bold text-yellow-200 mb-2.5 bg-yellow-500/20 px-2.5 py-0.5 rounded-full border border-yellow-300/50 text-xs">0 PTS</div>
+                        <div class="podium-pedestal podium-1-pedestal w-full bento-card !rounded-b-none flex justify-center pt-3 bg-gradient-to-b from-yellow-400/30 to-transparent">
+                            <span class="text-3xl sm:text-6xl font-display font-extrabold text-yellow-300">1</span>
                         </div>
                     </div>
 
                     <!-- Rank 3 -->
                     <div id="podium-3" class="podium-item w-1/3 flex flex-col items-center order-3 relative">
-                        <div class="podium-label text-xs font-semibold text-amber-300 mb-1.5 text-center">🥉 3rd Place</div>
-                        <div id="podium-3-avatar" class="podium-avatar w-12 h-12 sm:w-16 sm:h-16 rounded-full mb-2 bg-slate-800 border-2 border-amber-400 overflow-hidden"></div>
-                        <div id="podium-3-name" class="podium-name font-bold text-sm sm:text-base mb-0.5 text-white truncate w-full text-center">Name</div>
-                        <div id="podium-3-score" class="podium-score font-semibold text-amber-200 mb-2.5 bg-amber-500/20 border border-amber-400/30 px-2.5 py-0.5 rounded-full text-xs">0 PTS</div>
-                        <div class="podium-pedestal podium-3-pedestal w-full bento-card !rounded-b-none flex justify-center pt-3 bg-gradient-to-b from-amber-500/20 to-transparent">
-                            <span class="text-2xl sm:text-4xl font-display font-extrabold text-amber-300/75">3</span>
+                        <div class="podium-label text-[11px] sm:text-xs font-semibold text-amber-300 mb-1 text-center">🥉 3rd Place</div>
+                        <div id="podium-3-avatar" class="podium-avatar w-11 h-11 sm:w-16 sm:h-16 rounded-full mb-1.5 bg-slate-800 border-2 border-amber-400 overflow-hidden"></div>
+                        <div id="podium-3-name" class="podium-name font-bold text-xs sm:text-base mb-0.5 text-white truncate w-full text-center">Name</div>
+                        <div id="podium-3-score" class="podium-score font-semibold text-amber-200 mb-2 bg-amber-500/20 border border-amber-400/30 px-2 py-0.5 rounded-full text-[11px] sm:text-xs">0 PTS</div>
+                        <div class="podium-pedestal podium-3-pedestal w-full bento-card !rounded-b-none flex justify-center pt-2 bg-gradient-to-b from-amber-500/20 to-transparent">
+                            <span class="text-xl sm:text-4xl font-display font-extrabold text-amber-300/75">3</span>
                         </div>
                     </div>
                 </div>
             </section>
 
             <!-- Full Room Leaderboard Drawer (Reveals on Same Screen After 5s Shrink) -->
-            <section id="host-full-standings-section" class="bento-card p-3.5 sm:p-5 w-full full-standings-panel standings-hidden" aria-label="Full player standings">
-                <div class="flex flex-wrap justify-between items-center gap-2 mb-2.5 relative z-10 border-b border-white/10 pb-2 shrink-0">
-                    <div class="flex items-center gap-3">
-                        <h2 class="text-sm sm:text-base font-display font-bold text-white">Full Room Leaderboard</h2>
+            <section id="host-full-standings-section" class="bento-card p-3 sm:p-5 w-full full-standings-panel standings-hidden" aria-label="Full player standings">
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-2 relative z-10 border-b border-white/10 pb-2 shrink-0">
+                    <div class="flex items-center gap-2.5">
+                        <h2 class="text-xs sm:text-base font-display font-bold text-white">Full Room Leaderboard</h2>
                         <span class="bg-yellow-400/15 border border-yellow-400/30 text-yellow-200 font-bold px-2.5 py-0.5 rounded-full text-[11px]">
                             <span id="host-total-players-ranked">0</span> Players
                         </span>
                     </div>
-                    <button onclick="goHomeAndClean()" class="px-4 py-1.5 btn-primary rounded-lg font-bold text-xs">
+                    <button onclick="goHomeAndClean()" class="px-3.5 py-1.5 btn-primary rounded-lg font-bold text-xs">
                         Back to Home
                     </button>
                 </div>
@@ -902,56 +911,56 @@
     </div>
 
     <!-- Player Join -->
-    <div id="screen-player-join" class="screen-container p-4 items-center justify-center">
-        <button onclick="goHomeAndClean()" class="absolute top-3 left-3 p-3 btn-secondary rounded-full z-20">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+    <div id="screen-player-join" class="screen-container p-3 sm:p-4 items-center justify-center">
+        <button onclick="goHomeAndClean()" class="fixed top-2.5 left-3 p-2.5 btn-secondary rounded-full z-50">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
         </button>
-        <div class="bento-card p-5 md:p-7 w-full max-w-md flex flex-col h-[90vh] md:h-[86vh] shadow-2xl mt-6">
-            <h2 class="font-display text-xl font-bold text-center text-white mb-4 relative z-10">Join Game</h2>
+        <div class="bento-card p-4 sm:p-6 w-full max-w-md flex flex-col h-[calc(100dvh-3.5rem)] max-h-[740px] shadow-2xl mt-9 sm:mt-6">
+            <h2 class="font-display text-lg sm:text-xl font-bold text-center text-white mb-3 relative z-10 shrink-0">Join Game</h2>
             
-            <div class="grid grid-cols-2 gap-3 mb-4 relative z-10">
+            <div class="grid grid-cols-2 gap-2.5 mb-3 relative z-10 shrink-0">
                 <div>
-                    <label for="join-code" class="block text-xs font-semibold text-slate-300 mb-1">Room PIN</label>
-                    <input type="text" id="join-code" placeholder="PIN" aria-label="Room PIN" autocomplete="off" class="input-premium w-full p-2.5 text-center text-lg font-bold rounded-xl uppercase tracking-wider" maxlength="5">
+                    <label for="join-code" class="block text-[11px] font-semibold text-slate-300 mb-1">Room PIN</label>
+                    <input type="text" id="join-code" placeholder="PIN" aria-label="Room PIN" autocomplete="off" class="input-premium w-full p-2 text-center text-base sm:text-lg font-bold rounded-xl uppercase tracking-wider" maxlength="5">
                 </div>
                 <div>
-                    <label for="join-name" class="block text-xs font-semibold text-slate-300 mb-1">Your Name</label>
-                    <input type="text" id="join-name" placeholder="Nickname" aria-label="Your nickname" autocomplete="nickname" class="input-premium w-full p-2.5 text-center text-base font-semibold rounded-xl" maxlength="15">
+                    <label for="join-name" class="block text-[11px] font-semibold text-slate-300 mb-1">Your Name</label>
+                    <input type="text" id="join-name" placeholder="Nickname" aria-label="Your nickname" autocomplete="nickname" class="input-premium w-full p-2 text-center text-sm sm:text-base font-semibold rounded-xl" maxlength="15">
                 </div>
             </div>
             
-            <div class="flex items-center justify-between bg-indigo-950/70 border border-yellow-400/30 rounded-2xl px-3.5 py-2 mb-3 relative z-10">
-                <div class="flex items-center gap-3">
-                    <div id="selected-hero-preview" class="w-10 h-10 rounded-full border border-yellow-300 overflow-hidden shrink-0"></div>
+            <div class="flex items-center justify-between bg-indigo-950/70 border border-yellow-400/30 rounded-2xl px-3 py-2 mb-2.5 relative z-10 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div id="selected-hero-preview" class="w-9 h-9 rounded-full border border-yellow-300 overflow-hidden shrink-0"></div>
                     <div>
                         <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-300">Selected Character</div>
-                        <div id="selected-hero-name" class="text-sm font-bold text-yellow-200">King David</div>
+                        <div id="selected-hero-name" class="text-xs sm:text-sm font-bold text-yellow-200">King David</div>
                     </div>
                 </div>
-                <span class="text-xs font-medium text-slate-300">36 Avatars</span>
+                <span class="text-[11px] font-medium text-slate-300">36 Avatars</span>
             </div>
 
-            <div class="flex-grow flex flex-col mb-4 min-h-0 relative z-10">
-                <div class="bento-card p-3 flex-grow bg-black/30 border-white/10 overflow-hidden">
-                    <div id="avatar-grid" class="grid grid-cols-4 sm:grid-cols-5 gap-3 overflow-y-auto custom-scroll content-start h-full pr-1 py-1">
+            <div class="flex-grow flex flex-col mb-3 min-h-0 relative z-10">
+                <div class="bento-card p-2.5 flex-grow bg-black/30 border-white/10 overflow-hidden flex flex-col min-h-0">
+                    <div id="avatar-grid" class="grid grid-cols-4 sm:grid-cols-5 gap-2.5 overflow-y-auto custom-scroll content-start flex-grow pr-1 py-1">
                         <!-- 36 Storybook Avatars Injected Here -->
                     </div>
                 </div>
             </div>
-            <button onclick="playerJoinRoom()" id="btn-join-game" class="w-full py-3.5 btn-primary rounded-xl text-base font-bold mt-auto relative z-10">Join Game</button>
-            <p id="join-status" class="min-h-4 mt-1.5 text-center text-xs text-slate-300 relative z-10" role="status" aria-live="polite"></p>
+            <button onclick="playerJoinRoom()" id="btn-join-game" class="w-full py-3.5 btn-primary rounded-xl text-base font-bold mt-auto relative z-10 shrink-0">Join Game</button>
+            <p id="join-status" class="min-h-4 mt-1 text-center text-xs text-slate-300 relative z-10 shrink-0" role="status" aria-live="polite"></p>
         </div>
     </div>
 
     <!-- Player Lobby -->
-    <div id="screen-player-lobby" class="screen-container justify-center items-center p-6 text-center">
-        <div class="max-w-xs w-full">
+    <div id="screen-player-lobby" class="screen-container screen-scroll justify-center items-center p-6 text-center">
+        <div class="max-w-xs w-full my-auto shrink-0">
             <div class="inline-flex items-center justify-center bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-3.5 py-1 rounded-full font-semibold text-xs mb-5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-ping"></span> Connected
             </div>
             <h2 class="font-display text-3xl font-bold text-white mb-1">You're In!</h2>
             <p class="text-slate-300 text-sm mb-7">Look for your avatar on the host screen.</p>
-            <div class="bento-card py-8 px-6 flex flex-col items-center relative overflow-hidden">
+            <div class="bento-card py-8 px-6 flex flex-col items-center relative">
                 <div id="player-avatar-display" class="w-28 h-28 rounded-full mb-4 ring-3 ring-yellow-400 relative z-10 bg-slate-800 overflow-hidden"></div>
                 <div id="player-nickname-display" class="text-xl font-bold text-white truncate w-full relative z-10">Nickname</div>
                 <div id="player-hero-title" class="text-xs font-medium text-yellow-300 mt-1 relative z-10">Storybook Hero</div>
@@ -995,8 +1004,8 @@
     </div>
 
     <!-- Player Reveal -->
-    <div id="screen-player-reveal" class="screen-container p-6 justify-center items-center transition-colors duration-500">
-        <div id="player-reveal-content" class="text-center w-full max-w-sm bento-card p-8 shadow-2xl relative overflow-hidden transition-all duration-300">
+    <div id="screen-player-reveal" class="screen-container screen-scroll p-4 sm:p-6 justify-center items-center transition-colors duration-500">
+        <div id="player-reveal-content" class="text-center w-full max-w-sm bento-card p-6 sm:p-8 shadow-2xl relative overflow-hidden transition-all duration-300 my-auto shrink-0">
             <div id="reveal-glow" class="absolute inset-0 opacity-20 pointer-events-none"></div>
             <div id="reveal-icon" class="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 relative z-10 border-2"></div>
             
@@ -1016,63 +1025,67 @@
         </div>
     </div>
 
-    <!-- Player Final Result & Analytics Sheet -->
-    <div id="screen-player-leaderboard" class="screen-container screen-scroll custom-scroll p-4 md:p-6">
-        <main class="max-w-4xl w-full min-h-full mx-auto py-2 md:py-5 flex flex-col gap-5 pt-8">
-            <section class="bento-card p-5 md:p-7 text-center relative overflow-hidden">
-                <div class="eyebrow mb-2">Match Summary & Analytics</div>
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-5">
-                    <div class="relative w-20 h-20 shrink-0">
-                        <div id="player-final-avatar" class="w-full h-full rounded-full ring-3 ring-yellow-400 relative z-10 bg-slate-800 overflow-hidden"></div>
+    <!-- Player Final Result & Analytics Sheet (Fixed Mobile Layout - No Clipping) -->
+    <div id="screen-player-leaderboard" class="screen-container screen-scroll custom-scroll p-3 sm:p-6">
+        <main class="max-w-4xl w-full mx-auto pt-10 pb-12 flex flex-col gap-3.5 sm:gap-5">
+            <!-- Personal Summary & 6-Stat Telemetry Card -->
+            <section class="bento-card p-4 sm:p-6 text-center relative shrink-0">
+                <div class="eyebrow mb-2.5">Match Summary & Analytics</div>
+                
+                <!-- Compact Horizontal Profile Header for Mobile & Desktop -->
+                <div class="flex items-center justify-center gap-3.5 mb-4 bg-black/25 p-3 rounded-2xl border border-white/10">
+                    <div class="relative w-14 h-14 sm:w-20 sm:h-20 shrink-0">
+                        <div id="player-final-avatar" class="w-full h-full rounded-full ring-2 sm:ring-3 ring-yellow-400 relative z-10 bg-slate-800 overflow-hidden"></div>
                     </div>
-                    <div class="text-center sm:text-left">
-                        <p id="player-final-rank" class="text-lg md:text-xl font-bold text-white">Rank</p>
-                        <p id="player-final-rank-sub" class="text-xs text-slate-300 mb-1">Position</p>
-                        <div class="inline-flex items-baseline gap-1.5 bg-yellow-400/15 border border-yellow-400/30 px-3.5 py-1 rounded-full">
-                            <span id="player-final-score" class="text-2xl font-display font-extrabold text-yellow-300 tabular-nums">0</span>
-                            <span class="text-xs font-bold text-yellow-200 uppercase">Total Pts</span>
+                    <div class="text-left min-w-0 flex-grow">
+                        <p id="player-final-rank" class="text-sm sm:text-xl font-bold text-white leading-tight break-words">Rank</p>
+                        <p id="player-final-rank-sub" class="text-xs text-slate-300 mt-0.5 truncate">Position</p>
+                        <div class="inline-flex items-baseline gap-1.5 bg-yellow-400/15 border border-yellow-400/30 px-3 py-0.5 rounded-full mt-1.5">
+                            <span id="player-final-score" class="text-lg sm:text-2xl font-display font-extrabold text-yellow-300 tabular-nums">0</span>
+                            <span class="text-[10px] sm:text-xs font-bold text-yellow-200 uppercase">Total Pts</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Player Personal Performance Telemetry Grid -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 text-left relative z-10">
-                    <div class="bg-black/35 p-3 rounded-xl border border-white/10">
-                        <div class="text-[11px] font-semibold text-slate-400">⚡ Fastest Answer</div>
-                        <div id="p-stat-fastest" class="text-base font-extrabold text-emerald-300 mt-0.5 tabular-nums">—</div>
+                <!-- All 6 Telemetry Stats in a Clean 3x2 Grid on Mobile (6x1 on Desktop) -->
+                <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 text-left relative z-10">
+                    <div class="bg-black/35 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-[10px] sm:text-[11px] font-semibold text-slate-400 truncate">⚡ Fastest</div>
+                        <div id="p-stat-fastest" class="text-sm sm:text-base font-extrabold text-emerald-300 mt-0.5 tabular-nums">—</div>
                     </div>
-                    <div class="bg-black/35 p-3 rounded-xl border border-white/10">
-                        <div class="text-[11px] font-semibold text-slate-400">🐢 Slowest Answer</div>
-                        <div id="p-stat-slowest" class="text-base font-extrabold text-amber-300 mt-0.5 tabular-nums">—</div>
+                    <div class="bg-black/35 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-[10px] sm:text-[11px] font-semibold text-slate-400 truncate">🐢 Slowest</div>
+                        <div id="p-stat-slowest" class="text-sm sm:text-base font-extrabold text-amber-300 mt-0.5 tabular-nums">—</div>
                     </div>
-                    <div class="bg-black/35 p-3 rounded-xl border border-white/10">
-                        <div class="text-[11px] font-semibold text-slate-400">🎯 Avg Speed Pts</div>
-                        <div id="p-stat-avg-pts" class="text-base font-extrabold text-yellow-300 mt-0.5 tabular-nums">0 pts</div>
+                    <div class="bg-black/35 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-[10px] sm:text-[11px] font-semibold text-slate-400 truncate">🎯 Avg Pts</div>
+                        <div id="p-stat-avg-pts" class="text-sm sm:text-base font-extrabold text-yellow-300 mt-0.5 tabular-nums">0 pts</div>
                     </div>
-                    <div class="bg-black/35 p-3 rounded-xl border border-white/10">
-                        <div class="text-[11px] font-semibold text-slate-400">📊 Accuracy</div>
-                        <div id="p-stat-accuracy" class="text-base font-extrabold text-sky-300 mt-0.5 tabular-nums">0%</div>
+                    <div class="bg-black/35 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-[10px] sm:text-[11px] font-semibold text-slate-400 truncate">📊 Accuracy</div>
+                        <div id="p-stat-accuracy" class="text-sm sm:text-base font-extrabold text-sky-300 mt-0.5 tabular-nums">0%</div>
                     </div>
-                    <div class="bg-black/35 p-3 rounded-xl border border-white/10">
-                        <div class="text-[11px] font-semibold text-slate-400">🔥 Best Streak</div>
-                        <div id="p-stat-streak" class="text-base font-extrabold text-orange-300 mt-0.5 tabular-nums">0</div>
+                    <div class="bg-black/35 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-[10px] sm:text-[11px] font-semibold text-slate-400 truncate">🔥 Streak</div>
+                        <div id="p-stat-streak" class="text-sm sm:text-base font-extrabold text-orange-300 mt-0.5 tabular-nums">0</div>
                     </div>
-                    <div class="bg-black/35 p-3 rounded-xl border border-white/10">
-                        <div class="text-[11px] font-semibold text-slate-400">✅ Correct</div>
-                        <div id="p-stat-correct" class="text-base font-extrabold text-white mt-0.5 tabular-nums">0 / 10</div>
+                    <div class="bg-black/35 p-2.5 rounded-xl border border-white/10">
+                        <div class="text-[10px] sm:text-[11px] font-semibold text-slate-400 truncate">✅ Correct</div>
+                        <div id="p-stat-correct" class="text-sm sm:text-base font-extrabold text-white mt-0.5 tabular-nums">0 / 10</div>
                     </div>
                 </div>
             </section>
 
-            <section class="bento-card p-4 sm:p-6" aria-label="Final leaderboard">
-                <div class="flex flex-wrap justify-between items-center gap-3 mb-3 relative z-10 border-b border-white/10 pb-2.5">
+            <!-- Full Room Leaderboard Sheet (Expands Naturally, Never Clips) -->
+            <section class="bento-card p-3.5 sm:p-6 shrink-0" aria-label="Final leaderboard">
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-3 relative z-10 border-b border-white/10 pb-2">
                     <div>
-                        <h2 class="text-base sm:text-lg font-display font-bold text-white">Full Room Leaderboard Sheet</h2>
-                        <p class="text-xs text-slate-300">Fastest time, slowest time, average points, and total score</p>
+                        <h2 class="text-sm sm:text-lg font-display font-bold text-white">Full Room Leaderboard Sheet</h2>
+                        <p class="text-[11px] sm:text-xs text-slate-300">Fastest time, slowest time, average points, and total score</p>
                     </div>
                 </div>
 
-                <!-- Column Headers -->
+                <!-- Column Headers (Desktop) -->
                 <div class="leaderboard-header-grid relative z-10">
                     <span class="text-center">Rank</span>
                     <span></span>
@@ -1083,11 +1096,11 @@
                     <span class="text-right">Total Score</span>
                 </div>
 
-                <ol id="player-final-leaderboard" class="flex flex-col gap-2 relative z-10"></ol>
+                <ol id="player-final-leaderboard" class="flex flex-col gap-2.5 relative z-10"></ol>
             </section>
 
-            <div class="text-center pb-6">
-                <button onclick="goHomeAndClean()" class="px-8 py-3.5 btn-primary rounded-xl font-bold text-sm">Play Again</button>
+            <div class="text-center pt-1 pb-4 shrink-0">
+                <button onclick="goHomeAndClean()" class="w-full sm:w-auto px-10 py-3.5 btn-primary rounded-xl font-bold text-sm">Play Again</button>
             </div>
         </main>
     </div>
@@ -1176,7 +1189,6 @@
                 osc.stop(now + duration + 0.02);
             },
 
-            // Helper: Synthesizes a single crisp, bright Roman Brass Trumpet Note
             playBrassNote(freq, startOffset, duration, vol = 0.16) {
                 if (!this.ctx) return;
                 const now = this.ctx.currentTime + startOffset;
@@ -1191,12 +1203,10 @@
                 osc2.type = 'sawtooth';
                 subOsc.type = 'triangle';
 
-                // Slight detune for a rich, imperial brass ensemble chorus
                 osc1.frequency.setValueAtTime(freq, now);
                 osc2.frequency.setValueAtTime(freq * 1.004, now);
                 subOsc.frequency.setValueAtTime(freq * 0.5, now);
 
-                // Brass filter "blare" envelope (opens brightly on attack, then settles warm)
                 filter.type = 'lowpass';
                 filter.Q.setValueAtTime(2.2, now);
                 filter.frequency.setValueAtTime(freq * 1.5, now);
@@ -1222,25 +1232,22 @@
                 subOsc.stop(now + duration + 0.03);
             },
 
-            // Victorious Roman Imperial Trumpet Fanfare (Caesar / Ancient Herald Style)
             shofar() {
                 if (!this.sfxEnabled) return;
                 this.init();
                 if (!this.ctx) return;
 
-                // Heraldic Trumpet Call: G4 -> C5 -> E5 -> G5 (with glorious fifth/third harmony)
                 const fanfare = [
-                    { f: 392.00, h: 196.00, t: 0.00, d: 0.14, v: 0.14 }, // G4 pickup
-                    { f: 523.25, h: 261.63, t: 0.15, d: 0.14, v: 0.15 }, // C5
-                    { f: 659.25, h: 329.63, t: 0.30, d: 0.14, v: 0.16 }, // E5
-                    { f: 783.99, h: 523.25, t: 0.46, d: 0.68, v: 0.19 }  // G5 + C5 Royal Sustained Triumph
+                    { f: 392.00, h: 196.00, t: 0.00, d: 0.14, v: 0.14 },
+                    { f: 523.25, h: 261.63, t: 0.15, d: 0.14, v: 0.15 },
+                    { f: 659.25, h: 329.63, t: 0.30, d: 0.14, v: 0.16 },
+                    { f: 783.99, h: 523.25, t: 0.46, d: 0.68, v: 0.19 }
                 ];
 
                 fanfare.forEach(note => {
                     this.playBrassNote(note.f, note.t, note.d, note.v);
                     this.playBrassNote(note.h, note.t, note.d, note.v * 0.65);
                 });
-                // Add a third harmony note (E5) on the final victorious blast
                 this.playBrassNote(659.25, 0.46, 0.68, 0.12);
             },
 
@@ -1338,7 +1345,6 @@
                     this.playBrassNote(659.25, 0.28, 0.14, 0.16);
                     this.playBrassNote(880.00, 0.42, 0.50, 0.18);
                 } else if (rank === 1) {
-                    // Grand Roman Champion Fanfare
                     this.shofar();
                     const grand = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
                     grand.forEach((f, i) => {
@@ -1347,7 +1353,6 @@
                 }
             },
 
-            // Soft Percussion Shaker/Hat for Upbeat Game Groove
             playBgmPerc(vol = 0.015) {
                 if (!this.musicEnabled || !this.ctx) return;
                 const noiseBuf = this.getNoiseBuffer();
@@ -1369,13 +1374,11 @@
                 noise.stop(now + 0.05);
             },
 
-            // Upbeat, Happy Marimba & Bass Game Show Background Music
             startBGM(mode = 'lobby') {
                 this.currentBgmMode = mode;
                 if (this.bgmInterval) clearInterval(this.bgmInterval);
                 if (!this.musicEnabled) return;
 
-                // Joyful C-Major / G-Major / F-Major Bouncy Marimba Melody (Lobby)
                 const lobbyMelody = [
                     523.25, 659.25, 783.99, 659.25, 880.00, 783.99, 659.25, 523.25,
                     587.33, 659.25, 783.99, 880.00, 783.99, 659.25, 587.33, 493.88,
@@ -1389,7 +1392,6 @@
                     174.61, 0, 130.81, 0, 196.00, 0, 130.81, 0
                 ];
 
-                // Energetic Upbeat Quiz Show Melody & Bass (Active Question)
                 const quizMelody = [
                     523.25, 0, 659.25, 783.99, 880.00, 783.99, 659.25, 523.25,
                     587.33, 0, 698.46, 880.00, 783.99, 698.46, 587.33, 493.88,
@@ -1413,7 +1415,7 @@
                         const bNote = lobbyBass[idx];
                         if (mNote > 0) {
                             this.playBgmTone(mNote, 'triangle', 0.21, 0.045);
-                            this.playBgmTone(mNote * 2, 'sine', 0.09, 0.015); // Bright marimba overtone
+                            this.playBgmTone(mNote * 2, 'sine', 0.09, 0.015);
                         }
                         if (bNote > 0) {
                             this.playBgmTone(bNote, 'sine', 0.35, 0.055);
@@ -2081,7 +2083,7 @@
         function generateQRCode(url) {
             const qrContainer = document.getElementById("qrcode");
             qrContainer.innerHTML = "";
-            try { new QRCode(qrContainer, { text: url, width: 132, height: 132, colorDark : "#1e1b4b", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
+            try { new QRCode(qrContainer, { text: url, width: 116, height: 116, colorDark : "#1e1b4b", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
             } catch(e) { qrContainer.innerHTML = "<span class='text-xs text-red-500 font-bold'>QR Error</span>"; }
         }
 
@@ -2368,8 +2370,8 @@
                     if (!existingIds.includes(p.id)) {
                         SoundEngine.playerJoin();
                         const card = document.createElement('div'); card.dataset.id = p.id;
-                        card.className = 'flex flex-col items-center bg-indigo-950/70 p-3 rounded-2xl border border-yellow-400/35 w-32 text-center shrink-0 transition-transform hover:-translate-y-1 shadow-lg';
-                        card.innerHTML = `<div class="w-16 h-16 mb-2 border-2 border-yellow-300 rounded-full overflow-hidden">${getAvatarHTML(p.avatar)}</div><div class="text-sm font-bold text-white truncate w-full">${p.name}</div><div class="text-[11px] font-medium text-yellow-200/80 truncate w-full">${getHeroName(p.avatar)}</div>`;
+                        card.className = 'flex flex-col items-center bg-indigo-950/70 p-2.5 sm:p-3 rounded-2xl border border-yellow-400/35 w-28 sm:w-32 text-center shrink-0 transition-transform hover:-translate-y-1 shadow-lg';
+                        card.innerHTML = `<div class="w-14 h-14 sm:w-16 sm:h-16 mb-1.5 border-2 border-yellow-300 rounded-full overflow-hidden">${getAvatarHTML(p.avatar)}</div><div class="text-xs sm:text-sm font-bold text-white truncate w-full">${p.name}</div><div class="text-[10px] sm:text-[11px] font-medium text-yellow-200/80 truncate w-full">${getHeroName(p.avatar)}</div>`;
                         card.style.opacity = '0'; card.style.transform = 'scale(0.8)';
                         listEl.appendChild(card);
                         setTimeout(() => { card.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'; card.style.opacity = '1'; card.style.transform = 'scale(1)'; }, 50);
@@ -2378,7 +2380,7 @@
             } else {
                 if(msg) msg.style.display = 'flex';
                 btn.disabled = true;
-                listEl.innerHTML = '<div class="w-full h-full flex flex-col items-center justify-center text-slate-400 font-medium text-sm gap-3" id="waiting-msg"><svg class="w-12 h-12 animate-bounce opacity-50 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>Waiting for players to join...</div>';
+                listEl.innerHTML = '<div class="w-full h-full flex flex-col items-center justify-center text-slate-400 font-medium text-sm gap-3" id="waiting-msg"><svg class="w-10 h-10 animate-bounce opacity-50 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>Waiting for players to join...</div>';
             }
         }
 
