@@ -31,7 +31,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Clean, minimal display class replacing ornate serif */
         .font-display {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             letter-spacing: -0.025em;
@@ -277,13 +276,35 @@
         @keyframes winner-glow { 0% { filter: drop-shadow(0 0 0 rgba(250,204,21,0)); } 50% { filter: drop-shadow(0 0 24px rgba(250,204,21,.6)); } 100% { filter: drop-shadow(0 0 8px rgba(250,204,21,.2)); } }
         #leaderboard-announcement.announcement-pop { animation: announcement-pop .42s cubic-bezier(.18,.85,.28,1.18) both; }
         @keyframes announcement-pop { from { opacity: .35; transform: translateY(8px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        .leaderboard-row { display: grid; grid-template-columns: 44px 48px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 62px; padding: 10px 14px; border: 1px solid rgba(250, 204, 21, 0.18); border-radius: 16px; background: rgba(15, 11, 33, 0.65); }
+        
+        /* Drum Roll Pulse Effect on Announcement Banner */
+        .drumroll-active {
+            animation: drumroll-shake 0.14s infinite alternate ease-in-out !important;
+            color: #fde047 !important;
+        }
+        @keyframes drumroll-shake {
+            0% { transform: scale(1) translateX(-1.5px); }
+            100% { transform: scale(1.03) translateX(1.5px); }
+        }
+
+        .leaderboard-row { display: grid; grid-template-columns: 52px 48px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 62px; padding: 10px 14px; border: 1px solid rgba(250, 204, 21, 0.18); border-radius: 16px; background: rgba(15, 11, 33, 0.65); transition: transform 0.2s ease; }
+        .leaderboard-row:hover { transform: translateX(3px); }
         .leaderboard-row-avatar { width: 42px; height: 42px; overflow: hidden; border-radius: 50%; background: rgba(255,255,255,.08); border: 2px solid rgba(250, 204, 21, 0.4); }
         .leaderboard-row-avatar svg { width: 100%; height: 100%; display: block; }
-        .leaderboard-rank { color: #fde047; font-weight: 800; text-align: center; }
+        .leaderboard-rank { color: #fde047; font-weight: 800; text-align: center; font-size: 0.95rem; }
         .leaderboard-row-name { min-width: 0; overflow: hidden; color: #f8fafc; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
-        .leaderboard-points { color: #fde047; font-variant-numeric: tabular-nums; font-weight: 800; white-space: nowrap; background: rgba(234, 179, 8, 0.14); padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(250, 204, 21, 0.25); }
+        .leaderboard-points { color: #fde047; font-variant-numeric: tabular-nums; font-weight: 800; white-space: nowrap; background: rgba(234, 179, 8, 0.14); padding: 5px 12px; border-radius: 999px; border: 1px solid rgba(250, 204, 21, 0.25); }
         .top-three-row { border-color: rgba(250, 204, 21, .45); background: linear-gradient(100deg, rgba(234, 179, 8, .18), rgba(30, 27, 75, .65)); }
+        
+        .full-standings-panel {
+            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .full-standings-panel.standings-hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+
         #confetti-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 40; }
 
         .sound-pill {
@@ -316,7 +337,7 @@
             .ans-btn { flex-direction: row; justify-content: flex-start; gap: 10px; padding: 10px; text-align: left; }
             .ans-choice-symbol { width: 34px; height: 34px; padding: 6px; }
             .ans-copy { font-size: clamp(.8rem, 3.2vw, .95rem); }
-            .leaderboard-row { grid-template-columns: 32px 38px minmax(0, 1fr) auto; gap: 8px; }
+            .leaderboard-row { grid-template-columns: 40px 38px minmax(0, 1fr) auto; gap: 8px; }
             .leaderboard-row-avatar { width: 36px; height: 36px; }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -677,24 +698,30 @@
         </div>
     </div>
 
-    <!-- Host Leaderboard -->
-    <div id="screen-host-leaderboard" class="screen-container leaderboard-screen p-4 md:p-6 relative">
-        <main class="max-w-6xl w-full min-h-full mx-auto py-3 md:py-6 flex flex-col gap-8 relative z-10 pt-8">
+    <!-- Host Leaderboard (Podium + Full Standings of Everyone) -->
+    <div id="screen-host-leaderboard" class="screen-container leaderboard-screen custom-scroll p-4 md:p-6 relative">
+        <main class="max-w-6xl w-full min-h-full mx-auto py-3 md:py-6 flex flex-col gap-6 relative z-10 pt-8">
             <header class="text-center">
                 <div class="eyebrow mb-1">Final Results</div>
-                <h1 class="font-display text-3xl md:text-5xl font-extrabold text-white tracking-tight mb-2">Leaderboard</h1>
-                <p id="leaderboard-announcement" class="mt-2 min-h-8 text-lg md:text-xl font-semibold text-yellow-200" aria-live="polite">Get ready for the final results…</p>
+                <h1 class="font-display text-3xl md:text-5xl font-extrabold text-white tracking-tight mb-2">Championship Podium & Standings</h1>
+                <div class="flex flex-col items-center justify-center gap-2">
+                    <p id="leaderboard-announcement" class="mt-1 min-h-8 text-lg md:text-2xl font-bold text-yellow-200 px-4 py-1 rounded-full" aria-live="polite">Get ready for the final results…</p>
+                    <button id="btn-skip-podium" onclick="skipPodiumAnimation()" class="hidden text-xs font-semibold text-slate-300 hover:text-white underline">
+                        Skip Reveal Animation
+                    </button>
+                </div>
             </header>
 
+            <!-- Top 3 Podium -->
             <section aria-label="Top three players" class="w-full">
-                <div class="w-full max-w-5xl mx-auto flex items-end justify-center gap-2 sm:gap-4 md:gap-8 pt-4">
+                <div class="w-full max-w-5xl mx-auto flex items-end justify-center gap-2 sm:gap-4 md:gap-8 pt-2">
                     <!-- Rank 2 -->
                     <div id="podium-2" class="podium-item w-1/3 flex flex-col items-center order-1 relative">
-                        <div class="text-xs font-semibold text-slate-300 mb-2 text-center">2nd Place</div>
+                        <div class="text-xs font-semibold text-slate-300 mb-2 text-center">🥈 2nd Place</div>
                         <div id="podium-2-avatar" class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full mb-3 bg-slate-800 border-3 border-slate-200 overflow-hidden"></div>
                         <div id="podium-2-name" class="font-bold text-sm sm:text-lg md:text-xl mb-1 text-white truncate w-full text-center">Name</div>
                         <div id="podium-2-score" class="font-semibold text-slate-100 mb-4 bg-slate-400/20 border border-slate-300/30 px-3 py-1 rounded-full text-xs">0 PTS</div>
-                        <div class="w-full h-32 sm:h-40 md:h-48 bento-card !rounded-b-none flex justify-center pt-5 bg-gradient-to-b from-slate-300/20 to-transparent">
+                        <div class="w-full h-28 sm:h-36 md:h-44 bento-card !rounded-b-none flex justify-center pt-5 bg-gradient-to-b from-slate-300/20 to-transparent">
                             <span class="text-4xl md:text-5xl font-display font-extrabold text-slate-200/70">2</span>
                         </div>
                     </div>
@@ -707,36 +734,40 @@
                         <div id="podium-1-avatar" class="w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full mb-3 ring-4 ring-yellow-300 bg-slate-800 overflow-hidden"></div>
                         <div id="podium-1-name" class="font-bold text-base sm:text-xl md:text-2xl mb-1 text-yellow-100 truncate w-full text-center">Name</div>
                         <div id="podium-1-score" class="font-bold text-yellow-200 mb-5 bg-yellow-500/20 px-4 py-1 rounded-full border border-yellow-300/50 text-xs sm:text-sm">0 PTS</div>
-                        <div class="w-full h-44 sm:h-52 md:h-64 bento-card !rounded-b-none flex justify-center pt-6 bg-gradient-to-b from-yellow-400/30 to-transparent">
+                        <div class="w-full h-40 sm:h-48 md:h-60 bento-card !rounded-b-none flex justify-center pt-6 bg-gradient-to-b from-yellow-400/30 to-transparent">
                             <span class="text-5xl md:text-7xl font-display font-extrabold text-yellow-300">1</span>
                         </div>
                     </div>
 
                     <!-- Rank 3 -->
                     <div id="podium-3" class="podium-item w-1/3 flex flex-col items-center order-3 relative">
-                        <div class="text-xs font-semibold text-amber-300 mb-2 text-center">3rd Place</div>
+                        <div class="text-xs font-semibold text-amber-300 mb-2 text-center">🥉 3rd Place</div>
                         <div id="podium-3-avatar" class="w-14 h-14 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-full mb-3 bg-slate-800 border-3 border-amber-400 overflow-hidden"></div>
                         <div id="podium-3-name" class="font-bold text-sm sm:text-base md:text-lg mb-1 text-white truncate w-full text-center">Name</div>
                         <div id="podium-3-score" class="font-semibold text-amber-200 mb-4 bg-amber-500/20 border border-amber-400/30 px-3 py-1 rounded-full text-xs">0 PTS</div>
-                        <div class="w-full h-28 sm:h-32 md:h-40 bento-card !rounded-b-none flex justify-center pt-4 bg-gradient-to-b from-amber-500/20 to-transparent">
+                        <div class="w-full h-24 sm:h-28 md:h-36 bento-card !rounded-b-none flex justify-center pt-4 bg-gradient-to-b from-amber-500/20 to-transparent">
                             <span class="text-3xl md:text-4xl font-display font-extrabold text-amber-300/75">3</span>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section class="bento-card p-4 sm:p-6 w-full" aria-label="Full player standings">
-                <div class="flex flex-wrap justify-between items-end gap-3 mb-4 relative z-10">
+            <!-- Full Leaderboard of Everyone Who Played -->
+            <section id="host-full-standings-section" class="bento-card p-5 sm:p-6 w-full full-standings-panel" aria-label="Full player standings">
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-4 relative z-10 border-b border-white/10 pb-3">
                     <div>
-                        <h2 class="text-base sm:text-lg font-display font-bold text-white">All Players</h2>
-                        <p class="text-xs text-slate-300">Ranked by total points</p>
+                        <h2 class="text-lg sm:text-xl font-display font-bold text-white">Full Room Leaderboard</h2>
+                        <p class="text-xs text-slate-300">Complete standings from 1st place down to every participant</p>
+                    </div>
+                    <div class="bg-yellow-400/15 border border-yellow-400/30 text-yellow-200 font-bold px-3.5 py-1 rounded-full text-xs">
+                        <span id="host-total-players-ranked">0</span> Players Ranked
                     </div>
                 </div>
-                <ol id="host-leaderboard-rest" class="flex flex-col gap-2 relative z-10"></ol>
+                <ol id="host-leaderboard-rest" class="flex flex-col gap-2.5 relative z-10"></ol>
                 <p id="host-leaderboard-empty" class="hidden text-sm text-slate-300 py-3 relative z-10">No players to show yet.</p>
             </section>
 
-            <div class="text-center pb-2">
+            <div class="text-center pb-6">
                 <button onclick="goHomeAndClean()" class="px-8 py-3.5 btn-primary rounded-xl font-bold text-sm">Back to Home</button>
             </div>
         </main>
@@ -858,7 +889,7 @@
     </div>
 
     <!-- Player Final Result -->
-    <div id="screen-player-leaderboard" class="screen-container leaderboard-screen p-4 md:p-6">
+    <div id="screen-player-leaderboard" class="screen-container leaderboard-screen custom-scroll p-4 md:p-6">
         <main class="max-w-3xl w-full min-h-full mx-auto py-2 md:py-5 flex flex-col gap-5 pt-8">
             <section class="bento-card p-6 md:p-8 text-center relative overflow-hidden">
                 <div class="eyebrow mb-3">Game Over</div>
@@ -873,14 +904,15 @@
                 </div>
             </section>
             <section class="bento-card p-4 sm:p-6" aria-label="Final leaderboard">
-                <div class="flex flex-wrap justify-between items-end gap-3 mb-3 relative z-10">
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-3 relative z-10 border-b border-white/10 pb-2.5">
                     <div>
-                        <h2 class="text-base sm:text-lg font-display font-bold text-white">Standings</h2>
+                        <h2 class="text-base sm:text-lg font-display font-bold text-white">Full Room Standings</h2>
+                        <p class="text-xs text-slate-300">Every player ranked from 1st place down</p>
                     </div>
                 </div>
                 <ol id="player-final-leaderboard" class="flex flex-col gap-2 relative z-10"></ol>
             </section>
-            <div class="text-center pb-2">
+            <div class="text-center pb-6">
                 <button onclick="goHomeAndClean()" class="px-8 py-3.5 btn-primary rounded-xl font-bold text-sm">Play Again</button>
             </div>
         </main>
@@ -916,7 +948,7 @@
         }
 
         // =========================================================================
-        // 🎶 SANCTUARY WEB AUDIO SYNTHESIZER
+        // 🎶 SANCTUARY WEB AUDIO SYNTHESIZER (WITH SNARE DRUM ROLLS & FANFARES)
         // =========================================================================
         const SoundEngine = {
             ctx: null,
@@ -925,6 +957,7 @@
             bgmInterval: null,
             currentBgmMode: null,
             stepIndex: 0,
+            noiseBuffer: null,
 
             init() {
                 if (!this.ctx) {
@@ -934,6 +967,19 @@
                 if (this.ctx && this.ctx.state === 'suspended') {
                     this.ctx.resume();
                 }
+            },
+
+            getNoiseBuffer() {
+                if (!this.ctx) return null;
+                if (this.noiseBuffer) return this.noiseBuffer;
+                const bufferSize = this.ctx.sampleRate * 2;
+                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                this.noiseBuffer = buffer;
+                return buffer;
             },
 
             playNote(freq, type = 'sine', duration = 0.35, startTime = 0, volume = 0.14) {
@@ -954,6 +1000,60 @@
                 gain.connect(this.ctx.destination);
                 osc.start(now);
                 osc.stop(now + duration + 0.02);
+            },
+
+            // Realistic Snare Drum Roll Crescendo before each Podium Reveal
+            drumRoll(durationSeconds = 1.4, intensity = 1.0) {
+                if (!this.sfxEnabled) return;
+                this.init();
+                if (!this.ctx) return;
+                const noiseBuf = this.getNoiseBuffer();
+                if (!noiseBuf) return;
+
+                const now = this.ctx.currentTime;
+                const hits = Math.floor(durationSeconds * 28); // Rapid 28 strokes/sec snare buzz
+                for (let i = 0; i < hits; i++) {
+                    const progress = i / hits;
+                    const hitTime = now + (i * (durationSeconds / hits));
+                    // Crescendo: builds up dramatically toward the reveal
+                    const hitVol = (0.02 + Math.pow(progress, 1.8) * 0.18) * intensity;
+
+                    // Snare wire noise burst
+                    const noise = this.ctx.createBufferSource();
+                    noise.buffer = noiseBuf;
+                    const filter = this.ctx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.setValueAtTime(1100 + progress * 500, hitTime);
+                    filter.Q.setValueAtTime(1.2, hitTime);
+
+                    const gain = this.ctx.createGain();
+                    gain.gain.setValueAtTime(0.001, hitTime);
+                    gain.gain.linearRampToValueAtTime(hitVol, hitTime + 0.005);
+                    gain.gain.exponentialRampToValueAtTime(0.0008, hitTime + 0.045);
+
+                    noise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    noise.start(hitTime);
+                    noise.stop(hitTime + 0.05);
+
+                    // Drum shell body thump on alternating strokes
+                    if (i % 2 === 0) {
+                        const osc = this.ctx.createOscillator();
+                        const bodyGain = this.ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(165, hitTime);
+                        osc.frequency.exponentialRampToValueAtTime(85, hitTime + 0.035);
+
+                        bodyGain.gain.setValueAtTime(hitVol * 0.65, hitTime);
+                        bodyGain.gain.exponentialRampToValueAtTime(0.001, hitTime + 0.038);
+
+                        osc.connect(bodyGain);
+                        bodyGain.connect(this.ctx.destination);
+                        osc.start(hitTime);
+                        osc.stop(hitTime + 0.04);
+                    }
+                }
             },
 
             click() {
@@ -1034,15 +1134,20 @@
                 }
             },
 
+            // Celebratory Fanfare when each Podium Hero pops up after the drum roll
             podiumStep(rank) {
                 if (rank === 3) {
-                    [392.00, 493.88, 587.33].forEach((f, i) => this.playNote(f, 'triangle', 0.4, i * 0.08, 0.15));
+                    [392.00, 493.88, 587.33, 783.99].forEach((f, i) => this.playNote(f, 'triangle', 0.45, i * 0.07, 0.16));
                 } else if (rank === 2) {
-                    [440.00, 554.37, 659.25, 880.00].forEach((f, i) => this.playNote(f, 'triangle', 0.45, i * 0.08, 0.16));
+                    [440.00, 554.37, 659.25, 880.00, 1108.73].forEach((f, i) => this.playNote(f, 'triangle', 0.5, i * 0.07, 0.17));
                 } else if (rank === 1) {
+                    // Victorious Champion Fanfare: Shofar + Royal Chord + Harp Cascade
                     this.shofar();
-                    const grand = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
-                    grand.forEach((f, i) => this.playNote(f, 'triangle', 0.8, 0.25 + i * 0.07, 0.18));
+                    const grand = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98, 2093.00];
+                    grand.forEach((f, i) => {
+                        this.playNote(f, 'triangle', 0.9, 0.15 + i * 0.065, 0.2);
+                        this.playNote(f * 0.5, 'sawtooth', 0.65, 0.15 + i * 0.065, 0.08);
+                    });
                 }
             },
 
@@ -1645,7 +1750,7 @@
         
         const allScreens = ['screen-loading', 'screen-home', 'screen-host-setup', 'screen-custom-builder', 'screen-host-lobby', 'screen-host-question', 'screen-host-reveal', 'screen-host-leaderboard', 'screen-player-join', 'screen-player-lobby', 'screen-player-question', 'screen-player-reveal', 'screen-player-leaderboard'];
 
-        window.showScreen = showScreen; window.closeError = closeError; window.createRoom = createRoom; window.playerJoinRoom = playerJoinRoom; window.startHostGame = startHostGame; window.submitAnswer = submitAnswer; window.hostNextQuestion = hostNextQuestion; window.goHomeAndClean = goHomeAndClean; window.copyJoinLink = copyJoinLink; window.selectAvatar = selectAvatar;
+        window.showScreen = showScreen; window.closeError = closeError; window.createRoom = createRoom; window.playerJoinRoom = playerJoinRoom; window.startHostGame = startHostGame; window.submitAnswer = submitAnswer; window.hostNextQuestion = hostNextQuestion; window.goHomeAndClean = goHomeAndClean; window.copyJoinLink = copyJoinLink; window.selectAvatar = selectAvatar; window.skipPodiumAnimation = skipPodiumAnimation;
 
         function showScreen(screenId) {
             SoundEngine.click();
@@ -2038,7 +2143,10 @@
 
             const rankLabel = document.createElement('span');
             rankLabel.className = 'leaderboard-rank';
-            rankLabel.textContent = `#${rank}`;
+            if (rank === 1) rankLabel.textContent = '🥇 #1';
+            else if (rank === 2) rankLabel.textContent = '🥈 #2';
+            else if (rank === 3) rankLabel.textContent = '🥉 #3';
+            else rankLabel.textContent = `#${rank}`;
 
             const avatar = document.createElement('span');
             avatar.className = 'leaderboard-row-avatar';
@@ -2068,12 +2176,15 @@
             list.replaceChildren(...players.map((player, index) => createLeaderboardRow(player, startRank + index)));
         }
 
-        function setLeaderboardAnnouncement(message) {
+        function setLeaderboardAnnouncement(message, isDrumRoll = false) {
             const announcement = document.getElementById('leaderboard-announcement');
-            announcement.classList.remove('announcement-pop');
+            announcement.classList.remove('announcement-pop', 'drumroll-active');
             announcement.textContent = message;
             void announcement.offsetWidth;
             announcement.classList.add('announcement-pop');
+            if (isDrumRoll) {
+                announcement.classList.add('drumroll-active');
+            }
         }
 
         function stopConfetti() {
@@ -2247,18 +2358,45 @@
             }
         }
 
+        function skipPodiumAnimation() {
+            podiumRevealTimeouts.forEach(clearTimeout);
+            podiumRevealTimeouts = [];
+            podiumRevealRunning = false;
+            const sorted = sortPlayersByScore(playersData);
+            [3, 2, 1].forEach(rank => {
+                if (sorted[rank - 1]) document.getElementById(`podium-${rank}`).classList.add('is-revealed');
+            });
+            document.getElementById('host-full-standings-section').classList.remove('standings-hidden');
+            document.getElementById('btn-skip-podium').classList.add('hidden');
+            if (sorted[0]) {
+                setLeaderboardAnnouncement(`👑 ${sorted[0].name || 'Our champion'} takes 1st place!`, false);
+            }
+        }
+
         function renderHostLeaderboard(animate = true) {
             const leaderboardScreen = document.getElementById('screen-host-leaderboard');
             if (animate || !leaderboardScreen.classList.contains('active')) showScreen('screen-host-leaderboard');
             SoundEngine.stopBGM();
             const sorted = sortPlayersByScore(playersData);
+            
+            // Update Full Leaderboard Count & Rows (from #1 down to everyone who played)
+            document.getElementById('host-total-players-ranked').innerText = sorted.length;
+            renderLeaderboardRows('host-leaderboard-rest', sorted, 1);
+            document.getElementById('host-leaderboard-empty').classList.toggle('hidden', sorted.length > 0);
+
+            const fullStandingsPanel = document.getElementById('host-full-standings-section');
+            const skipBtn = document.getElementById('btn-skip-podium');
+
             if (animate) {
                 podiumRevealTimeouts.forEach(clearTimeout);
                 podiumRevealTimeouts = [];
                 podiumRevealRunning = true;
                 stopConfetti();
-                setLeaderboardAnnouncement('Get ready for the final results…');
+                fullStandingsPanel.classList.add('standings-hidden');
+                skipBtn.classList.remove('hidden');
+                setLeaderboardAnnouncement('🥁 Drum roll please… preparing the podium!', false);
             }
+
             const setPodium = (rank, p) => {
                 const el = document.getElementById(`podium-${rank}`);
                 if(!el) return;
@@ -2274,42 +2412,64 @@
             };
             setPodium(1, sorted[0]); setPodium(2, sorted[1]); setPodium(3, sorted[2]);
 
-            renderLeaderboardRows('host-leaderboard-rest', sorted, 1);
-            document.getElementById('host-leaderboard-empty').classList.toggle('hidden', sorted.length > 0);
-
             const revealOrder = [3, 2, 1].filter(rank => Boolean(sorted[rank - 1]));
             const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             if (!animate) {
-                if (!podiumRevealRunning) revealOrder.forEach(rank => document.getElementById(`podium-${rank}`).classList.add('is-revealed'));
+                if (!podiumRevealRunning) {
+                    revealOrder.forEach(rank => document.getElementById(`podium-${rank}`).classList.add('is-revealed'));
+                    fullStandingsPanel.classList.remove('standings-hidden');
+                    skipBtn.classList.add('hidden');
+                }
                 return;
             }
             if (!revealOrder.length) {
                 podiumRevealRunning = false;
-                setLeaderboardAnnouncement('No scores yet.');
+                fullStandingsPanel.classList.remove('standings-hidden');
+                skipBtn.classList.add('hidden');
+                setLeaderboardAnnouncement('No scores recorded yet.', false);
                 return;
             }
 
-            let timeline = 0;
+            let timeline = 200;
             revealOrder.forEach((rank, index) => {
                 const player = sorted[rank - 1];
-                const placeName = rank === 3 ? 'third' : rank === 2 ? 'second' : 'first';
-                const intro = rank === 3 ? 'Third place goes to…' : rank === 2 ? 'Second place goes to…' : 'And 1st place goes to…';
-                podiumRevealTimeouts.push(setTimeout(() => setLeaderboardAnnouncement(intro), timeline));
+                const placeName = rank === 3 ? '3rd' : rank === 2 ? '2nd' : '1st';
+                const drumDurationSec = rank === 1 ? 1.8 : 1.4;
+                const drumDurationMs = reduceMotion ? 0 : drumDurationSec * 1000;
+                const intro = rank === 3
+                    ? '🥁 Drum roll… 3rd place goes to…'
+                    : rank === 2
+                    ? '🥁 Drum roll… 2nd place goes to…'
+                    : '🥁 Drum roll for the Victorious One… 1st place goes to…';
 
-                timeline += reduceMotion ? 0 : 900;
+                // Stage 1: Start Drum Roll + Suspense Announcement
+                podiumRevealTimeouts.push(setTimeout(() => {
+                    setLeaderboardAnnouncement(intro, true);
+                    SoundEngine.drumRoll(drumDurationSec, rank === 1 ? 1.25 : 1.0);
+                }, timeline));
+
+                timeline += drumDurationMs;
+
+                // Stage 2: Reveal Podium Hero + Play Victorious Fanfare
                 podiumRevealTimeouts.push(setTimeout(() => {
                     document.getElementById(`podium-${rank}`).classList.add('is-revealed');
                     SoundEngine.podiumStep(rank);
                     if (rank === 1) {
-                        setLeaderboardAnnouncement(`👑 ${player.name || 'Our champion'} takes 1st place!`);
+                        setLeaderboardAnnouncement(`👑 ${player.name || 'Our champion'} is the Victorious One!`, false);
                         launchConfetti();
                     } else {
-                        setLeaderboardAnnouncement(`${player.name || 'Player'} takes ${placeName} place!`);
+                        setLeaderboardAnnouncement(`🎉 ${player.name || 'Player'} claims ${placeName} place!`, false);
                     }
-                    if (index === revealOrder.length - 1) podiumRevealRunning = false;
+
+                    // When the final podium spot is revealed, smoothly unveil the Full Room Standings below
+                    if (index === revealOrder.length - 1) {
+                        podiumRevealRunning = false;
+                        skipBtn.classList.add('hidden');
+                        fullStandingsPanel.classList.remove('standings-hidden');
+                    }
                 }, timeline));
 
-                timeline += reduceMotion ? 0 : 1600;
+                timeline += reduceMotion ? 0 : 1850;
             });
         }
 
